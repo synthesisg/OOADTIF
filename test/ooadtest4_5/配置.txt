@@ -1,0 +1,4 @@
+VisualStudio17
+.NetFramework 4.5
+EntityFramework 6.2
+MSSQL12

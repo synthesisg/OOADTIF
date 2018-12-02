@@ -1,0 +1,26 @@
+﻿@model ooadtest4_5.Models.AtestDB
+@{
+    ViewBag.Title = "Aindex_Title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Aindexxxx</h2>
+@using (Html.BeginForm())
+{
+    <div>
+        用户名：
+    </div>
+    <div>
+        @Html.TextBoxFor(model => model.ID)
+    </div>
+    <div>
+        密码：
+    </div>
+    <div>
+        @Html.PasswordFor(model => model.Title)
+    </div>
+    <div>
+        <input type="submit" value="登录" />
+    </div>
+}
+<p>Hello from our View Template!</p>

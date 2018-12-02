@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>gg</title>
+</head>
+<body>
+    hello, Files.
+    <form id="form1" method="post" enctype="multipart/form-data" action="uploadfile">
+        <input id="testFile" type="file" name="afile" />
+        <input id="testSubmit" type="submit" value="上传" />
+    </form>
+    <p> </p>
+    <img src="~/Files/mafu.jpeg" height="200" width="200" />
+    <p><a href="~/Files/SJTU_template.pdf" download="SJTU_template">点击下载(html)</a></p>
+    <!-- 需要手动右键下载 暂未尝试后端发放 -->
+    <p><a href="Download?fileName=SJTU_template.pdf">点击下载(MVC)</a></p>
+    <p><a href="Download?fileName=name.gif">点击下载(MVC)</a></p>
+        <!-- 后端发放 看上去能直接用 浏览器直接在文件名正常 迅雷显示为download-->
+</body>
+</html>

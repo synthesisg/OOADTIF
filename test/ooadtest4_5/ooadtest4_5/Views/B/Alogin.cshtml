@@ -1,0 +1,35 @@
+﻿@{
+
+    ViewBag.Title = "Alogin";
+    Layout = "~/Views/Shared/login.cshtml";
+}
+
+
+<p>@ViewBag.cdx</p>
+<p>@ViewData["CDX2"]</p>
+@foreach (var p in ViewBag.arr)
+{<li>@p</li>}
+<p>Now ASP</p>
+@{
+    if (IsPost)
+    {
+        string companyname = Request["companyname"];
+        string contactname = Request["contactname"];
+        <p>
+            You entered: <br />
+            Company Name: @companyname <br />
+            Contact Name: @contactname <br />
+            [cdx]@Request["contactname"]
+        </p>
+    }
+    else
+    {
+        <form method="post" action="gg">
+            Company Name:<br />
+            <input type="text" name="CompanyName" value="" /><br />
+            Contact Name:<br />
+            <input type="text" name="ContactName" value="" /><br /><br />
+            <input type="submit" value="Submit" class="submit" />
+        </form>
+    }
+} 

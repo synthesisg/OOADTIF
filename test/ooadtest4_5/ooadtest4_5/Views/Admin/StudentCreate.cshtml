@@ -1,0 +1,47 @@
+﻿
+@{
+	ViewBag.Title = "StudentCreate";
+	Layout = "~/Views/Shared/_LayoutAdmin2.cshtml";
+}
+<!-- header -->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2>创建教师账户</h2>
+</div>
+
+<!-- body -->
+<form class="bs-example bs-example-form" role="form">
+	<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+		<div style="padding: 30px 30px">
+
+			<div class="input-group">
+				<span class="input-group-addon">学生姓名</span>
+				<input type="text" class="form-control">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon">学号</span>
+				<input type="text" class="form-control">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon">电子邮箱</span>
+				<input type="text" class="form-control">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon">初始密码</span>
+				<input type="text" class="form-control">
+			</div>
+		</div>
+	</div>
+	<div class="container" style="width:90%;margin-top:40px;text-align:center;">
+		<button type="submit" class="btn btn-primary btn-lg" onclick="Mess()" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%">提交</button>
+		<button type="button" class="btn btn-primary btn-lg" style="background-color:#e1e1e1;border:none;width:20%">取消</button>
+	</div>
+</form>
+<script type="text/javascript">
+	function Mess() {
+		alert("您已成功创建一个账户");
+	}
+
+</script>

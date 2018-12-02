@@ -1,0 +1,80 @@
+﻿
+@{
+	ViewBag.Title = "StudentInfo";
+	Layout = "~/Views/Shared/_LayoutAdmin2.cshtml";
+}
+<!-- header -->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2>学生信息管理</h2>
+</div>
+<!-- header2 -->
+<div class="container" style=" padding:5px; width:90%; background-color:#f0f0f0; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<div style="display:inline">
+		<div class="input-group" style="float:left;width:45%;">
+			<span class="glyphicon glyphicon-search input-group-addon"></span>
+			<input type="text" class="form-control" placeholder="学号/姓名" style="display:inline;">
+		</div>
+	</div>
+
+	<p style="display:inline;margin-right:5px;font-size:20px;line-height:inherit">每页显示</p>
+	<select style="height:25px">
+		<option value="5">5</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+	</select>
+	<button type="button" class="btn btn-primary" style="float:right;background-color:#5ab4ac;color:white;border:none">
+		搜索
+	</button>
+</div>
+<!-- body -->
+<div class="container" style=" padding:5px; width:90%; background-color:#f0f0f0; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<table class="table">
+		<thead>
+			<tr>
+				<td>学生列表</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>
+					@Html.ActionLink("新建账户", "TeacherInfo", "Admin", new { style = "color:#5ab4ac", @class = "glyphicon glyphicon-plus-sign" })
+				</td>
+			</tr>
+			<tr>
+				<th>学号</th>
+				<th>姓名</th>
+				<th>性别</th>
+				<th>手机号</th>
+				<th>电子邮箱</th>
+				<th>
+				</th>
+			</tr>
+
+		</thead>
+		<tbody>
+			<tr>
+				<td>24320162202891</td>
+				<td>Rammohan </td>
+				<td>男</td>
+				<td>18012345678</td>
+				<td>Ramohan@163.com</td>
+				<td style="float:right;">
+					@Html.ActionLink(" ", "TeacherInfoMod", "Admin", new { style = "color:#5ab4ac;", @class = "glyphicon glyphicon-pencil" })
+					@Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "newPassW()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-repeat" })
+					@Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "delAccount()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-trash" })
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<script type="text/javascript">
+	function  newPassW() {
+		prompt("请输入新密码","");
+	}
+	function delAccount() {
+		confirm("确认删除该账户吗？");
+	}
+</script>
