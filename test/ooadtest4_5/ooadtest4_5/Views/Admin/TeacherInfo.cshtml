@@ -30,44 +30,63 @@
 </div>
 <!-- body -->
 <div class="container" style=" padding:5px; width:90%; background-color:#f0f0f0; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
-	<table class="table">
-		<thead>
-			<tr>
-				<td>教师列表</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td>
-					@Html.ActionLink("新建账户", "TeacherInfo", "Admin", new { style = "color:#5ab4ac", @class = "glyphicon glyphicon-plus-sign" })
-				</td>
-			</tr>
-			<tr>
-				<th>教工号</th>
-				<th>姓名</th>
-				<th>性别</th>
-				<th>手机号</th>
-				<th>电子邮箱</th>
-				<th>
-				</th>
-			</tr>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>教师列表</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    @Html.ActionLink("新建账户", "TeacherInfo", "Admin", new { style = "color:#5ab4ac", @class = "glyphicon glyphicon-plus-sign" })
+                </td>
+            </tr>
+            <tr>
+                <th>教工号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>手机号</th>
+                <th>电子邮箱</th>
+                <th>
+                </th>
+            </tr>
 
-		</thead>
-		<tbody>
-			<tr>
-				<td>1519117</td>
-				<td>Rammohan </td>
-				<td>男</td>
-				<td>18012345678</td>
-				<td>Ramohan@163.com</td>
-				<td style="float:right;">
-					@Html.ActionLink(" ", "TeacherInfoMod", "Admin", new { style = "color:#5ab4ac;", @class = "glyphicon glyphicon-pencil" })
-					@Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "newPassW()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-repeat" })
-					@Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "delAccount()",style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-trash" })
-				</td>
-			</tr>
-		</tbody>
-	</table>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1519117</td>
+                <td>Rammohan </td>
+                <td>男</td>
+                <td>18012345678</td>
+                <td>Ramohan@163.com</td>
+                <td style="float:right;">
+                    @Html.ActionLink(" ", "TeacherInfoMod", "Admin", new { style = "color:#5ab4ac;", @class = "glyphicon glyphicon-pencil" })
+                    @Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "newPassW()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-repeat" })
+                    @Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "delAccount()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-trash" })
+                </td>
+            </tr>
+        </tbody>
+
+        <!--from database-->
+        @foreach (var teacher in ViewBag.teacherlist)
+        {
+            <tbody>
+                <tr>
+                    <td>@teacher.academic_id</td>
+                    <td>@teacher.name </td>
+                    <td>这需求里没有</td>
+                    <td>这需求里也没有</td>
+                    <td>@teacher.email</td>
+                    <td style="float:right;">
+                        @Html.ActionLink(" ", "TeacherInfoMod", new { id = teacher.id }, new { style = "color:#5ab4ac;", @class = "glyphicon glyphicon-pencil" })
+                        @Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "newPassW()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-repeat" })
+                        @Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "delAccount()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-trash" })
+                    </td>
+                </tr>
+            </tbody>
+        }
+    </table>
 </div>
 
 <script type="text/javascript">

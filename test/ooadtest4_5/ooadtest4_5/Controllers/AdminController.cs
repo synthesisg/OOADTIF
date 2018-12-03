@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using ooadtest4_5.Models;
 namespace ooadtest4_5.Controllers
 {
     public class AdminController : Controller
@@ -36,12 +37,20 @@ namespace ooadtest4_5.Controllers
         }
         public ActionResult TeacherInfo()
         {
+            /*
             if (Session["is_admin"] == null) return Content("[null]Login First!");
             if ((bool)Session["is_admin"] == false) return Content("[false]Login First!");
+            //*/
+            var teacher = from ui in uidb.data where (ui.is_student == false) select ui;
+            //return Content(teacher.Count().ToString());
+            ViewBag.teacherlist = teacher;
             return View();
         }
-        public ActionResult TeacherInfoMod()
+        public ActionResult TeacherInfoMod(int id)
         {
+            userinfo ui = uidb.data.Find(id);
+            ViewBag.uimod = ui;
+            //return Content(id.ToString());
             return View();
         }
         public ActionResult TeacherCreate()
@@ -60,5 +69,7 @@ namespace ooadtest4_5.Controllers
         {
             return View();
         }
+
+        userinfoDB uidb = new userinfoDB();
     }
 }

@@ -19,6 +19,8 @@ namespace ooadtest4_5.Models
     {
         public AtestDBContext() : base("SQLConnectionString") { }
         public DbSet<AtestDB> Atest { get; set; }
+
+        public System.Data.Entity.DbSet<ooadtest4_5.Models.userinfo> userinfoes { get; set; }
     }
     public class us
     {

@@ -2,3 +2,12 @@ VisualStudio17
 .NetFramework 4.5
 EntityFramework 6.2
 MSSQL12
+
+
+测试账号：
+admin下
+123/456
+teacher下
+teacher/teacher
+student下
+student/student
