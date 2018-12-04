@@ -6,10 +6,17 @@
 <script type="text/javascript" language="javascript">
     function newPassW(id) {
         var str = id.toString();
-        document.getElementById("inputpwd_"+str).value = prompt("请输入新密码", "");
+        document.getElementById("inputpwd_" + str).value = prompt("请输入新密码", "");
+    } 
+    function TeacherDel(id) {
+        if (confirm("确认删除该账户吗？"))
+        {
+            alert("删除成功");
+            window.location.href = "TeacherDel/" + id.toString();
+        }
     }
-    function delAccount() {
-        confirm("确认删除该账户吗？");
+    function Search(){
+        window.location.href = "?Search=" + document.getElementById("search").value;
     }
 </script>
 
@@ -22,7 +29,7 @@
     <div style="display:inline">
         <div class="input-group" style="float:left;width:45%;">
             <span class="glyphicon glyphicon-search input-group-addon"></span>
-            <input type="text" class="form-control" placeholder="教工号/姓名" style="display:inline;">
+            <input type="text" class="form-control" placeholder="教工号/姓名" style="display:inline;" id="search">
         </div>
     </div>
 
@@ -34,7 +41,7 @@
         <option value="3">3</option>
         <option value="4">4</option>
     </select>
-    <button type="button" class="btn btn-primary" style="float:right;background-color:#5ab4ac;color:white;border:none">
+    <button type="button" class="btn btn-primary" onclick="Search()" style="float:right;background-color:#5ab4ac;color:white;border:none">
         搜索
     </button>
 </div>
@@ -47,7 +54,7 @@
                 <td></td>
                 <td></td>
                 <td>
-                    @Html.ActionLink("新建账户", "TeacherInfo", "Admin", new { style = "color:#5ab4ac", @class = "glyphicon glyphicon-plus-sign" })
+                    <a class="glyphicon glyphicon-plus-sign" href="/Admin/TeacherCreate" style="color:#5ab4ac">新建账户</a>
                 </td>
             </tr>
             <tr>
@@ -86,7 +93,7 @@
                             <input type="hidden" name="newpass" id="newpass" value="@teacher.id">
                             @Html.ActionLink(" ", "TeacherInfoMod", new { id = teacher.id }, new { style = "color:#5ab4ac;", @class = "glyphicon glyphicon-pencil" })
                             <button type="submit" class="glyphicon glyphicon-repeat" onclick="newPassW(@teacher.id)" style="color:#5ab4ac;padding-left:5px;background-color:Transparent;border-style:none;outline:none"></button>
-                            @Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "delAccount()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-trash" })
+                            <button type="button" class="glyphicon glyphicon-trash" onclick="TeacherDel(@teacher.id)" style="color:#5ab4ac;padding-left:5px;background-color:Transparent;border-style:none;outline:none"></button>
                         </td>
                     </form>
                 </tr>
