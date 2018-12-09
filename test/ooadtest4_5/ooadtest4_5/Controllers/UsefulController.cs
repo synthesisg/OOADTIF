@@ -47,7 +47,7 @@ namespace ooadtest4_5.Controllers
             u.email = email;
             uidb.SaveChanges();
         }
-        void UpdateInterval(int user_id,int interval)
+        void UpdateInterval(int user_id, int interval)
         {
             userinfo u = uidb.data.Find(user_id);
             u.interval = interval;
@@ -57,16 +57,16 @@ namespace ooadtest4_5.Controllers
         {
             userinfo ui = uidb.data.Find(user_id);
             ui.is_valid = true;
-            UpdatePassword(user_id, pwd);           
-            if(ui.is_student!=true)
+            UpdatePassword(user_id, pwd);
+            if (ui.is_student != true)
                 UpdateEmail(user_id, email);
             uidb.SaveChanges();
         }
-        void SendVeriCode(int user_id,string email="")
+        void SendVeriCode(int user_id, string email = "")
         {
             userinfo ui = uidb.data.Find(user_id);
             string em = ui.email;
-            if (ui.is_valid != true && ui.is_student==true) em = email;
+            if (ui.is_valid != true && ui.is_student == true) em = email;
             //SendEmail
             SmtpClient client = new SmtpClient("smtp.163.com", 25);
             Random Rdm = new Random();
@@ -81,7 +81,7 @@ namespace ooadtest4_5.Controllers
 
             //update table
             var query = from vc in vcdb.data where vc.id == user_id select vc;
-            if(query.Count()>0)//update
+            if (query.Count() > 0)//update
             {
                 foreach (var cdx in query)
                 {
@@ -102,9 +102,9 @@ namespace ooadtest4_5.Controllers
             }
             vcdb.SaveChanges();
         }
-        private bool login(string acad_id,string pwd)
+        private bool login(string acad_id, string pwd)
         {
-            var query = from tmp in uidb.data where (tmp.academic_id == acad_id && tmp.password==pwd) select tmp;
+            var query = from tmp in uidb.data where (tmp.academic_id == acad_id && tmp.password == pwd) select tmp;
             if (query.Count() > 0)
             {
                 Session["is_login"] = true;
@@ -118,7 +118,7 @@ namespace ooadtest4_5.Controllers
             Session["is_login"] = false;
         }
 
-        
+
         //Course_Teacher==============================================================================================================================================
         List<int> MyCourse_Stu(int student_id)
         {
@@ -144,32 +144,32 @@ namespace ooadtest4_5.Controllers
         {
             //course
             course co = codb.data.Find(course_id);
-            codb.data.Remove(co);   codb.SaveChanges();
+            codb.data.Remove(co); codb.SaveChanges();
 
             //class
             var class1id = from c1 in c1db.data where c1.course_id == course_id select c1.id;
             foreach (int id in class1id) c1db.data.Remove(c1db.data.Find(id));
             c1db.SaveChanges();
-            
+
             //team_share
             var tseid = from Tse in tsedb.data where (Tse.from_course_id == course_id || Tse.to_course_id == course_id) select Tse.id;
             foreach (int id in tseid) tsedb.data.Remove(tsedb.data.Find(id)); tsedb.SaveChanges();
-            
+
             //team_submit
             var tstid = from Tst in tstdb.data where class1id.Contains(tdb.data.Find(Tst.team_id).class_id) select Tst.id;
             foreach (int id in tstid) tstdb.data.Remove(tstdb.data.Find(id)); tstdb.SaveChanges();
-            
+
             //seminar_share
             var ssid = from Ss in ssdb.data where (Ss.from_course_id == course_id || Ss.to_course_id == course_id) select Ss.id;
-            foreach (int id in ssid) ssdb.data.Remove(ssdb.data.Find(id));    ssdb.SaveChanges();
+            foreach (int id in ssid) ssdb.data.Remove(ssdb.data.Find(id)); ssdb.SaveChanges();
 
             //select_course
             var scid = from sc in scdb.data where class1id.Contains(sc.class_id) select sc;
-            foreach (var id in scid) scdb.data.Remove(id);                  scdb.SaveChanges();
+            foreach (var id in scid) scdb.data.Remove(id); scdb.SaveChanges();
 
             //team
             var tid = from t in tdb.data where class1id.Contains(t.class_id) select t.id;
-            foreach (var id in tid) tdb.data.Remove(tdb.data.Find(id));     tdb.SaveChanges();
+            foreach (var id in tid) tdb.data.Remove(tdb.data.Find(id)); tdb.SaveChanges();
 
             //team_member
             var tmid = from tm in tmdb.data where tid.Contains(tm.team_id) select tm.id;
@@ -245,9 +245,9 @@ namespace ooadtest4_5.Controllers
         List<int> QueryList(int course_id)
         {
             course co = codb.data.Find(course_id);
-            var rc1=from c1 in c1db.data where c1.course_id==course_id select c1;
-            List<int> student_id=new List<int>();
-            foreach(var r in rc1)
+            var rc1 = from c1 in c1db.data where c1.course_id == course_id select c1;
+            List<int> student_id = new List<int>();
+            foreach (var r in rc1)
             {
                 int class_id = r.id;
                 var rsc = from sc in scdb.data where (sc.class_id == class_id && sc.hasteam != true) select sc;
@@ -255,22 +255,22 @@ namespace ooadtest4_5.Controllers
             }
             return student_id;
         }
-        List<int> QueryMember(int student_id,int course_id)
+        List<int> QueryMember(int student_id, int course_id)
         {
             List<int> member = new List<int>();
             var rtm = from tm in tmdb.data where tm.student_id == student_id select tm.team_id;
             int team_id = 0;
-            foreach(var rr in rtm)
+            foreach (var rr in rtm)
             {
                 if (course_id == c1db.data.Find(tdb.data.Find(rr).class_id).course_id)
                     team_id = rr;
             }
             member.Add(tdb.data.Find(team_id).leader_id);
             rtm = from tm in tmdb.data where tm.team_id == team_id select tm.student_id;
-            foreach (var r in rtm) if(r!=member[0]) member.Add(r);
+            foreach (var r in rtm) if (r != member[0]) member.Add(r);
             return member;
         }
-        void AddtoTeam(int team_id,int student_id)
+        void AddtoTeam(int team_id, int student_id)
         {
             team t = tdb.data.Find(team_id);
             class1 c1 = c1db.data.Find(t.class_id);
@@ -287,12 +287,12 @@ namespace ooadtest4_5.Controllers
             tmdb.SaveChanges();
 
             //[team]valid
-            var rtm = from tm in tmdb.data where tm.team_id==team_id select tm;
+            var rtm = from tm in tmdb.data where tm.team_id == team_id select tm;
             if (rtm.Count() > co.max_member_limit || rtm.Count() < co.min_member_limit) t.is_valid = false;
             else t.is_valid = true;
             tdb.SaveChanges();
         }
-        public void RemovefromTeam(int team_id,int student_id)
+        public void RemovefromTeam(int team_id, int student_id)
         {
             team t = tdb.data.Find(team_id);
             class1 c1 = c1db.data.Find(t.class_id);
@@ -305,7 +305,7 @@ namespace ooadtest4_5.Controllers
 
             //[team_member]remove
             var retm = from tm in tmdb.data where (tm.team_id == team_id && tm.student_id == student_id) select tm;
-            foreach(var r in retm) tmdb.data.Remove(r);
+            foreach (var r in retm) tmdb.data.Remove(r);
             tmdb.SaveChanges();
 
             //[team]valid
@@ -389,7 +389,7 @@ namespace ooadtest4_5.Controllers
             tsedb.SaveChanges();
             return true;
         }
-        bool  CancelTeamShare(int tseid)
+        bool CancelTeamShare(int tseid)
         {
             team_share tse = tsedb.data.Find(tseid);
             if (tse.state != true) return false;
@@ -493,7 +493,7 @@ namespace ooadtest4_5.Controllers
             rdb.SaveChanges();
 
             var c1id = from c1 in c1db.data where c1.course_id == course_id select c1.id;
-            foreach(int id in c1id)
+            foreach (int id in c1id)
             {
                 var addcr = new class_round
                 {
@@ -529,13 +529,32 @@ namespace ooadtest4_5.Controllers
             sdb.SaveChanges();
         }
         //SeminarProcess================================================================================================================================
-        bool Begin(int seminar_id)
+        bool Begin(int seminar_id)//continue
         {
             seminar s = sdb.data.Find(seminar_id);
             if (s.state == true) return false;
             s.state = false;
             sdb.SaveChanges();
             return true;
+        }
+        void  NextPresnetation(int seminar_id)
+        {
+            //拉取前端时间存入
+        }
+        void NextQuestion()
+        {
+
+        }
+        void pause(int seminar_id)
+        {
+
+            //拉取前端时间存入
+        }
+        void score()
+        {
+            string oper=Request["oper"];
+            int id = Int32.Parse(Request["id"]);
+            decimal score= Decimal.Parse(Request["score"]);
         }
         //Presentation==================================================================================================================================
         void SignUpSeiminar(int team_id,int seminar_id,int queue_no=0)

@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<style type="text/css">
+		body {
+			background-color: #f0f0f0
+		}
+
+		footer {
+			bottom: 0;
+			width: 100%;
+			height: 100px;
+			color: black;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		li {
+			border-bottom: inset;
+			border-width: 1px;
+			border-bottom-color: #f7f7f7;
+			cursor:pointer;
+		}
+
+		ul li {
+			font-size: 20px;
+		}
+
+			ul li:hover {
+				color: white;
+				background-color: #5ab4ac;
+			}
+	</style>
+</head>
+<body>
+	<!--header -->
+	<div class="container" style="width:100%; height:50px ;background-color:#e1e1e1;text-align:left;margin:0;">
+		<p style="color:#5ab4ac;line-height:50px;padding-left:1em;font-weight:bold;font-size:20px;float:left">个人信息综合管理平台</p>
+		<button type="button" class="btn btn-primary btn-lg" style="float:right;background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+			<span class="glyphicon glyphicon-off">@Html.ActionLink("退出", "TeacherLogin", "TeacherWeb",new { style= "color:#5ab4ac" })</span>
+		</button>
+	</div>
+
+	<div style="clear:both;padding:0">
+
+		<div class="row" style="background-color:rgb(247,247,247);">
+			<!-- left menu-->
+			<div class="col-md-3 col-sm-12" style="text-align:center;background-color:#f7f7f7; margin:0;padding:0; height:inherit; bottom:0;padding:0;border-bottom:inset;border-bottom-width:1px; border-color:#f7f7f7;">
+				<ul style="line-height:200px;">				
+					<li style="border-bottom:inset;border-bottom-width:2px" onclick="ReAction(1)">导入学生名单</li>
+					<li style="border-bottom:inset;border-bottom-width:2px" onclick="ReAction(2)">下载讨论课报告</li>
+					<li style="border-bottom:inset;border-bottom-width:2px" onclick="ReAction(3)">导出成绩</li>
+				</ul>
+			</div>
+			<!--content pane-->
+			<div class="col-md-9 col-sm-12" style="padding:0; background-color:white;height:inherit;border-left:inset;border-width:1px; border-right-color:#f7f7f7;">
+				@RenderBody()
+			</div>
+		</div>
+
+	</div>
+
+	<footer>
+		<hr />
+		<p style="text-align: center">&copy; @DateTime.Now.Year - TIF Group</p>
+	</footer>
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+</body>
+</html>
+<script>
+	function ReAction(str) {
+		switch (str) {
+			case 1: window.location = "/TeacherWeb/TeacherImport";
+				break;
+			case 2:
+				window.location = "/TeacherWeb/DownloadReport";
+				break;
+			case 3:
+				window.location = "/TeacherWeb/DownloadMarks";
+				break;
+			default: window.location = "/TeacherWeb/TeacherImport";
+		}
+		
+}
+</script>

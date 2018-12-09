@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<style type="text/css">
+		body {
+			background-color: #f0f0f0
+		}
+
+		footer {
+			
+			bottom: 0;
+			width: 100%;
+			height: 100px;
+			color: black;
+		}
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		li {
+			border-bottom: inset;
+			border-width: 1px;
+			border-bottom-color: #f7f7f7;
+		}
+		ul li {
+			font-size:20px;
+		}
+		ul li:hover {
+			color: white;
+			background-color: #5ab4ac;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="container" style="width:100%; height:50px ;background-color:#e1e1e1;text-align:left;margin:0;">
+		<p style="color:#5ab4ac;line-height:50px;padding-left:1em;font-weight:bold;font-size:20px;float:left">翻转课堂管理平台</p>
+		<button type="button" class="btn btn-primary btn-lg" style="float:right;background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+			<span class="glyphicon glyphicon-off"></span>
+		</button>
+	</div>
+
+	<div style="clear:both;padding:0">
+
+		<div class="row" style="background-color:rgb(247,247,247);">
+			<!-- left menu-->
+			<div class="col-md-3 col-sm-12" style="text-align:center;background-color:#f7f7f7; margin:0;padding:0; height:inherit; bottom:0;padding:0;border-bottom:inset;border-bottom-width:1px; border-color:#f7f7f7;">
+				<ul style="line-height:40px">
+					<li id="1" onclick="openMenu('2','3')" style="cursor:pointer">信息管理</li>
+					<li id="2">@Html.ActionLink("教师信息管理", "TeacherInfo", "Admin", new { style = "height:20%;color:black" })</li>
+					<li id="3">@Html.ActionLink("学生信息管理", "StudentInfo", "Admin", new { style = "height:10%;color:black" })</li>
+				</ul>
+			</div>
+			<!--content pane-->
+			<div class="col-md-9 col-sm-12" style="padding:0; background-color:white;height:inherit;border-left:inset;border-width:1px; border-right-color:#f7f7f7;" >
+				@RenderBody()
+			</div>
+		</div>
+
+	</div>
+
+		<footer>
+			<hr />
+			<p style="text-align: center">&copy; @DateTime.Now.Year - TIF Group</p>
+		</footer>
+
+		@Scripts.Render("~/bundles/jquery")
+		@Scripts.Render("~/bundles/bootstrap")
+		@RenderSection("scripts", required: false)
+</body>
+</html>
+<script type="text/javascript">
+	function openMenu(str,str2)
+	{
+		var sub_menu = document.getElementById(str);
+		var dis_v = sub_menu.style.display;
+		if (dis_v == "none") {
+			sub_menu.style.display = "block";
+		}
+		else sub_menu.style.display = "none";
+
+		sub_menu = document.getElementById(str2);
+		dis_v = sub_menu.style.display;
+		if (dis_v == "none") {
+			sub_menu.style.display = "block";
+		}
+		else sub_menu.style.display = "none";
+	}
+</script>

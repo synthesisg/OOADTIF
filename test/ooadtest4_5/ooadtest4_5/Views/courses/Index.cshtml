@@ -1,0 +1,101 @@
+﻿@model IEnumerable<ooadtest4_5.Models.course>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.teacher_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.report_percentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.presentation_percentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.question_percentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.is_group)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.start_datetime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.end_datetime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.max_member_limit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.min_member_limit)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.teacher_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.report_percentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.presentation_percentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.question_percentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.is_group)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.start_datetime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.end_datetime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.max_member_limit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.min_member_limit)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.id })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

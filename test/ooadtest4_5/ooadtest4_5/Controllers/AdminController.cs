@@ -29,7 +29,8 @@ namespace ooadtest4_5.Controllers
                     string pwd = Request["adminpwd"];
                     Session["user"] = user;
                     Session["pswd"] = pwd;
-                    if (user == "123" && pwd == "456") //success
+                    var alist = from a in adb.data where (a.admin_name == user && a.admin_pwd == pwd) select a.id;
+                    if ((user == "123" && pwd == "456")||(alist.Count()>0)) //success
                     {
                         Session["is_admin"] = true;
                         Response.Redirect("TeacherInfo");
@@ -224,6 +225,7 @@ namespace ooadtest4_5.Controllers
             return RedirectToAction("StudentInfo");
         }
         userinfoDB uidb = new userinfoDB();
+        adminDB adb = new adminDB();
         bool is_judge = false;
     }
 }

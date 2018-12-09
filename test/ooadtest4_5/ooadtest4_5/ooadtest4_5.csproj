@@ -153,11 +153,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AtestDBsController.cs" />
     <Compile Include="Controllers\BController.cs" />
+    <Compile Include="Controllers\class1Controller.cs" />
+    <Compile Include="Controllers\coursesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TeacherWebController.cs" />
     <Compile Include="Controllers\usController.cs" />
     <Compile Include="Controllers\UsefulController.cs" />
     <Compile Include="Controllers\userinfoesController.cs" />
@@ -220,7 +222,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\A\Aindex.cshtml" />
     <Content Include="Views\B\Index.cshtml" />
     <Content Include="Views\Shared\login.cshtml" />
     <Content Include="Views\B\Alogin.cshtml" />
@@ -236,6 +237,25 @@
     <Content Include="Views\userinfoes\Details.cshtml" />
     <Content Include="Views\userinfoes\Edit.cshtml" />
     <Content Include="Views\userinfoes\Index.cshtml" />
+    <Content Include="Views\TeacherWeb\DownloadMarks.cshtml" />
+    <Content Include="Views\TeacherWeb\DownloadReport.cshtml" />
+    <Content Include="Views\TeacherWeb\InnerReport.cshtml" />
+    <Content Include="Views\TeacherWeb\TeacherImport.cshtml" />
+    <Content Include="Views\TeacherWeb\TeacherLogin.cshtml" />
+    <Content Include="Views\Shared\TeacherLayout\_LayoutTeacher1.cshtml" />
+    <Content Include="Views\Shared\TeacherLayout\_LayoutTeacher2.cshtml" />
+    <Content Include="Views\Shared\AdminLayout\_LayoutAdmin1.cshtml" />
+    <Content Include="Views\Shared\AdminLayout\_LayoutAdmin2.cshtml" />
+    <Content Include="Views\courses\Create.cshtml" />
+    <Content Include="Views\courses\Delete.cshtml" />
+    <Content Include="Views\courses\Details.cshtml" />
+    <Content Include="Views\courses\Edit.cshtml" />
+    <Content Include="Views\courses\Index.cshtml" />
+    <Content Include="Views\class1\Create.cshtml" />
+    <Content Include="Views\class1\Delete.cshtml" />
+    <Content Include="Views\class1\Details.cshtml" />
+    <Content Include="Views\class1\Edit.cshtml" />
+    <Content Include="Views\class1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

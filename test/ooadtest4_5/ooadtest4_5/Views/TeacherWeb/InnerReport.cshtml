@@ -1,0 +1,64 @@
+﻿
+@{
+	ViewBag.Title = "InnerReport";
+	Layout = "~/Views/Shared/TeacherLayout/_LayoutTeacher2.cshtml";
+}
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2 style="color:#5ab4ac">下载讨论课材料</h2>
+</div>
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+
+	<h3>@ViewBag.obMsg.title</h3>
+	<h3>讨论课报名截止时间: @ViewBag.obMsg.signUpTime</h3>
+	<h3>报告提交截止时间: @ViewBag.obMsg.reportTime</h3>
+</div>
+
+<div class="container" style=" padding:5px; width:90%; background-color:#f0f0f0; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<table class="table">
+		<thead>
+			<tr>
+				<td>已报名小组</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<th>小组名</th>
+				<th>组长</th>
+				<th>提交情况</th>
+				<th>课程报告</th>
+			</tr>
+
+		</thead>
+		<!--ViewBag 给我信息我这里填-->
+		<tbody>
+			<tr>
+				<td>TIF</td>
+				<td>Rammohan </td>
+				<td>显示是否提交</td>
+				<td>
+					<button id="n" type="button" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+						下载
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<script type="text/javascript">
+	//这是未写完的 你来写 改URL jdata 按你的接口 
+	function downLoad(n) {
+		$.ajax({
+			'url': "/TeacherWeb/Amethod",
+			'type': "post",
+			'data': { jdata: JSON.stringify(person) },
+			'success': function (result) {
+				//如果发送成功
+				//查询数据库 如果上传了文件则开始下载
+				//否则
+				alert("该组文件未上传")
+			}
+		})
+	}
+</script>

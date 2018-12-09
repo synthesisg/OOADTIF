@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<style type="text/css">
+		body {
+			background-color: #f0f0f0
+		}
+
+		footer {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 100px;
+			color: black;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" style="height:50px ;width:100%;margin-top:0; background-color:#e1e1e1;text-align:left">
+		<p style="color:#5ab4ac;line-height:50px;padding-left:1em;font-weight:bold;font-size:16px">翻转课堂管理平台</p>
+	</div>
+	@RenderBody()
+	<footer>
+		<hr />
+		<p style="text-align: center">&copy; @DateTime.Now.Year - TIF Group</p>
+	</footer>
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+</body>
+</html>
