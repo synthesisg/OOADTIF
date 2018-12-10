@@ -5,20 +5,24 @@
 }
 
 <script language="javascript" type="text/javascript">
-    var arr = new Array()
-    arr[0] ="@ViewBag.c1list[0]";
-    arr[1]="@ViewBag.c1list[1]";
-    function GetClass(pos)
-    {
-        var i = 0;
-        alert(arr[pos-1]);
-        document.all.class_id.length = 0;
-        document.all.selCity.options[document.all.class_id.length] = new Option(array[pos], array[pos]);
-        //for (i = 0; i < array[pos]; i++)
-        {
-            //document.all.selCity.options[document.all.class_id.length] = new Option(666,666);
-        }
-    }
+    function f(pos) {
+		$.ajax({
+			'url': "/TeacherWeb/RClassInfo",
+			'type': "post",
+			'data': { data: pos },
+			'success': function (result) {
+				var obj = document.getElementById("class_id");
+				obj.options.length = 0;
+                var list = result.split("|");
+                for (var i = 0; i < list.length; i += 2) {
+                    obj.options.add(new Option(list[i], list[i + 1]));
+                }
+			},
+			'error': function () {
+				alert("发送失败！")
+			}
+		})
+	}
 </script>
 
 <!-- content hearder-->
@@ -27,7 +31,7 @@
 </div>
 
 <!-- content body -->
-<form class="bs-example bs-example-form" role="form">
+<form class="bs-example bs-example-form" role="form" action="UploadList" enctype="multipart/form-data" method="post">
     <div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
         <div style="padding: 30px 30px">
 
@@ -62,13 +66,12 @@
 
             <div class="input-group">
                 <span class="input-group-addon">课程</span>
-                <select id="course_id" name="course_id" class="form-control" onChange="GetClass(this.options[this.selectedIndex].value)">
-                    @{ int cnt = 0;}
+                <select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
                     @foreach (var co in ViewBag.colist)
                     {
-                        cnt++;
-                        <option value="@cnt">@co.name</option>
+                        <option value="@co.id">@co.name</option>
                     }
+                    <option value="-1" disabled selected = "selected">-- 请选择 --</option>
                 </select>
             </div>
             <br>
@@ -80,15 +83,14 @@
             <br>
             <div class="input-group">
                 <span class="input-group-addon">学生名单</span>
-                <input type="file" class="form-control">
+                <input type="file" id="afile" name="afile" class="form-control">
             </div>
             <br>
 
         </div>
     </div>
     <div class="container" style="width:90%;margin-top:40px;text-align:center;">
-        <button type="submit" class="btn btn-primary btn-lg" onclick="Mess()" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%">提交</button>
+        <button type="submit" class="btn btn-primary btn-lg" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%">提交</button>
         <button type="button" class="btn btn-primary btn-lg" style="background-color:#e1e1e1;border:none;width:20%">取消</button>
     </div>
 </form>
-

@@ -4,21 +4,43 @@
 	Layout = "~/Views/Shared/TeacherLayout/_LayoutTeacher2.cshtml";
 }
 
+<script language="javascript" type="text/javascript">
+    function f(pos) {
+        $.ajax({
+            'url': "/TeacherWeb/RRoundInfo",
+            'type': "post",
+            'data': { data: pos },
+            'success': function (result) {
+                var obj = document.getElementById("round_id");
+                obj.options.length = 0;
+                var list = result.split("|");
+                for (var i = 0; i < list.length; i++) {
+                    obj.options.add(new Option(list[i], list[i]));
+                }
+            },
+            'error': function () {
+                alert("发送失败！")
+            }
+        })
+    }
+</script>
 
 <div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
 	<h2 style="color:#5ab4ac">导出成绩</h2>
 </div>
 <div class="input-group"style="margin:20px;">
 	<span class="input-group-addon">课程</span>
-	<select id="person_id" name="SelectItem" class="form-control">
-		<option selected="selected" value="1">.NET</option>
-		<option value="2">OOAD</option>
-		<option value="3">J2EE</option>
-	</select>
+    <select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
+        @foreach (var co in ViewBag.colist)
+        {
+            <option value="@co.id">@co.name</option>
+        }
+        <option value="-1" disabled selected="selected">-- 请选择 --</option>
+    </select>
 </div>
 <div class="input-group" style="margin:20px;">
 	<span class="input-group-addon">轮次</span>
-	<select id="person_id" name="SelectItem" class="form-control">
+	<select id="round_id" name="round_id" class="form-control">
 		<option value="1">1</option>
 		<option selected="selected" value="2">2</option>
 		<option value="3">3</option>

@@ -129,7 +129,7 @@ namespace ooadtest4_5.Controllers
         }
         public ActionResult Axls()
         {
-            string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + Server.MapPath("~/Files/NET.xls") + ";" + "Extended Properties='Excel 8.0;HDR=NO;IMEX=1';";
+            string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + Server.MapPath("~/Files/NET.xlsx") + ";" + "Extended Properties='Excel 12.0;HDR=NO;IMEX=1';";
             // 若为xlsx 需要修改Extended Properties='Excel 12.0;HDR=NO;IMEX=1';
             string strExcel = "select * from   [sheet1$]";
             DataSet ds = new DataSet();
