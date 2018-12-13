@@ -159,6 +159,7 @@
     <Compile Include="Controllers\class1Controller.cs" />
     <Compile Include="Controllers\coursesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\StudentWebController.cs" />
     <Compile Include="Controllers\TeacherWebController.cs" />
     <Compile Include="Controllers\usController.cs" />
     <Compile Include="Controllers\UsefulController.cs" />
@@ -256,6 +257,12 @@
     <Content Include="Views\class1\Details.cshtml" />
     <Content Include="Views\class1\Edit.cshtml" />
     <Content Include="Views\class1\Index.cshtml" />
+    <Content Include="Views\Shared\StudentLayout\_StudentLayout1.cshtml" />
+    <Content Include="Views\Shared\StudentLayout\_StudentLayout2.cshtml" />
+    <Content Include="Views\StudentWeb\StudentLogin.cshtml" />
+    <Content Include="Views\StudentWeb\ChsLesson.cshtml" />
+    <Content Include="Views\StudentWeb\SpecificSeminar.cshtml" />
+    <Content Include="Views\StudentWeb\DownloadMarks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

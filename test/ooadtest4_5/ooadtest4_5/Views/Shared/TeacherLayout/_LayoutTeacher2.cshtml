@@ -2,6 +2,7 @@
 
 <html>
 <head>
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
 	<meta name="viewport" content="width=device-width" />
 	<title>@ViewBag.Title</title>
 	@Styles.Render("~/Content/css")
@@ -27,7 +28,7 @@
 			border-bottom: inset;
 			border-width: 1px;
 			border-bottom-color: #f7f7f7;
-			cursor:pointer;
+			cursor: pointer;
 		}
 
 		ul li {
@@ -54,7 +55,7 @@
 		<div class="row" style="background-color:rgb(247,247,247);">
 			<!-- left menu-->
 			<div class="col-md-3 col-sm-12" style="text-align:center;background-color:#f7f7f7; margin:0;padding:0; height:inherit; bottom:0;padding:0;border-bottom:inset;border-bottom-width:1px; border-color:#f7f7f7;">
-				<ul style="line-height:200px;">				
+				<ul style="line-height:200px;">
 					<li style="border-bottom:inset;border-bottom-width:2px" onclick="ReAction(1)">导入学生名单</li>
 					<li style="border-bottom:inset;border-bottom-width:2px" onclick="ReAction(2)">下载讨论课报告</li>
 					<li style="border-bottom:inset;border-bottom-width:2px" onclick="ReAction(3)">导出成绩</li>
