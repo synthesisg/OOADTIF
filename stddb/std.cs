@@ -21,7 +21,7 @@ namespace ooadtest4_5.Models
         public int id { get; set; }
         public string account { get; set; }
         public string password { get; set; }
-        public bool? is_active { get; set; }
+        public bool is_active { get; set; }
         public string studnet_name { get; set; }
         public string email { get; set; }
     }
@@ -32,7 +32,7 @@ namespace ooadtest4_5.Models
         public string account { get; set; }
         public string password { get; set; }
         public string teacher_name { get; set; }
-        public bool? is_active { get; set; }
+        public bool is_active { get; set; }
         public string email { get; set; }
     }
     public class team
@@ -44,7 +44,7 @@ namespace ooadtest4_5.Models
         public int leader_id { get; set; }
         public string team_name { get; set; }
 		public int team_serial { get; set; }
-        public bool? status { get; set; }
+        public int status { get; set; }
     }
     public class course
     {
@@ -53,11 +53,11 @@ namespace ooadtest4_5.Models
         public int teacher_id { get; set; }
         public string course_name { get; set; }
         public string introduction { get; set; }
-        public int? report_percentage { get; set; }
-        public int? presentation_percentage { get; set; }
-        public int? question_percentage { get; set; }
-        public DateTime? team_start_time { get; set; }
-        public DateTime? team_end_time { get; set; }
+        public int report_percentage { get; set; }
+        public int presentation_percentage { get; set; }
+        public int question_percentage { get; set; }
+        public DateTime team_start_time { get; set; }
+        public DateTime team_end_time { get; set; }
         public int? team_main_course_id { get; set; }
         public int? seminar_main_course_id { get; set; }
     }
@@ -72,10 +72,9 @@ namespace ooadtest4_5.Models
         public string introduction { get; set; }
         public int max_team { get; set; }
         public bool? is_visible { get; set; }
-        public int max_team { get; set; }
         public int seminar_serial { get; set; }
-        public DateTime enroll_start_time { get; set; }
-        public DateTime enroll_end_time { get; set; }
+        public DateTime? enroll_start_time { get; set; }
+        public DateTime? enroll_end_time { get; set; }
     }
 	public class attendance
     {
@@ -84,7 +83,7 @@ namespace ooadtest4_5.Models
         public int klass_seminar_id { get; set; }
         public int team_id { get; set; }
         public int team_order { get; set; }
-        public bool? is_present { get; set; }
+        public bool is_present { get; set; }
         public string ppt_name { get; set; }
         public string report_name { get; set; }
         public string ppt_url { get; set; }
@@ -118,7 +117,7 @@ namespace ooadtest4_5.Models
         public int attendance_id { get; set; }
         public int team_id { get; set; }
         public int student_id { get; set; }
-        public bool? is_selected { get; set; }
+        public bool is_selected { get; set; }
         public decimal? score { get; set; }
     }
 	public class klass_seminar
@@ -132,42 +131,42 @@ namespace ooadtest4_5.Models
     }
 	public class klass_student
     {
-        [Key, ,Column(Order = 0)]
+        [Key, Column(Order = 0)]
         public int klass_id { get; set; }
-        [Key, ,Column(Order = 1)]
+        [Key, Column(Order = 1)]
         public int student_id { get; set; }
         public int course_id { get; set; }
-        public int team_id { get; set; }
+        public int? team_id { get; set; }
     }
     public class klass_round
     {
-        [Key, ,Column(Order = 0)]
+        [Key, Column(Order = 0)]
         public int klass_id { get; set; }
-        [Key, ,Column(Order = 1)]
+        [Key, Column(Order = 1)]
         public int round_id { get; set; }
-        public int enroll_number { get; set; }
+        public int? enroll_number { get; set; }
     }
 	public class seminar_score
 	{
-        [Key, ,Column(Order = 0)]
+        [Key, Column(Order = 0)]
         public int klass_seminar_id { get; set; }
-        [Key, ,Column(Order = 1)]
+        [Key, Column(Order = 1)]
         public int team_id { get; set; }
-		public int total_score { get; set; }
-		public int presentation_score { get; set; }
-		public int question_score { get; set; }
-		public int report_score { get; set; }
+		public int? total_score { get; set; }
+		public int? presentation_score { get; set; }
+		public int? question_score { get; set; }
+		public int? report_score { get; set; }
 	}
 	public class round_score
 	{
-        [Key, ,Column(Order = 0)]
+        [Key, Column(Order = 0)]
         public int round_id { get; set; }
-        [Key, ,Column(Order = 1)]
+        [Key, Column(Order = 1)]
         public int team_id { get; set; }
-		public int total_score { get; set; }
-		public int presentation_score { get; set; }
-		public int question_score { get; set; }
-		public int report_score { get; set; }
+		public int? total_score { get; set; }
+		public int? presentation_score { get; set; }
+		public int? question_score { get; set; }
+		public int? report_score { get; set; }
 	}
 	public class conflict_course_strategy
 	{
@@ -180,8 +179,8 @@ namespace ooadtest4_5.Models
 	{
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
-        public int min_member { get; set; }
-        public int max_member { get; set; }
+        public int? min_member { get; set; }
+        public int? max_member { get; set; }
 	}
 	public class share_seminar_application
     {
@@ -213,9 +212,9 @@ namespace ooadtest4_5.Models
     }
     public class team_strategy
 	{
-        [Key, ,Column(Order = 0)]
+        [Key, Column(Order = 0)]
         public int course_id { get; set; }
-        [Key, ,Column(Order = 1)]
+        [Key, Column(Order = 1)]
         public int strategy_id { get; set; }
 		public string strategy_name { get; set; }
 	}
@@ -311,7 +310,7 @@ namespace ooadtest4_5.Models
     public class klass_roundDB : DbContext
     {
         public klass_roundDB() : base("MySQLContext") { }
-        public DbSet<Klass_round> data { get; set; }
+        public DbSet<klass_round> data { get; set; }
     }
 	public class seminar_scoreDB : DbContext
     {

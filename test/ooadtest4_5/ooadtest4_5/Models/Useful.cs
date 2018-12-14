@@ -10,7 +10,7 @@ namespace ooadtest4_5.Models
     public class Useful
     {
     }
-
+    //*
     //Models
     public class admin
     {
@@ -281,4 +281,5 @@ namespace ooadtest4_5.Models
         public noticeDB() : base("SQLConnectionString") { }
         public DbSet<notice> data { get; set; }
     }
+    //*/
 }
