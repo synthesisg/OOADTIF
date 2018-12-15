@@ -1,0 +1,85 @@
+﻿
+@{
+	ViewBag.Title = "DownloadMarks";
+	Layout = "~/Views/Shared/TeacherLayout/_LayoutTeacher2.cshtml";
+}
+
+<script language="javascript" type="text/javascript">
+    function f(pos) {
+        $.ajax({
+            'url': "/TeacherWeb/RRoundInfo",
+            'type': "post",
+            'data': { data: pos },
+            'success': function (result) {
+                var obj = document.getElementById("round_id");
+                obj.options.length = 0;
+                var list = result.split("|");
+                for (var i = 0; i < list.length; i+=2) {
+                    obj.options.add(new Option(list[i], list[i + 1]));
+                }
+            },
+            'error': function () {
+                alert("发送失败！")
+            }
+        })
+    }
+</script>
+
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2 style="color:#5ab4ac">导出成绩</h2>
+</div>
+<div class="input-group"style="margin:20px;">
+	<span class="input-group-addon">课程</span>
+    <select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
+        @foreach (var co in ViewBag.colist)
+        {
+            <option value="@co.id">@co.name</option>
+        }
+        <option value="-1" disabled selected="selected">-- 请选择 --</option>
+    </select>
+</div>
+<div class="input-group" style="margin:20px;">
+	<span class="input-group-addon">轮次</span>
+	<select id="round_id" name="round_id" class="form-control">
+		<option value="1">1</option>
+		<option selected="selected" value="2">2</option>
+		<option value="3">3</option>
+	</select>
+</div>
+
+<!--你要给我数据接口 不然我表格我写不出来啊。。-->
+<div class="container" style=" padding:5px; width:90%;  margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>小组编号</th>
+				<th>参与讨论课</th>
+				<th>发言成绩</th>
+				<th>提问成绩</th>
+				<th>报告成绩</th>
+				<th>总成绩</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!--ViewBag 给我信息我这里用foreach填-->
+			<tr>
+				<td>2-9</td>
+				<td>1</td>
+				<td>5</td>
+				<td>5</td>
+				<td>5</td>
+				<td>5</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<button id="n" value="download" onclick="dlMethod()" type="button" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+		导出Excel
+	</button>
+</div>
+<script type="text/javascript">
+	function dlMethod() {
+		//window.location.href = "文件的url地址";
+		//if成功 alert("success") 你写一下啊= =
+	}
+</script>

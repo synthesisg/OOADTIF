@@ -1,0 +1,32 @@
+﻿以下为服务器配置
+
+VisualStudio17
+.NetFramework 4.6.1
+[NuGet包]
+EntityFramework 6.2.0
+MySql.Data 6.10.8
+MySql.Data.Entity 6.10.8
+[DataBase]
+MySQL8.0
+MySQL Connector \Net 6.10.8
+
+三者版本不一致会引起闪退。
+一定要首次安装就选择正确版本，否则请重建项目。
+
+MySQL
+uid=root
+pwd=666666
+
+
+网页测试帐号
+admin
+uid=admin
+pwd=admin
+
+teacher
+uid=t1
+pwd=t1
+
+student
+uid=s1
+pwd=s1

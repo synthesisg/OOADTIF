@@ -1,0 +1,41 @@
+﻿
+@{
+	ViewBag.Title = "SpecificSeminar";
+	Layout = "~/Views/Shared/StudentLayout/_StudentLayout2.cshtml";
+}
+
+
+<!-- content hearder-->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2 style="color:#5ab4ac">讨论课</h2>
+</div>
+
+<!-- content body -->
+
+<div style="margin:20px;">
+	<h3 style="color:#5ab4ac">第 1次讨论课</h3>
+	<h4>需求分析</h4>
+	<p>这节课啊是balabalabalabala一大堆从数据库里拿出来的屎</p>
+	<hr />
+	<h4>已报名信息</h4>
+	<p>小组编号1</p>
+	<p>小组编号2</p>
+</div>
+<hr/>
+<!--如已报名这里显示已报名 显示取消报名按钮 需要小组报名信息-->
+<h3 style="margin:20px;">如已报名这里显示已报名，没有报名按钮，需要小组报名信息，点击后刷新页面</h3>
+<div style="margin:20px;">
+	<button id="n" value="download" onclick="SignUp()" type="button" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+		报名
+	</button>
+</div>
+<h3 style="margin:20px;">如已报名 根据时间显示，需要讨论课信息当期时间</h3>
+
+<script>
+	function SignUp() {
+		//传个消息给你 报名成功alert成功 失败就失败
+		alert("成功")
+		window.location.reload();
+	}
+
+</script>

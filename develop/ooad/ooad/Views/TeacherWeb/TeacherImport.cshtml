@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewBag.Title = "TeacherImport";
+    Layout = "~/Views/Shared/TeacherLayout/_LayoutTeacher2.cshtml";
+}
+
+<script language="javascript" type="text/javascript">
+    function f(pos) {
+		$.ajax({
+			'url': "/TeacherWeb/RClassInfo",
+			'type': "post",
+			'data': { data: pos },
+			'success': function (result) {
+				var obj = document.getElementById("class_id");
+				obj.options.length = 0;
+                var list = result.split("|");
+                for (var i = 0; i < list.length; i += 2) {
+                    obj.options.add(new Option(list[i], list[i + 1]));
+                }
+			},
+			'error': function () {
+				alert("发送失败！")
+			}
+		})
+	}
+</script>
+
+<!-- content hearder-->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+    <h2 style="color:#5ab4ac">导入学生名单</h2>
+</div>
+
+<!-- content body -->
+<form class="bs-example bs-example-form" role="form" action="UploadList" enctype="multipart/form-data" method="post">
+    <div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+        <div style="padding: 30px 30px">
+
+            <div class="input-group">
+                <span class="input-group-addon">课程</span>
+                <select id="person_id" name="SelectItem" class="form-control">
+                    <option selected="selected" value="1">.NET</option>
+                    <option value="2">OOAD</option>
+                    <option value="3">J2EE</option>
+                </select>
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">班级</span>
+                <select id="person_id" name="SelectItem" class="form-control">
+                    <option value="1">1</option>
+                    <option selected="selected" value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">学生名单</span>
+                <input type="file" class="form-control">
+            </div>
+            <br>
+
+        </div>
+
+        <!--database-->
+        <div style="padding: 30px 30px">
+
+            <div class="input-group">
+                <span class="input-group-addon">课程</span>
+                <select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
+                    @foreach (var co in ViewBag.colist)
+                    {
+                        <option value="@co.id">@co.name</option>
+                    }
+                    <option value="-1" disabled selected = "selected">-- 请选择 --</option>
+                </select>
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">班级</span>
+                <select id="class_id" name="class_id" class="form-control">
+                </select>
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">学生名单</span>
+                <input type="file" id="afile" name="afile" class="form-control">
+            </div>
+            <br>
+
+        </div>
+    </div>
+    <div class="container" style="width:90%;margin-top:40px;text-align:center;">
+        <button type="submit" class="btn btn-primary btn-lg" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%">提交</button>
+        <button type="button" class="btn btn-primary btn-lg" style="background-color:#e1e1e1;border:none;width:20%">取消</button>
+    </div>
+</form>

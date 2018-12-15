@@ -1,0 +1,32 @@
+﻿
+@{
+	ViewBag.Title = "DownLoadReport";
+	Layout = "~/Views/Shared/TeacherLayout/_LayoutTeacher2.cshtml";
+}
+
+
+<!-- content hearder-->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2 style="color:#5ab4ac">下载讨论课材料</h2>
+</div>
+
+<!-- content body -->
+<!--data from db-->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	@foreach (dynamic item in ViewBag.arrSeminar) {
+		<h3 style="color:#5ab4ac">第 @item.round 轮讨论课</h3>
+		<hr />
+		<h4>@item.title</h4>
+		<p>@item.msg</p>
+		<button onclick="enter(@item.round)" type="button" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+			进入
+		</button>
+	}
+
+</div>
+<script>
+	//跳转并传递轮次信息
+	function enter(n) {
+		window.location.href = "InnerReport?round="+n;
+	}
+</script>

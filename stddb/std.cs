@@ -5,7 +5,7 @@ using System.Web;
 using System.Data.Entity;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-namespace ooadtest4_5.Models
+namespace ooad.Models
 {
     //Models
     public class admin

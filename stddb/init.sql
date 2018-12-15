@@ -40,7 +40,7 @@ CREATE TABLE `attendance` (
   `team_order` tinyint(4) unsigned NOT NULL COMMENT '该队伍顺序',
   `is_present` tinyint(4) unsigned NOT NULL COMMENT '是否正在进行',
   `report_name` varchar(30) DEFAULT NULL COMMENT '提交的报告文件名',
-  `reprot_url` varchar(50) DEFAULT NULL COMMENT '提交的报告文件位置',
+  `report_url` varchar(50) DEFAULT NULL COMMENT '提交的报告文件位置',
   `ppt_name` varchar(30) DEFAULT NULL COMMENT '提交的PPT文件名',
   `ppt_url` varchar(50) DEFAULT NULL COMMENT '提交的PPT文件位置',
   PRIMARY KEY (`id`),
@@ -70,7 +70,7 @@ DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `teacher_id` bigint(20) unsigned NOT NULL COMMENT '教师id',
-  `course_name` varchar(10) NOT NULL COMMENT '课程名称',
+  `course_name` varchar(30) NOT NULL COMMENT '课程名称',
   `introduction` varchar(500) DEFAULT NULL COMMENT '课程介绍',
   `presentation_percentage` tinyint(4) unsigned NOT NULL COMMENT '展示分数占比',
   `question_percentage` tinyint(4) unsigned NOT NULL COMMENT '提问分数占比',
@@ -138,7 +138,7 @@ CREATE TABLE `klass_seminar` (
   `klass_id` bigint(20) unsigned NOT NULL COMMENT '班级id',
   `seminar_id` bigint(20) unsigned NOT NULL COMMENT '讨论课id\n',
   `report_ddl` datetime DEFAULT NULL COMMENT '报告截止时间',
-  `seminar_status` varchar(20) NOT NULL COMMENT '讨论课所处状态',
+  `status` tinyint(4) NOT NULL COMMENT '讨论课所处状态，未开始0，正在进行1，已结束2，暂停3',
   PRIMARY KEY (`id`),
   KEY `idx_klass_id` (`klass_id`),
   KEY `idx_seminar_id` (`seminar_id`)
@@ -185,7 +185,7 @@ CREATE TABLE `question` (
   `team_id` bigint(20) unsigned NOT NULL COMMENT '提问小组的id',
   `student_id` bigint(20) unsigned NOT NULL COMMENT '提问学生的id',
   `is_selected` tinyint(4) unsigned NOT NULL COMMENT '是否被选中',
-  `score` decimal(4,1) unsigned DEFAULT NULL COMMENT '提问分数',
+  `score` decimal(4,1) DEFAULT NULL COMMENT '提问分数',
   PRIMARY KEY (`id`),
   KEY `idx_team_id` (`team_id`),
   KEY `idx_klass_seminar_id` (`klass_seminar_id`),
@@ -219,10 +219,10 @@ DROP TABLE IF EXISTS `round_score`;
 CREATE TABLE `round_score` (
   `round_id` bigint(20) unsigned NOT NULL COMMENT '轮次id',
   `team_id` bigint(20) unsigned NOT NULL COMMENT '小组id',
-  `total_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '总成绩',
-  `presentation_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '展示成绩',
-  `question_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '提问成绩',
-  `report_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '报告成绩',
+  `total_score` decimal(4,1) DEFAULT NULL COMMENT '总成绩',
+  `presentation_score` decimal(4,1) DEFAULT NULL COMMENT '展示成绩',
+  `question_score` decimal(4,1) DEFAULT NULL COMMENT '提问成绩',
+  `report_score` decimal(4,1) DEFAULT NULL COMMENT '报告成绩',
   PRIMARY KEY (`round_id`,`team_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -236,7 +236,7 @@ CREATE TABLE `seminar` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `course_id` bigint(20) unsigned NOT NULL COMMENT '课程id',
   `round_id` bigint(20) unsigned NOT NULL COMMENT '轮次id',
-  `seminar_name` varchar(10) NOT NULL COMMENT '讨论课名称',
+  `seminar_name` varchar(30) NOT NULL COMMENT '讨论课名称',
   `introduction` varchar(500) DEFAULT NULL COMMENT '讨论课介绍',
   `max_team` tinyint(4) unsigned NOT NULL COMMENT '报名讨论课最多组数',
   `is_visible` tinyint(4) unsigned NOT NULL COMMENT '是否可见',
@@ -257,10 +257,10 @@ DROP TABLE IF EXISTS `seminar_score`;
 CREATE TABLE `seminar_score` (
   `klass_seminar_id` bigint(20) unsigned NOT NULL COMMENT '班级讨论课id',
   `team_id` bigint(20) unsigned NOT NULL COMMENT '小组id',
-  `total_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '总成绩',
-  `presentaton_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '展示成绩',
-  `question_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '提问成绩',
-  `report_score` decimal(4,1) unsigned DEFAULT NULL COMMENT '报告成绩',
+  `total_score` decimal(4,1) DEFAULT NULL COMMENT '总成绩',
+  `presentaton_score` decimal(4,1) DEFAULT NULL COMMENT '展示成绩',
+  `question_score` decimal(4,1) DEFAULT NULL COMMENT '提问成绩',
+  `report_score` decimal(4,1) DEFAULT NULL COMMENT '报告成绩',
   PRIMARY KEY (`klass_seminar_id`,`team_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -312,7 +312,7 @@ CREATE TABLE `student` (
   `password` varchar(20) NOT NULL COMMENT '账户密码',
   `is_active` tinyint(4) unsigned NOT NULL COMMENT '账号是否激活',
   `student_name` varchar(10) NOT NULL COMMENT '学生姓名',
-  `email` varchar(30) NOT NULL COMMENT '邮箱地址',
+  `email` varchar(30) DEFAULT NULL COMMENT '邮箱地址',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_account` (`account`),
   KEY `idx_password` (`password`)
@@ -347,7 +347,7 @@ CREATE TABLE `team` (
   `klass_id` bigint(20) unsigned NOT NULL COMMENT '班级序号',
   `course_id` bigint(20) unsigned NOT NULL COMMENT '课程序号',
   `leader_id` bigint(20) unsigned NOT NULL COMMENT '队长的学生id',
-  `team_name` varchar(10) NOT NULL COMMENT '队伍名称',
+  `team_name` varchar(30) NOT NULL COMMENT '队伍名称',
   `team_serial` tinyint(4) unsigned NOT NULL COMMENT '队伍序号',
   `status` tinyint(4) unsigned NOT NULL COMMENT '队伍状态，不合法0、合法1、审核中2',
   PRIMARY KEY (`id`),

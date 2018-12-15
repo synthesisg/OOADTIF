@@ -1,5 +1,6 @@
 [build in MySQL cmd line]
 source C:\std\db\init.sql
+C:\git\OOADTIF\stddb\init.sql
 
 [std_url]
 https://github.com/Black-W/DatabaseStandard

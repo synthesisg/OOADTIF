@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="standard_seminar_systemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="admin">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="account" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="attendance">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="klass_seminar_id" Type="Decimal" Nullable="false" />
+    <Property Name="team_id" Type="Decimal" Nullable="false" />
+    <Property Name="team_order" Type="Byte" Nullable="false" />
+    <Property Name="is_present" Type="Byte" Nullable="false" />
+    <Property Name="report_name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="report_url" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ppt_name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ppt_url" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="conflict_course_strategy">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="course_1_id" Type="Decimal" Nullable="false" />
+    <Property Name="course_2_id" Type="Decimal" Nullable="false" />
+  </EntityType>
+  <EntityType Name="course">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="teacher_id" Type="Decimal" Nullable="false" />
+    <Property Name="course_name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="introduction" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="presentation_percentage" Type="Byte" Nullable="false" />
+    <Property Name="question_percentage" Type="Byte" Nullable="false" />
+    <Property Name="report_percentage" Type="Byte" Nullable="false" />
+    <Property Name="team_start_time" Type="DateTime" Nullable="false" />
+    <Property Name="team_end_time" Type="DateTime" Nullable="false" />
+    <Property Name="team_main_course_id" Type="Decimal" />
+    <Property Name="seminar_main_course_id" Type="Decimal" />
+  </EntityType>
+  <EntityType Name="course_member_limit_strategy">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="course_id" Type="Byte" Nullable="false" />
+    <Property Name="min_member" Type="Byte" />
+    <Property Name="max_member" Type="Byte" />
+  </EntityType>
+  <EntityType Name="klass">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="course_id" Type="Decimal" Nullable="false" />
+    <Property Name="grade" Type="Int64" Nullable="false" />
+    <Property Name="klass_serial" Type="Byte" Nullable="false" />
+    <Property Name="klass_time" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="klass_location" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="klass_round">
+    <Key>
+      <PropertyRef Name="klass_id" />
+      <PropertyRef Name="round_id" />
+    </Key>
+    <Property Name="klass_id" Type="Decimal" Nullable="false" />
+    <Property Name="round_id" Type="Decimal" Nullable="false" />
+    <Property Name="enroll_number" Type="Byte" />
+  </EntityType>
+  <EntityType Name="klass_seminar">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="klass_id" Type="Decimal" Nullable="false" />
+    <Property Name="seminar_id" Type="Decimal" Nullable="false" />
+    <Property Name="report_ddl" Type="DateTime" />
+    <Property Name="status" Type="SByte" Nullable="false" />
+  </EntityType>
+  <EntityType Name="klass_student">
+    <Key>
+      <PropertyRef Name="klass_id" />
+      <PropertyRef Name="student_id" />
+    </Key>
+    <Property Name="klass_id" Type="Decimal" Nullable="false" />
+    <Property Name="student_id" Type="Decimal" Nullable="false" />
+    <Property Name="course_id" Type="Decimal" Nullable="false" />
+    <Property Name="team_id" Type="Decimal" />
+  </EntityType>
+  <EntityType Name="member_limit_strategy">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="min_member" Type="Byte" />
+    <Property Name="max_member" Type="Byte" />
+  </EntityType>
+  <EntityType Name="question">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="klass_seminar_id" Type="Decimal" Nullable="false" />
+    <Property Name="attendance_id" Type="Decimal" Nullable="false" />
+    <Property Name="team_id" Type="Decimal" Nullable="false" />
+    <Property Name="student_id" Type="Decimal" Nullable="false" />
+    <Property Name="is_selected" Type="Byte" Nullable="false" />
+    <Property Name="score" Type="Decimal" />
+  </EntityType>
+  <EntityType Name="round">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="course_id" Type="Decimal" Nullable="false" />
+    <Property Name="round_serial" Type="Byte" Nullable="false" />
+    <Property Name="presentation_score_method" Type="Byte" Nullable="false" />
+    <Property Name="report_score_method" Type="Byte" Nullable="false" />
+    <Property Name="question_score_method" Type="Byte" Nullable="false" />
+  </EntityType>
+  <EntityType Name="round_score">
+    <Key>
+      <PropertyRef Name="round_id" />
+      <PropertyRef Name="team_id" />
+    </Key>
+    <Property Name="round_id" Type="Decimal" Nullable="false" />
+    <Property Name="team_id" Type="Decimal" Nullable="false" />
+    <Property Name="total_score" Type="Decimal" />
+    <Property Name="presentation_score" Type="Decimal" />
+    <Property Name="question_score" Type="Decimal" />
+    <Property Name="report_score" Type="Decimal" />
+  </EntityType>
+  <EntityType Name="seminar">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="course_id" Type="Decimal" Nullable="false" />
+    <Property Name="round_id" Type="Decimal" Nullable="false" />
+    <Property Name="seminar_name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="introduction" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="max_team" Type="Byte" Nullable="false" />
+    <Property Name="is_visible" Type="Byte" Nullable="false" />
+    <Property Name="seminar_serial" Type="Byte" Nullable="false" />
+    <Property Name="enroll_start_time" Type="DateTime" />
+    <Property Name="enroll_end_time" Type="DateTime" />
+  </EntityType>
+  <EntityType Name="seminar_score">
+    <Key>
+      <PropertyRef Name="klass_seminar_id" />
+      <PropertyRef Name="team_id" />
+    </Key>
+    <Property Name="klass_seminar_id" Type="Decimal" Nullable="false" />
+    <Property Name="team_id" Type="Decimal" Nullable="false" />
+    <Property Name="total_score" Type="Decimal" />
+    <Property Name="presentaton_score" Type="Decimal" />
+    <Property Name="question_score" Type="Decimal" />
+    <Property Name="report_score" Type="Decimal" />
+  </EntityType>
+  <EntityType Name="share_seminar_application">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="main_course_id" Type="Decimal" Nullable="false" />
+    <Property Name="sub_course_id" Type="Decimal" Nullable="false" />
+    <Property Name="sub_course_teacher_id" Type="Decimal" Nullable="false" />
+    <Property Name="status" Type="Byte" />
+  </EntityType>
+  <EntityType Name="share_team_application">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="main_course_id" Type="Decimal" Nullable="false" />
+    <Property Name="sub_course_id" Type="Decimal" Nullable="false" />
+    <Property Name="sub_course_teacher_id" Type="Decimal" Nullable="false" />
+    <Property Name="status" Type="Byte" />
+  </EntityType>
+  <EntityType Name="student">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="account" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="is_active" Type="Byte" Nullable="false" />
+    <Property Name="student_name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="teacher">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="account" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="teacher_name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="is_active" Type="Byte" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="team">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="klass_id" Type="Decimal" Nullable="false" />
+    <Property Name="course_id" Type="Decimal" Nullable="false" />
+    <Property Name="leader_id" Type="Decimal" Nullable="false" />
+    <Property Name="team_name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="team_serial" Type="Byte" Nullable="false" />
+    <Property Name="status" Type="Byte" Nullable="false" />
+  </EntityType>
+  <EntityType Name="team_and_strategy">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="strategy_1_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="strategy_1_id" Type="Decimal" Nullable="false" />
+    <Property Name="strategy_2_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="strategy_2_id" Type="Decimal" Nullable="false" />
+  </EntityType>
+  <EntityType Name="team_or_strategy">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="strategy_1_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="strategy_1_id" Type="Decimal" Nullable="false" />
+    <Property Name="strategy_2_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="strategy_2_id" Type="Decimal" Nullable="false" />
+  </EntityType>
+  <EntityType Name="team_strategy">
+    <Key>
+      <PropertyRef Name="course_id" />
+      <PropertyRef Name="strategy_id" />
+      <PropertyRef Name="strategy_name" />
+    </Key>
+    <Property Name="course_id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="strategy_id" Type="Decimal" Nullable="false" />
+    <Property Name="strategy_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="team_valid_application">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Decimal" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="team_id" Type="Decimal" Nullable="false" />
+    <Property Name="teacher_id" Type="Decimal" Nullable="false" />
+    <Property Name="reason" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="Byte" />
+  </EntityType>
+  <EntityContainer Name="MySQLContext" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="admin" EntityType="Self.admin" />
+    <EntitySet Name="attendance" EntityType="Self.attendance" />
+    <EntitySet Name="conflict_course_strategy" EntityType="Self.conflict_course_strategy" />
+    <EntitySet Name="course" EntityType="Self.course" />
+    <EntitySet Name="course_member_limit_strategy" EntityType="Self.course_member_limit_strategy" />
+    <EntitySet Name="klass" EntityType="Self.klass" />
+    <EntitySet Name="klass_round" EntityType="Self.klass_round" />
+    <EntitySet Name="klass_seminar" EntityType="Self.klass_seminar" />
+    <EntitySet Name="klass_student" EntityType="Self.klass_student" />
+    <EntitySet Name="member_limit_strategy" EntityType="Self.member_limit_strategy" />
+    <EntitySet Name="question" EntityType="Self.question" />
+    <EntitySet Name="round" EntityType="Self.round" />
+    <EntitySet Name="round_score" EntityType="Self.round_score" />
+    <EntitySet Name="seminar" EntityType="Self.seminar" />
+    <EntitySet Name="seminar_score" EntityType="Self.seminar_score" />
+    <EntitySet Name="share_seminar_application" EntityType="Self.share_seminar_application" />
+    <EntitySet Name="share_team_application" EntityType="Self.share_team_application" />
+    <EntitySet Name="student" EntityType="Self.student" />
+    <EntitySet Name="teacher" EntityType="Self.teacher" />
+    <EntitySet Name="team" EntityType="Self.team" />
+    <EntitySet Name="team_and_strategy" EntityType="Self.team_and_strategy" />
+    <EntitySet Name="team_or_strategy" EntityType="Self.team_or_strategy" />
+    <EntitySet Name="team_strategy" EntityType="Self.team_strategy" />
+    <EntitySet Name="team_valid_application" EntityType="Self.team_valid_application" />
+  </EntityContainer>
+</Schema>
