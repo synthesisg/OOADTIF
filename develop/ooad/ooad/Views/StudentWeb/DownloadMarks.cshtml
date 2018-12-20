@@ -13,7 +13,7 @@
 	<!--这URL变了 你function要改你去写Controller吧= = -->
 	<select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
 		@foreach (var co in ViewBag.colist) {
-			<option value="@co.id">@co.name</option>
+			<option value="@co.id">@co.course_name</option>
 		}
 		<option value="-1" disabled selected="selected">-- 请选择 --</option>
 	</select>

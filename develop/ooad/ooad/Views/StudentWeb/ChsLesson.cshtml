@@ -12,20 +12,19 @@
 <!-- content body -->
 <div class="input-group" style="margin:20px;">
 	<span class="input-group-addon">课程</span>
-	<select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
-		@foreach (var co in ViewBag.colist) {
-			<option value="@co.id">@co.name</option>
-		}
-		<option value="-1" disabled selected="selected">-- 请选择 --</option>
-	</select>
+    <select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
+        @foreach (var co in ViewBag.colist)
+        {
+            <option value="@co.id">@co.course_name</option>
+        }
+        <option value="-1" disabled selected="selected">-- 请选择 --</option>
+    </select>
 </div>
 <div class="input-group" style="margin:20px;">
 	<span class="input-group-addon">轮次</span>
-	<select id="round_id" name="round_id" class="form-control">
-		<option value="1">1</option>
-		<option selected="selected" value="2">2</option>
-		<option value="3">3</option>
-	</select>
+    <select id="round_id" name="round_id" class="form-control">
+        <option value="-1" disabled selected="selected">-- 请选择 --</option>
+    </select>
 </div>
 <hr />
 <!--这里要改 咋传数据咋改-->
@@ -42,5 +41,23 @@
 		//跳转并传递这是第几次讨论课
 		function enter(n) {
 			window.location.href = "SpecificSeminar?round="+@ViewBag.obMsg.round+"&count=" + n;
-		}
+    }
+    function f(pos) {
+        $.ajax({
+            'url': "/TeacherWeb/RRoundInfo",
+            'type': "post",
+            'data': { data: pos },
+            'success': function (result) {
+                var obj = document.getElementById("round_id");
+                obj.options.length = 0;
+                var list = result.split("|");
+                for (var i = 0; i < list.length; i+=2) {
+                    obj.options.add(new Option(list[i], list[i + 1]));
+                }
+            },
+            'error': function () {
+                alert("发送失败！")
+            }
+        })
+    }
 </script>

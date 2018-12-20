@@ -10,8 +10,9 @@ using System.Data;
 using System.Data.OleDb;
 //files
 using System.IO;
+using System.Text;
 
-namespace ooadtest4_5.Controllers
+namespace ooad.Controllers
 {
     public class TeacherWebController : Controller
     {
@@ -57,11 +58,12 @@ namespace ooadtest4_5.Controllers
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
                     return RedirectToAction("TeacherLogin");
             }
-            else Session["user_id"] = 11;
+            else Session["user_id"] = 3;
 
 
             int tid = Int32.Parse(Session["user_id"].ToString());
-            var colist = from cse in db.course where cse.teacher_id == tid select cse;
+            var colistt = from cse in db.course where cse.teacher_id == tid select cse;
+            var colist = colistt.ToList();
             string[] c1list = new string[colist.Count()];
             int cnt = 0;
             foreach (var co in colist)
@@ -69,7 +71,7 @@ namespace ooadtest4_5.Controllers
                 c1list[cnt] = "";
                 decimal coid = co.id;
                 var ac1list = from c1 in db.klass where c1.course_id == coid select c1;
-                foreach (var a in ac1list) c1list[cnt] += a.klass_serial.ToString() + '|' + a.id.ToString() + '|';
+                foreach (var a in ac1list.ToList()) c1list[cnt] += a.klass_serial.ToString() + '|' + a.id.ToString() + '|';
                 c1list[cnt]= c1list[cnt].Remove(c1list[cnt].Length - 1, 1);
                 cnt++;
             }
@@ -101,10 +103,13 @@ namespace ooadtest4_5.Controllers
             if (str == "lsx") type = 2;
             if (type > 0) 
             {
+                //需要判断删除旧文件...
+                //...
+
                 string fname = class_id.ToString() + ".xls";
                 if (type == 2) fname += 'x';
-                f.SaveAs(this.Server.MapPath("~/Files/Class/" + fname));
-                LoadList("~/Files/Class/" + fname, class_id);
+                f.SaveAs(Server.MapPath("~/Files/class/" + fname));
+                LoadList("~/Files/class/" + fname, class_id);
                 Response.Write("<script type='text/javascript'>alert('Success!');</script>");
                 return RedirectToAction("TeacherImport");
             }
@@ -205,6 +210,7 @@ namespace ooadtest4_5.Controllers
             //学号    姓名  所属系 专业
             DataTable data = ds.Tables["sheet1"];
 
+            decimal course_id = db.klass.Find(class_id).course_id;
             //以前的记录
             var sclist = from sc in db.klass_student where sc.klass_id == class_id select sc;
             List<decimal> scid = new List<decimal>();
@@ -236,7 +242,7 @@ namespace ooadtest4_5.Controllers
                 if (scid.Contains(uid)) scid.Remove(uid);   //仍在表内，踢出list
                 else                                        //不在表内，加入选课表
                 {
-                    var addsc = new klass_student { student_id = uid, klass_id = class_id, course_id=0};//==================[course]========================
+                    var addsc = new klass_student { student_id = uid, klass_id = class_id, course_id=course_id};
                     db.klass_student.Add(addsc);
                 }
             }
@@ -247,6 +253,52 @@ namespace ooadtest4_5.Controllers
 
             //保存
             db.SaveChanges();
+        }
+
+        public string DataToExcel(DataTable m_DataTable)
+        {
+            var dt = DateTime.Now;
+            string FileName = Server.MapPath("~/Files/"+ string.Format("{0:yyyyMMddHHmmssffff}", dt) + ".xls");
+            if (System.IO.File.Exists(FileName))
+            {
+                System.IO.File.Delete(FileName);
+            }
+            FileStream objFileStream;
+            StreamWriter objStreamWriter;
+            string strLine = "";
+            objFileStream = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.Write);
+            objStreamWriter = new StreamWriter(objFileStream, Encoding.Unicode);
+
+
+            for (int i = 0; i < m_DataTable.Columns.Count; i++)
+            {
+                strLine = strLine + m_DataTable.Columns[i].Caption.ToString() + Convert.ToChar(9);      //写列标题
+            }
+            objStreamWriter.WriteLine(strLine);
+            strLine = "";
+            for (int i = 0; i < m_DataTable.Rows.Count; i++)
+            {
+                for (int j = 0; j < m_DataTable.Columns.Count; j++)
+                {
+                    if (m_DataTable.Rows[i].ItemArray[j] == null)
+                        strLine = strLine + " " + Convert.ToChar(9);                                    //写内容
+                    else
+                    {
+                        string rowstr = "";
+                        rowstr = m_DataTable.Rows[i].ItemArray[j].ToString();
+                        if (rowstr.IndexOf("\r\n") > 0)
+                            rowstr = rowstr.Replace("\r\n", " ");
+                        if (rowstr.IndexOf("\t") > 0)
+                            rowstr = rowstr.Replace("\t", " ");
+                        strLine = strLine + rowstr + Convert.ToChar(9);
+                    }
+                }
+                objStreamWriter.WriteLine(strLine);
+                strLine = "";
+            }
+            objStreamWriter.Close();
+            objFileStream.Close();
+            return FileName; 
         }
 
 
