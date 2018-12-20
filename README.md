@@ -1,2 +1,2 @@
 # OOADTIF
-ooad
+ooadTiff
