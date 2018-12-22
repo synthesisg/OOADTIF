@@ -226,6 +226,6 @@ namespace ooad.Controllers
             public string reportTime;
         }
         bool is_judge = false;
-        MySQLContext db = new MySQLContext();
+        MSSQLContext db = new MSSQLContext();
     }
 }

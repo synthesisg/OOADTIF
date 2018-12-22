@@ -210,7 +210,7 @@ namespace ooad.Controllers
             //学号    姓名  所属系 专业
             DataTable data = ds.Tables["sheet1"];
 
-            decimal course_id = db.klass.Find(class_id).course_id;
+            int course_id = db.klass.Find(class_id).course_id;
             //以前的记录
             var sclist = from sc in db.klass_student where sc.klass_id == class_id select sc;
             List<decimal> scid = new List<decimal>();
@@ -237,7 +237,7 @@ namespace ooad.Controllers
                 }
 
                 var uilist = from ui in db.student where ui.account.Contains(acad_id) select ui;
-                decimal uid = 0;
+                int uid = 0;
                 foreach (var ui in uilist) uid = ui.id;
                 if (scid.Contains(uid)) scid.Remove(uid);   //仍在表内，踢出list
                 else                                        //不在表内，加入选课表
@@ -315,6 +315,6 @@ namespace ooad.Controllers
             public string name { get; set; }
         }
         bool is_judge = false;
-        MySQLContext db = new MySQLContext();
+        MSSQLContext db = new MSSQLContext();
     }
 }

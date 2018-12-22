@@ -220,7 +220,7 @@ namespace ooad.Controllers
             }
             return RedirectToAction("StudentInfo");
         }
-        MySQLContext db = new MySQLContext();
+        MSSQLContext db = new MSSQLContext();
         bool is_judge = true;
     }
 }

@@ -152,93 +152,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\admin.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\attendance.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\conflict_course_strategy.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\course.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\course_member_limit_strategy.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\klass.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\klass_round.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\klass_seminar.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\klass_student.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\member_limit_strategy.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\question.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\round.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\round_score.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\seminar.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\seminar_score.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\share_seminar_application.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\share_team_application.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\std.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>std.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\std.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\std.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>std.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\student.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\teacher.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\team.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\team_and_strategy.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\team_or_strategy.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\team_strategy.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\team_valid_application.cs">
-      <DependentUpon>std.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\stdmssql.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -250,25 +164,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\std.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>std.Context.cs</LastGenOutput>
-      <DependentUpon>std.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\std.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>std.edmx</DependentUpon>
-      <LastGenOutput>std.cs</LastGenOutput>
-    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\std.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>std.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\std.edmx.diagram">
-      <DependentUpon>std.edmx</DependentUpon>
-    </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

@@ -1,0 +1,18 @@
+
+EntityFramework 6.2.0
+
+
+<add name="SQLServerContext" connectionString="Data Source=139.159.159.236;Initial Catalog=StuDb28;uid=StuDb28; pwd=StuDb28" providerName="System.Data.SqlClient" />
+
+[test]
+StuDb28
+[final]
+StuDb28
+
+account:
+
+admin:
+id=1
+uid=admin
+pwd=admin
+

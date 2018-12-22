@@ -10,6 +10,14 @@ namespace ooad.Controllers
     {
         public ActionResult Index()
         {
+            admin cdx = new admin
+            {
+                account = "admin",
+                password = "admin"
+            };
+            MSSQLContext c = new MSSQLContext();
+            c.admin.Add(cdx);
+            c.SaveChanges();
             return View();
         }
 
