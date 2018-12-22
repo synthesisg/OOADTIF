@@ -23,7 +23,7 @@
 				</div>
 				<br>
 				<div class="input-group input-group input-group-lg" style="margin:0 auto">
-					<input type="submit" class="btn btn-primary btn-lg" value="登陆" style="background-color:#5ab4ac;width:300px" />
+					<input type="submit" class="btn btn-primary btn-lg" value="登陆" style="background-color:#5ab4ac;width:300px" onclick="validateLogin()"/>
 				</div>
 			</form>
 		</div>
@@ -34,3 +34,11 @@
 	</div>
 </div>
 
+<script type="text/javascript">
+	function validateLogin() {
+		if (document.getElementById("userName").value == "") {
+			alert("请输入用户名");
+			return false;
+        }
+	}
+</script>

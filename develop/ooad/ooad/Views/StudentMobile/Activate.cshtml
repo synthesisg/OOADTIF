@@ -1,0 +1,65 @@
+﻿
+@{
+	ViewBag.Title = "activate";
+	ViewBag.TitleText = "密码设置";
+	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout2.cshtml";
+}
+
+<div class="row" style="margin-top:20px;width:100%">
+	<!-- body-->
+	<div class="col-xs-2" style="text-align:center;margin:0;padding:0;">
+
+	</div>
+	<form class="bs-example bs-example-form" role="form" method="post">
+		<div class="col-xs-8" style="padding:0;">
+			<div class="input-group">
+				<span class="input-group-addon">新密码</span>
+				<input id="newPassword" name="newPassword" type="password" class="form-control">
+			</div>
+			<div class="input-group" style="margin:20px 0px">
+				<span class="input-group-addon">确认密码</span>
+				<input id="confirmPassword" name="confirmPassword" type="password" class="form-control">
+			</div>
+			@{ if (true @*ViewBag.isStudent*@) {
+		<div class="input-group" style="margin:20px 0px">
+		<span class="input-group-addon">邮箱</span>
+		<input id="email" name="email" type="text" class="form-control">
+		</div>}
+			}
+			<div class="input-group input-group input-group-lg" style="margin:20px 0px">
+				<input type="button" class="btn btn-primary" onclick="CheckPassword()" value="确认提交" style="background-color:#1fa5e5;width:200px" />
+			</div>
+		</div>
+	</form>
+	<div class="col-xs-2" style="padding:0; height:inherit;">
+
+	</div>
+</div>
+<script>
+	function CheckPassword() {
+		var obj = document.getElementById("newPassword"); //要验证的对象
+		var obj2 = document.getElementById("confirmPassword"); //要验证的对象
+		if (obj.value.length <= 6) {
+			alert("密码长度必须大于6");
+			return false;
+		}
+		if (obj.value !== obj2.value) { //输入不能为空
+			alert("两次输入密码不一致");
+			return false;
+		}
+		var obj = document.getElementById("email"); //要验证的对象
+		if(obj!=null)
+		{
+			var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+		
+			if (obj.value === "") { //输入不能为空
+				alert("邮箱不能为空!");
+				return false;
+			}
+			else if (!reg.test(obj.value)) { //正则验证不通过，格式不对
+				alert("邮箱格式错误！");
+				return false;
+			}
+		}
+	}
+</script>
