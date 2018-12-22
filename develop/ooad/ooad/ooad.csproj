@@ -147,6 +147,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\StudentMobileController.cs" />
     <Compile Include="Controllers\StudentWebController.cs" />
     <Compile Include="Controllers\TeacherWebController.cs" />
     <Compile Include="Global.asax.cs">
@@ -213,6 +214,16 @@
     <Content Include="Views\Shared\StudentLayout\_StudentLayout2.cshtml" />
     <Content Include="Views\Shared\TeacherLayout\_LayoutTeacher1.cshtml" />
     <Content Include="Views\Shared\TeacherLayout\_LayoutTeacher2.cshtml" />
+    <Content Include="Views\StudentMobile\Activate.cshtml" />
+    <Content Include="Views\StudentMobile\BUEnrollSmn.cshtml" />
+    <Content Include="Views\StudentMobile\ChsSpecSeminar.cshtml" />
+    <Content Include="Views\StudentMobile\FindPassword.cshtml" />
+    <Content Include="Views\StudentMobile\Login.cshtml" />
+    <Content Include="Views\StudentMobile\Seminar.cshtml" />
+    <Content Include="Views\Shared\SMobileLayout\_SMobileLayout1.cshtml" />
+    <Content Include="Views\Shared\SMobileLayout\_SMobileLayout2.cshtml" />
+    <Content Include="Views\Shared\SMobileLayout\_SMobileLayout3.cshtml" />
+    <Content Include="Views\Shared\SMobileLayout\_SMobileLayout4.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
