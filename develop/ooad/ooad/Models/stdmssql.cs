@@ -127,7 +127,7 @@ namespace ooad.Models
         public int id { get; set; }
         public int klass_id { get; set; }
         public int seminar_id { get; set; }
-        public Nullable<System.DateTime> report_ddl { get; set; }
+        public Nullable<DateTime> report_ddl { get; set; }
         public short status { get; set; }
     }
 	public class klass_student
@@ -137,7 +137,7 @@ namespace ooad.Models
         [Key, Column(Order = 1)]
         public int student_id { get; set; }
         public int course_id { get; set; }
-        public Nullable<decimal> team_id { get; set; }
+        public int? team_id { get; set; }
     }
     public class klass_round
     {

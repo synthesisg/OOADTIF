@@ -16,3 +16,12 @@ id=1
 uid=admin
 pwd=admin
 
+teacher:
+id=1
+uid=t1
+pwd=t1
+
+student:
+id=1
+uid=s1
+pwd=123456

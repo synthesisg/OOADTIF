@@ -52,12 +52,12 @@ namespace ooad.Controllers
         {
             if (is_judge)
             {
-                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("TeacherLogin");
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("StudentLogin");
             }
-            else Session["user_id"] = 9;
+            else Session["user_id"] = 1;
 
-            decimal sid = Int32.Parse(Session["user_id"].ToString());
+            int sid = Int32.Parse(Session["user_id"].ToString());
             var kque = from k in db.klass_student where k.student_id == sid select k;
             var klist = kque.ToList();
             List<course> co = new List<course>();
@@ -97,14 +97,15 @@ namespace ooad.Controllers
             return View();
         }
         public ActionResult DownloadMarks() {
-            if (is_judge) {
-                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("TeacherLogin");
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("StudentLogin");
             }
-            else Session["user_id"] = 11;
+            else Session["user_id"] = 1;
 
 
-            decimal sid = Int32.Parse(Session["user_id"].ToString());
+            int sid = Int32.Parse(Session["user_id"].ToString());
             var kque = from k in db.klass_student where k.student_id == sid select k;
             var klist = kque.ToList();
             List<course> co = new List<course>();
@@ -115,14 +116,22 @@ namespace ooad.Controllers
             }
             ViewBag.colist = co;
 
-            decimal course_id = 666;
+            return View();
+            int course_id = 1;
             var team_id_que = from ks in db.klass_student where ks.student_id == sid select ks;
-            decimal? team_id = team_id_que.ToList()[0].team_id;
-            var rque = from r in db.round where r.course_id == course_id select r;
-            List<decimal> rid = new List<decimal>();
-            foreach (var r in rque) rid.Add(r.id);
-            var rscore = from rs in db.round_score where ( rid.Contains(rs.round_id) && rs.team_id==team_id ) select rs;
-            ViewBag.rscore = rscore.ToList();
+            if (team_id_que.ToList()[0].team_id!=null)
+            {
+                int team_id = (int)team_id_que.ToList()[0].team_id;
+                var rque = from r in db.round where r.course_id == course_id select r;
+                List<decimal> rid = new List<decimal>();
+                foreach (var r in rque) rid.Add(r.id);
+                var rscore = from rs in db.round_score where (rid.Contains(rs.round_id) && rs.team_id == team_id) select rs;
+                ViewBag.rscore = rscore.ToList();
+            }
+            else
+            {
+                //未组队
+            }
             return View();
         }
         public string crtmarkxls()

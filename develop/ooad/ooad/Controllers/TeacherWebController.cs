@@ -58,7 +58,7 @@ namespace ooad.Controllers
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
                     return RedirectToAction("TeacherLogin");
             }
-            else Session["user_id"] = 3;
+            else Session["user_id"] = 1;
 
 
             int tid = Int32.Parse(Session["user_id"].ToString());
@@ -123,7 +123,7 @@ namespace ooad.Controllers
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
                     return RedirectToAction("TeacherLogin");
             }
-            else Session["user_id"] = 11;
+            else Session["user_id"] = 1;
 
 
             int teacher_id = Int32.Parse(Session["user_id"].ToString());
@@ -179,7 +179,7 @@ namespace ooad.Controllers
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
                     return RedirectToAction("TeacherLogin");
             }
-            else Session["user_id"] = 11;
+            else Session["user_id"] = 1;
 
 
             int tid = Int32.Parse(Session["user_id"].ToString());
