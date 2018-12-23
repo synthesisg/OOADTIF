@@ -5,6 +5,7 @@
 }
 
 <div class="row" style="margin-top:20px;width:100%">
+    <input type="hidden" id="seminar_id" value="@ViewBag.seminar_id"/>
 	<div class="col-xs-12" style="padding:0;margin:0;">
 		@{
 			var temp = 0;
@@ -24,9 +25,9 @@
 		$.ajax({
 			'url': 'Enroll',
 			'type': 'post',
-			'data': { str: temp },
+			'data': { str: n },
 			'success': function (mes) {
-				if (mes !== "success") {
+				if (mes == "success") {
 					alert("报名成功");
 					window.location.reload();
 				}

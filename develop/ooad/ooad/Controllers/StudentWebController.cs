@@ -40,7 +40,7 @@ namespace ooad.Controllers
                         {
                             Session["user_id"] = ui[0].id;
                             Session["is_student"] = true;
-                            Response.Redirect("ChsLesson");
+                            return RedirectToAction("ChsLesson");
                         }
                     }
                     else Session["is_student"] = false;
@@ -136,12 +136,12 @@ namespace ooad.Controllers
         }
         public string crtmarkxls()
         {
-            decimal course_id = 666;
-            decimal sid = Decimal.Parse(Request["user_id"]);
+            int course_id = 666;
+            int sid = Int32.Parse(Request["user_id"]);
             var team_id_que = from ks in db.klass_student where ks.student_id == sid select ks;
-            decimal? team_id = team_id_que.ToList()[0].team_id;
+            int team_id = (int)team_id_que.ToList()[0].team_id;
             var rque = from r in db.round where r.course_id == course_id select r;
-            List<decimal> rid = new List<decimal>();
+            List<int> rid = new List<int>();
             foreach (var r in rque) rid.Add(r.id);
             var rscore = from rs in db.round_score where (rid.Contains(rs.round_id) && rs.team_id == team_id) select rs;
 
@@ -170,7 +170,7 @@ namespace ooad.Controllers
         public string RRoundInfo(string data)
         {
             return "1|2|3|4";
-            decimal course_id = Decimal.Parse(data);
+            int course_id = Int32.Parse(data);
             var rlist = from r in db.round where r.course_id == course_id select r;
             string back = "";
             foreach (var r in rlist) back += r.round_serial.ToString() + '|' + r.id.ToString() + '|';

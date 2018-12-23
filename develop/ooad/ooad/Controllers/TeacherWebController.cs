@@ -84,7 +84,7 @@ namespace ooad.Controllers
             int course_id = Int32.Parse(data);
             var c1list = from c1 in db.klass where c1.course_id == course_id select c1;
             string back = "";
-            foreach (var c1 in c1list) back += c1.klass_serial.ToString() + '|' + c1.id.ToString() + '|';
+            foreach (var c1 in c1list) back += c1.grade.ToString() + '-' + c1.klass_serial.ToString() + '|' + c1.id.ToString() + '|';
             back = back.Remove(back.Length - 1, 1);
             return back;
         }
