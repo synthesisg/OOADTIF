@@ -10,6 +10,7 @@ namespace ooad.Controllers
     {
         public ActionResult Index()
         {
+            /*
             admin cdx = new admin
             {
                 account = "admin",
@@ -18,6 +19,7 @@ namespace ooad.Controllers
             MSSQLContext c = new MSSQLContext();
             c.admin.Add(cdx);
             c.SaveChanges();
+            //*/
             return View();
         }
 
