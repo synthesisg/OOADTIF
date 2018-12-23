@@ -155,6 +155,21 @@ namespace ooad.Controllers
             ViewBag.TitleText = se.seminar_name;
             return View();
         }
+        public ActionResult BUSmnInfo() {
+            //TitleText = 课程名称+讨论课名
+            ViewBag.TitleText = "1";
+            return View();
+        }
+        public ActionResult BEnrollSmn() {
+            //TitleText = 课程名称+讨论课名
+            ViewBag.TitleText = "1";
+            return View();
+        }
+        public ActionResult BChangeEnrollSmn() {
+            //TitleText = 课程名称+讨论课名
+            ViewBag.TitleText = "1";
+            return View();
+        }
         public bool SendPW2Email(string data)
         {
             var uilist = from ui in db.student where ui.account.Equals(data) select ui;
@@ -198,7 +213,6 @@ namespace ooad.Controllers
             db.SaveChanges();
             return "success";
         }
-
 
         public void score(int id)           //course_id
         {

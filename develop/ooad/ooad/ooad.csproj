@@ -225,6 +225,9 @@
     <Content Include="Views\Shared\SMobileLayout\_SMobileLayout2.cshtml" />
     <Content Include="Views\Shared\SMobileLayout\_SMobileLayout3.cshtml" />
     <Content Include="Views\Shared\SMobileLayout\_SMobileLayout4.cshtml" />
+    <Content Include="Views\StudentMobile\BChangeEnrollSmn.cshtml" />
+    <Content Include="Views\StudentMobile\BEnrollSmn.cshtml" />
+    <Content Include="Views\StudentMobile\BUSmnInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
