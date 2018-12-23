@@ -9,6 +9,21 @@
 <div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
 	<h2 style="color:#5ab4ac">下载讨论课材料</h2>
 </div>
+<div class="input-group" style="margin:20px;">
+	<span class="input-group-addon">课程</span>
+	<select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
+		@foreach (var co in ViewBag.colist) {
+			<option value="@co.id">@co.course_name</option>
+		}
+		<option value="-1" disabled selected="selected">-- 请选择 --</option>
+	</select>
+</div>
+<div class="input-group" style="margin:20px;">
+	<span class="input-group-addon">轮次</span>
+	<select id="round_id" name="round_id" class="form-control">
+		<option value="-1" disabled selected="selected">-- 请选择 --</option>
+	</select>
+</div>
 
 <!-- content body -->
 <!--data from db-->
@@ -27,6 +42,6 @@
 <script>
 	//跳转并传递轮次信息
 	function enter(n) {
-		window.location.href = "InnerReport?round="+n;
+		window.location.href = "InnerReport?round=" + n;
 	}
 </script>

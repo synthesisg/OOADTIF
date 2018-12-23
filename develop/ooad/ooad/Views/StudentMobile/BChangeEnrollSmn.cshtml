@@ -1,12 +1,10 @@
 ﻿
 @{
-	ViewBag.Title = "ChsSpecSeminar";
+	ViewBag.Title = "BChangeEnrollSmn";
 	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
 }
 
-<div class="row" style="margin-top:20px;width:100%">
-    <input type="hidden" id="seminar_id" value="@ViewBag.seminar_id"/>
-	<div class="col-xs-12" style="padding:0;margin:0;">
+<div class="container" style="margin-top:20px;width:100%">
 		@{
 			var temp = 0;
 			while (temp < 6) {
@@ -17,23 +15,28 @@
 				temp++;
 			}
 		}
-	</div>
+</div>
+<div class="container" style="margin-top:20px;width:100%">
+	<button type="button" class="btn btn-primary" value="取消报名" style="background-color:#ed5858;width:100%;margin-top:20px;" >
+		取消报名
+	</button>
 </div>
 <script>
 	function enroll(n) {
-		if (confirm("确认报名吗？")) {
+
+		if (confirm("确认更改报名信息吗？")){
 			var temp = document.getElementById(n).innerHTML;
 			$.ajax({
 				'url': 'Enroll',
 				'type': 'post',
-				'data': { str: n },
+				'data': { str: temp },
 				'success': function (mes) {
-					if (mes == "success") {
-						alert("报名成功");
-						window.location.reload();
+					if (mes !== "success") {
+						alert("更改报名成功");
 					}
 					else
 						alert(mes);
+					window.location.reload();
 				},
 				'error': function (mes) {
 					alert("连接错误");

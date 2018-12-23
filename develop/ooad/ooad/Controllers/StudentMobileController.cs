@@ -155,6 +155,21 @@ namespace ooad.Controllers
             ViewBag.TitleText = se.seminar_name;
             return View();
         }
+        public ActionResult BUSmnInfo() {
+            //TitleText = 课程名称+讨论课名
+            ViewBag.TitleText = "1";
+            return View();
+        }
+        public ActionResult BEnrollSmn() {
+            //TitleText = 课程名称+讨论课名
+            ViewBag.TitleText = "1";
+            return View();
+        }
+        public ActionResult BChangeEnrollSmn() {
+            //TitleText = 课程名称+讨论课名
+            ViewBag.TitleText = "1";
+            return View();
+        }
         public bool SendPW2Email(string data)
         {
             var uilist = from ui in db.student where ui.account.Equals(data) select ui;
@@ -198,7 +213,6 @@ namespace ooad.Controllers
             db.SaveChanges();
             return "success";
         }
-
 
         public void score(int id)           //course_id
         {
@@ -248,7 +262,7 @@ namespace ooad.Controllers
                 int myteamid = (int)team_id_que.ToList()[0].team_id;
 
                 teamlist tmp = new teamlist();
-                tmp.t = db.team.Find(myteamid);
+                tmp.team = db.team.Find(myteamid);
                 var stlist = from ks in db.klass_student where ks.course_id == id && ks.team_id == myteamid select ks.student_id;
                 foreach (var st in stlist)
                 {
@@ -261,7 +275,7 @@ namespace ooad.Controllers
                     if (teamid != myteamid)
                     {
                         teamlist tmpp = new teamlist();
-                        tmpp.t = db.team.Find(teamid);
+                        tmpp.team = db.team.Find(teamid);
                         var stlistt = from ks in db.klass_student where ks.course_id == id && ks.team_id == teamid select ks.student_id;
                         foreach (var st in stlistt)
                         {
@@ -270,24 +284,14 @@ namespace ooad.Controllers
                         }
                         tl.Add(tmpp);
                     }
+                ViewBag.ct = tl;
             }
             else
             {
                 ViewBag.hasteam = false;
-                foreach(var teamid in teamlistdis)
-                {
-                    teamlist tmp = new teamlist();
-                    tmp.t = db.team.Find(teamid);
-                    var stlist = from ks in db.klass_student where ks.course_id == id && ks.team_id==teamid select ks.student_id;
-                    foreach(var st in stlist)
-                    {
-                        tmp.name.Add(db.student.Find(st).student_name);
-                        tmp.account.Add(db.student.Find(st).account);
-                    }
-                    tl.Add(tmp);
-                }
+                course_team ct=new course_team(id);
+                ViewBag.ct = ct.list;
             }
-            ViewBag.tl = tl;
         }
         public void studentlist(int id)        //course_id
         {
@@ -337,8 +341,33 @@ namespace ooad.Controllers
         public void add()
         {
             int course_id = 1;
+            int team_id = 1;
+            List<int> student_id = new List<int>();
+            
+            var kslist = from aks in db.klass_student where aks.course_id == course_id && student_id.Contains(aks.student_id) select aks;
+            foreach (var ks in kslist)
+            {
+                if (ks.team_id == null) ks.team_id = team_id;
+            }
+            db.SaveChanges();
         }
-
+        public void submit_team_valid()
+        {
+            int team_id = 1;
+            team t = db.team.Find(team_id);
+            if (t.status==0)
+            {
+                team_valid_application Newtva = new team_valid_application
+                {
+                    team_id = team_id,
+                    reason = Request["reason"],
+                    status = null,
+                    teacher_id = db.course.Find(t.course_id).teacher_id
+                };
+                db.team_valid_application.Add(Newtva);
+                db.SaveChanges();
+            }
+        }
 
         public bool chgpwd(string data)
         {
@@ -357,28 +386,7 @@ namespace ooad.Controllers
             return true;
         }
 
-        public class personclass        //For Seminar
-        {
-            public int klass_id;
-            public string name;
-        }
-        public class round_seminar      //For ChsSpecSeminar
-        {
-            public round r;
-            public List<seminar> s = new List<seminar>();
-        }
-        public class scoreboard             //For score
-        {
-            public round_score rs;
-            public List<seminar_score> ss = new List<seminar_score>();
-            public List<string> name = new List<string>();
-        }
-        public class teamlist
-        {
-            public team t;
-            public List<string> name = new List<string>();
-            public List<string> account = new List<string>();
-        }
+        
         bool is_judge = false;
         int test_id = 1;
         MSSQLContext db = new MSSQLContext();

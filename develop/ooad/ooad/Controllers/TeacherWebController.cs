@@ -103,11 +103,15 @@ namespace ooad.Controllers
             if (str == "lsx") type = 2;
             if (type > 0) 
             {
-                //需要判断删除旧文件...
-                //...
 
                 string fname = class_id.ToString() + ".xls";
                 if (type == 2) fname += 'x';
+
+                if (System.IO.File.Exists(Server.MapPath("~/Files/class/" + fname)))
+                {
+                    System.IO.File.Delete(Server.MapPath("~/Files/class/" + fname));
+                }
+
                 f.SaveAs(Server.MapPath("~/Files/class/" + fname));
                 LoadList("~/Files/class/" + fname, class_id);
                 Response.Write("<script type='text/javascript'>alert('Success!');</script>");
@@ -129,7 +133,7 @@ namespace ooad.Controllers
             int teacher_id = Int32.Parse(Session["user_id"].ToString());
             teacher ui = db.teacher.Find(teacher_id);
             var rco = from co in db.course where co.teacher_id == teacher_id select co;
-
+            ViewBag.colist = rco;
 
             SeminarInfo smnInfo = new SeminarInfo
             {
@@ -146,10 +150,14 @@ namespace ooad.Controllers
             SeminarInfo[] arrSmn = { smnInfo, smnInfo2 };
             ViewBag.arrSeminar = arrSmn;
             return View();
+
+            //确定round后
+            int round_id = 1;
+            var slist = from s in db.seminar where s.round_id == round_id select s;
+            ViewBag.s = slist.ToList();
         }
         public string RRoundInfo(string data)
         {
-            return "1|2|3|4";
             int course_id = Int32.Parse(data);
             var rlist = from r in db.round where r.course_id == course_id select r;
             string back = "";
@@ -172,6 +180,12 @@ namespace ooad.Controllers
             };
             return View();
         }
+        public ActionResult inner(int id)//seminar_id
+        {
+            seminar_report sr = new seminar_report(id);
+            ViewBag.sr = sr;
+            return View();
+        }
         public ActionResult DownloadMarks()
         {
             if (is_judge)
@@ -187,6 +201,11 @@ namespace ooad.Controllers
             ViewBag.colist = colist;
 
             return View();
+
+            //确定round后
+            int round_id = 1;
+            var rslist = from rs in db.round_score where rs.round_id == round_id select rs;
+            ViewBag.rs = rslist;
         }
 
 
