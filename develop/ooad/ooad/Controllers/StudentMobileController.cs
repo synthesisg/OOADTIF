@@ -173,6 +173,34 @@ namespace ooad.Controllers
             ViewBag.TitleText = model.seminar_name;
             return View();
         }
+        public ActionResult NowUEnrollSmnInfo() {
+            //要  ViewBag.TitleText =课程名 + 讨论课名
+            return View();
+        }
+        public ActionResult NowSmnPPT() {
+            //要  ViewBag.TitleText = 课程名 + 讨论课名
+            return View();
+        }
+        public ActionResult NowSmnDisplay() {
+            //要  ViewBag.TitleText = 课程名 + 讨论课名
+            return View();
+        }
+        public ActionResult NowEnrollSmnInfo() {
+            //要  ViewBag.TitleText =课程名 + 讨论课名
+            return View();
+        }
+        public ActionResult LaterUErollSmnInfo() {
+            //要  ViewBag.TitleText =课程名 + 讨论课名
+            return View();
+        }
+        public ActionResult LaterEnrollSmnInfo() {
+            //要  ViewBag.TitleText =课程名 + 讨论课名
+            return View();
+        }
+        public ActionResult LaterEnrollEndSmnInfo() {
+            //要  ViewBag.TitleText =课程名 + 讨论课名
+            return View();
+        }
         public bool SendPW2Email(string data)
         {
             var uilist = (from ui in db.student where ui.account.Equals(data) select ui).ToList();

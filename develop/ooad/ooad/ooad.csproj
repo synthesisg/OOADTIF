@@ -229,6 +229,13 @@
     <Content Include="Views\StudentMobile\BChangeEnrollSmn.cshtml" />
     <Content Include="Views\StudentMobile\BEnrollSmn.cshtml" />
     <Content Include="Views\StudentMobile\BUSmnInfo.cshtml" />
+    <Content Include="Views\StudentMobile\NowUEnrollSmnInfo.cshtml" />
+    <Content Include="Views\StudentMobile\NowSmnPPT.cshtml" />
+    <Content Include="Views\StudentMobile\NowSmnDisplay.cshtml" />
+    <Content Include="Views\StudentMobile\NowEnrollSmnInfo.cshtml" />
+    <Content Include="Views\StudentMobile\LaterUErollSmnInfo.cshtml" />
+    <Content Include="Views\StudentMobile\LaterEnrollSmnInfo.cshtml" />
+    <Content Include="Views\StudentMobile\LaterEnrollEndSmnInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
