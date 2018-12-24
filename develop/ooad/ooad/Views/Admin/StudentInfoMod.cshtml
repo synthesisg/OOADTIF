@@ -14,17 +14,17 @@
 
 			<div class="input-group">
 				<span class="input-group-addon">学生姓名</span>
-				<input type="text" class="form-control">
+				<input type="text" class="form-control" id="name" value="@Html.Raw(ViewBag.uimod.student_name)">
 			</div>
 			<br>
 			<div class="input-group">
 				<span class="input-group-addon">学号</span>
-				<input type="text" class="form-control">
+				<input type="text" class="form-control" id="account" value="@Html.Raw(ViewBag.uimod.account)">
 			</div>
 			<br>
 			<div class="input-group">
 				<span class="input-group-addon">电子邮箱</span>
-				<input type="text" class="form-control">
+				<input type="text" class="form-control" id="email" value="@Html.Raw(ViewBag.uimod.email)">
 			</div>
 
 		</div>
@@ -39,9 +39,4 @@
 		alert("修改成功");
 	}
 </script>
-@{
-	ViewBag.Title = "StudentInfoMod";
-}
-
-<h2>StudentInfoMod</h2>
 

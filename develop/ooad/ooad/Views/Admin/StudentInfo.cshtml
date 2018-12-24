@@ -32,12 +32,12 @@
 	</div>
 
 	<p style="display:inline;margin-right:5px;font-size:20px;line-height:inherit">每页显示</p>
-	<select style="height:25px">
+	<select style="height:25px" id="select" onchange="loadPagination()">
 		<option value="5">5</option>
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
+		<option value="10">10</option>
+		<option value="15">15</option>
+		<option value="20">20</option>
+		<option value="25">25</option>
 	</select>
 	<button type="button" class="btn btn-primary" onclick="Search()" style="float:right;background-color:#5ab4ac;color:white;border:none">
 		搜索
@@ -45,57 +45,75 @@
 </div>
 <!-- body -->
 <div class="container" style=" padding:5px; width:90%; background-color:#f0f0f0; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
-    <table class="table">
-        <thead>
-            <tr>
-                <td>学生列表</td>
-                <td></td>
-                <td></td>
-                <td>
-                    <a class="glyphicon glyphicon-plus-sign" href="/Admin/StudentCreate" style="color:#5ab4ac">新建账户</a>
-                </td>
-            </tr>
-            <tr>
-                <th>学号</th>
-                <th>姓名</th>
-                <th>电子邮箱</th>
-                <th>
-                </th>
-            </tr>
+	<table class="table" id="tableData">
+		<thead>
+			<tr>
+				<td>学生列表</td>
+				<td></td>
+				<td></td>
+				<td>
+					<a class="glyphicon glyphicon-plus-sign" href="/Admin/StudentCreate" style="color:#5ab4ac">新建账户</a>
+				</td>
+			</tr>
+			<tr>
+				<th>学号</th>
+				<th>姓名</th>
+				<th>电子邮箱</th>
+				<th>
+				</th>
+			</tr>
 
-        </thead>
-        <tbody>
-            <tr>
-                <td>24320162202891</td>
-                <td>Rammohan </td>
-                <td>Ramohan@163.com</td>
-                <td style="float:right;">
-                    @Html.ActionLink(" ", "TeacherInfoMod", "Admin", new { style = "color:#5ab4ac;", @class = "glyphicon glyphicon-pencil" })
-                    @Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "newPassW()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-repeat" })
-                    @Html.ActionLink(" ", "TeacherInfo", "Admin", new { onclick = "delAccount()", style = "color:#5ab4ac;padding-left:5px", @class = "glyphicon glyphicon-trash" })
-                </td>
-            </tr>
-        </tbody>
-
-        <!--from database-->
-        @foreach (var student in ViewBag.studentlist)
-        {
-            <tbody>
-                <tr>
-                    <td>@student.account</td>
-                    <td>@student.student_name </td>
-                    <td>@student.email</td>
-                    <form method="post">
-                        <td style="float:right;">
-                            <input type="hidden" name="inputpwd_@student.id" id="inputpwd_@student.id" value="">
-                            <input type="hidden" name="newpass" id="newpass" value="@student.id">
-                            @Html.ActionLink(" ", "TeacherInfoMod", new { id = student.id }, new { style = "color:#5ab4ac;", @class = "glyphicon glyphicon-pencil" })
-                            <button type="submit" class="glyphicon glyphicon-repeat" onclick="newPassW(@student.id)" style="color:#5ab4ac;padding-left:5px;background-color:Transparent;border-style:none;outline:none"></button>
-                            <button type="button" class="glyphicon glyphicon-trash" onclick="TeacherDel(@student.id)" style="color:#5ab4ac;padding-left:5px;background-color:Transparent;border-style:none;outline:none"></button>
-                        </td>
-                    </form>
-                </tr>
-            </tbody>
-        }
-    </table>
+		</thead>
+		<tbody id="tbody1">
+			<!--from database-->
+			@foreach (var student in ViewBag.studentlist) {
+				<tr></tr>
+			}
+		</tbody>
+		</table>
+	<ul class="pagination" id="pagination">	</ul>
 </div>
+<script>
+	
+		function loadPagination() {
+
+		var tabledataCount = document.getElementById("tableData").rows.length-2;
+	//	alert(tabledata.rows.length);
+		var index = document.getElementById("select").selectedIndex;
+		var pageRow = document.getElementById("select").options[index].value;
+		var pageCount = tabledataCount / pageRow;
+		var ul = document.getElementById("pagination");
+		ul.innerHTML = "";
+		ul.innerHTML += "<li class='previous'><a>&laquo;</a></li>";
+		for (var i = 1; i < pageCount+1; i++) {
+			ul.innerHTML += "<li id='li"+i+"'><a  onclick='f("+i+")'>"+i+"</a></li>";
+		}
+		ul.innerHTML += "<li class='next'><a>&raquo;</a></li>";
+	//	alert(ul.innerHtml);
+		f(1);
+	}
+	function f(n) {
+		var tabledataCount = document.getElementById("tableData").rows.length - 2;
+		var tbody = document.getElementById("tbody1");
+		var index = document.getElementById("select").selectedIndex;
+		var pageRow = document.getElementById("select").options[index].value;
+		var arr1 = new Array();
+
+		//alert(tbody.rows[0].cells[1].innerHTML);
+		//第 n 次 第
+		var list = @Html.Raw(Json.Encode(ViewBag.studentlist));
+		tbody.innerHTML = "";
+		for (var j = 0; j < pageRow; j++) {
+			var row = tbody.insertRow(0);
+			cell = row.insertCell(0);
+			cell.innerHTML = list[(n-1) *pageRow+ j].account;
+			cell = row.insertCell(1);
+			cell.innerHTML = list[(n-1) *pageRow+ j].student_name;
+			cell = row.insertCell(2);
+			cell.innerHTML = list[(n - 1) * pageRow + j].email;
+			cell = row.insertCell(3);
+			cell.innerHTML = "<a href='StudentInfoMod/"+list[(n-1)*pageRow+j].id+"'>修改</a>"
+		}
+	}
+	window.onload = loadPagination();
+</script>

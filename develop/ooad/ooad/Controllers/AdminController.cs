@@ -155,10 +155,11 @@ namespace ooad.Controllers
             if (Request["Search"] != null)
             {
                 string search = Request["Search"];
-                ViewBag.studentlist = from ui in db.student where ((ui.account.Contains(search) || ui.student_name.Contains(search))) select ui;
+                ViewBag.studentlist = Newtonsoft.Json.JsonConvert.SerializeObject((from ui in db.student where ((ui.account.Contains(search) || ui.student_name.Contains(search))) select ui).ToList());
+
             }
             else
-                ViewBag.studentlist = from ui in db.student select ui;
+                Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.studentlist = (from ui in db.student select ui).ToList());
             return View();
         }
         public ActionResult StudentInfoMod(int id)

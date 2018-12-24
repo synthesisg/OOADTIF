@@ -27,7 +27,7 @@
 		</div>}
 			}
 			<div class="input-group input-group input-group-lg" style="margin:20px 0px">
-				<input type="button" class="btn btn-primary" onclick="CheckPassword()" value="确认提交" style="background-color:#1fa5e5;width:200px" />
+				<input type="submit" class="btn btn-primary" onclick="if (!CheckPassword()) return false;" value="确认提交" style="background-color:#1fa5e5;width:200px" />
 			</div>
 		</div>
 	</form>
@@ -61,5 +61,6 @@
 				return false;
 			}
 		}
+		return true;
 	}
 </script>
