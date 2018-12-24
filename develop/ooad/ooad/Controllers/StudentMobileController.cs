@@ -262,7 +262,7 @@ namespace ooad.Controllers
                 int myteamid = (int)team_id_que.ToList()[0].team_id;
 
                 teamlist tmp = new teamlist();
-                tmp.t = db.team.Find(myteamid);
+                tmp.team = db.team.Find(myteamid);
                 var stlist = from ks in db.klass_student where ks.course_id == id && ks.team_id == myteamid select ks.student_id;
                 foreach (var st in stlist)
                 {
@@ -275,7 +275,7 @@ namespace ooad.Controllers
                     if (teamid != myteamid)
                     {
                         teamlist tmpp = new teamlist();
-                        tmpp.t = db.team.Find(teamid);
+                        tmpp.team = db.team.Find(teamid);
                         var stlistt = from ks in db.klass_student where ks.course_id == id && ks.team_id == teamid select ks.student_id;
                         foreach (var st in stlistt)
                         {
@@ -284,28 +284,89 @@ namespace ooad.Controllers
                         }
                         tl.Add(tmpp);
                     }
+                ViewBag.ct = tl;
             }
             else
             {
                 ViewBag.hasteam = false;
-                foreach(var teamid in teamlistdis)
-                {
-                    teamlist tmp = new teamlist();
-                    tmp.t = db.team.Find(teamid);
-                    var stlist = from ks in db.klass_student where ks.course_id == id && ks.team_id==teamid select ks.student_id;
-                    foreach(var st in stlist)
-                    {
-                        tmp.name.Add(db.student.Find(st).student_name);
-                        tmp.account.Add(db.student.Find(st).account);
-                    }
-                    tl.Add(tmp);
-                }
+                course_team ct=new course_team(id);
+                ViewBag.ct = ct.list;
             }
-            ViewBag.tl = tl;
         }
         public void studentlist(int id)        //course_id
         {
             var stlist = from ks in db.klass_student where ks.course_id == id && ks.team_id == null select ks.student_id;
+        }
+        public void createteam()
+        {
+            int klass_id=1;
+            string team_name = "";
+
+            int course_id = db.klass.Find(klass_id).course_id;
+            var tlist = from t in db.team where t.course_id == course_id select t;
+            int sid = Int32.Parse(Request["user_id"]);
+            team NewTeam = new team
+            {
+                klass_id = klass_id,
+                course_id = course_id,
+                leader_id = sid,
+                team_name = team_name,
+                team_serial = (byte)(tlist.Count() + 1),
+                status = 0
+            };
+            db.team.Add(NewTeam);
+            db.SaveChanges();
+
+            var kslist = from ks in db.klass_student where ks.course_id == course_id && ks.student_id == sid select ks;
+            foreach (var ks in kslist) ks.team_id = NewTeam.id;
+            db.SaveChanges();
+        }
+        public void remove()
+        {
+            int course_id = 1;
+
+            int sid = Int32.Parse(Request["user_id"]);
+            var ks = (from aks in db.klass_student where aks.course_id == course_id && aks.student_id == sid select aks).ToList()[0];
+            if (ks.team_id == null) return;
+            int team_id = (int)ks.team_id;
+            if(db.team.Find(team_id).leader_id==sid)
+            {
+                var kslist = (from aks in db.klass_student where aks.course_id == course_id && aks.team_id == team_id select aks).ToList();
+                foreach (var aks in kslist) aks.team_id = null;
+            }
+            else
+                ks.team_id = null;
+                db.SaveChanges();
+        }
+        public void add()
+        {
+            int course_id = 1;
+            int team_id = 1;
+            List<int> student_id = new List<int>();
+            
+            var kslist = from aks in db.klass_student where aks.course_id == course_id && student_id.Contains(aks.student_id) select aks;
+            foreach (var ks in kslist)
+            {
+                if (ks.team_id == null) ks.team_id = team_id;
+            }
+            db.SaveChanges();
+        }
+        public void submit_team_valid()
+        {
+            int team_id = 1;
+            team t = db.team.Find(team_id);
+            if (t.status==0)
+            {
+                team_valid_application Newtva = new team_valid_application
+                {
+                    team_id = team_id,
+                    reason = Request["reason"],
+                    status = null,
+                    teacher_id = db.course.Find(t.course_id).teacher_id
+                };
+                db.team_valid_application.Add(Newtva);
+                db.SaveChanges();
+            }
         }
 
         public bool chgpwd(string data)
@@ -325,28 +386,7 @@ namespace ooad.Controllers
             return true;
         }
 
-        public class personclass        //For Seminar
-        {
-            public int klass_id;
-            public string name;
-        }
-        public class round_seminar      //For ChsSpecSeminar
-        {
-            public round r;
-            public List<seminar> s = new List<seminar>();
-        }
-        public class scoreboard             //For score
-        {
-            public round_score rs;
-            public List<seminar_score> ss = new List<seminar_score>();
-            public List<string> name = new List<string>();
-        }
-        public class teamlist
-        {
-            public team t;
-            public List<string> name = new List<string>();
-            public List<string> account = new List<string>();
-        }
+        
         bool is_judge = false;
         int test_id = 1;
         MSSQLContext db = new MSSQLContext();

@@ -225,15 +225,7 @@ namespace ooad.Controllers
             return FileName;
         }
 
-        public class SeminarInfo
-        {
-            public int round;
-            public int count;
-            public string title;
-            public string msg;
-            public string signUpTime;
-            public string reportTime;
-        }
+        
         bool is_judge = false;
         MSSQLContext db = new MSSQLContext();
     }
