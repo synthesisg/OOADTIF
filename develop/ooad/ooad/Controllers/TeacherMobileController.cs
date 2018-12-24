@@ -63,6 +63,7 @@ namespace ooad.Controllers
                 case "POST":        //login
                     student ui = db.student.Find(Int32.Parse(Session["tmp_id"].ToString()));
                     ui.password = Request["newPassword"];
+                    ui.is_active = 1;
                     db.SaveChanges();
                     Session["user_id"] = Session["tmp_id"];
                     Session["is_teacher"] = true;
@@ -72,13 +73,13 @@ namespace ooad.Controllers
         }
         public bool SendPW2Email(string data)
         {
-            var uilist = from ui in db.student where ui.account.Equals(data) select ui;
+            var uilist = (from ui in db.teacher where ui.account.Equals(data) select ui).ToList();
             if (uilist.Count() == 0) return false;
             string email = uilist.ToList()[0].email;
             if (email == null || email == "") return false;
 
             SmtpClient client = new SmtpClient("smtp.163.com", 25);
-            MailMessage msg = new MailMessage("13600858179@163.com", email, "找回瓜皮账户", "感谢使用瓜皮课堂\n您的密码为" + uilist.ToList()[0].password);
+            MailMessage msg = new MailMessage("13600858179@163.com", email, "找回瓜皮账户", "感谢使用瓜皮课堂\n您的账号" + uilist[0].account + "的password为" + uilist[0].password);
             client.UseDefaultCredentials = false;
             System.Net.NetworkCredential basicAuthenticationInfo =
                 new System.Net.NetworkCredential("13600858179@163.com", "20100710A");

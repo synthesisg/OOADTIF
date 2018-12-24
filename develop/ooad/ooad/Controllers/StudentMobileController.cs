@@ -64,6 +64,7 @@ namespace ooad.Controllers
                     student ui = db.student.Find(Int32.Parse(Session["tmp_id"].ToString()));
                     ui.password = Request["newPassword"];
                     ui.email = Request["email"];
+                    ui.is_active = 1;
                     db.SaveChanges();
                     Session["user_id"] = Session["tmp_id"];
                     Session["is_student"] = true;
@@ -126,7 +127,7 @@ namespace ooad.Controllers
             ViewBag.TitleText = db.course.Find(k.course_id).course_name;
             return View();
         }
-        public ActionResult BUEnrollSmn(int id)     //seminar_id
+        public ActionResult BUEnrollSmn(int id)     //klass_seminar_id 报名界面
         {
             if (is_judge)
             {
@@ -136,49 +137,51 @@ namespace ooad.Controllers
             else Session["user_id"] = test_id;
 
             int student_id = Int32.Parse(Session["user_id"].ToString());
-            var teamlist=from kst in db.klass_student where kst.student_id == student_id select kst;
-            team t = db.team.Find(teamlist.ToList()[0].team_id);
-            seminar se = db.seminar.Find(id);
-            round r = db.round.Find(se.round_id);
-            var ksrlist = from ksr in db.klass_seminar where ksr.klass_id == t.klass_id && ksr.seminar_id==id select ksr;
-            klass_seminar ks=ksrlist.ToList()[0];
-            Session["klass_seminar_id"] = ks.id;
-            var alist = from a in db.attendance where a.klass_seminar_id == ks.id select a;
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
+            ViewBag.model = model;
+            ViewBag.TitleText = model.seminar_name;
+            return View();
+        }
+        public ActionResult BUSmnInfo(int id)//klass_seminar_id
+        {
+            var ks = db.klass_seminar.Find(id);
+            var s = db.seminar.Find(ks.seminar_id);
+            ViewBag.ks = ks;
 
-            string[] team_order = new string[se.max_team];
-            for (int i = 0; i < team_order.Length; i++) team_order[i] = "";
-            foreach(var a in alist)
+            ViewBag.TitleText = s.seminar_name;
+            return View();
+        }
+        public ActionResult BEnrollSmn(int id)  //klass_seminar_id          讨论课详细信息(报名前)界面
+        {
+            if (is_judge)
             {
-                team_order[a.team_order - 1] = db.team.Find(a.team_id).team_name;
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("StudentLogin");
             }
-            ViewBag.team_order = team_order;
-            ViewBag.TitleText = se.seminar_name;
+            else Session["user_id"] = test_id;
+
+            var model = new BEnrollSmn_model(id, Int32.Parse(Session["user_id"].ToString()));
+            ViewBag.model = model;
+
+            ViewBag.TitleText = model.course_name + model.seminar_name;
             return View();
         }
-        public ActionResult BUSmnInfo() {
-            //TitleText = 课程名称+讨论课名
-            ViewBag.TitleText = "1";
-            return View();
-        }
-        public ActionResult BEnrollSmn() {
-            //TitleText = 课程名称+讨论课名
-            ViewBag.TitleText = "1";
-            return View();
-        }
-        public ActionResult BChangeEnrollSmn() {
-            //TitleText = 课程名称+讨论课名
-            ViewBag.TitleText = "1";
+        public ActionResult BChangeEnrollSmn(int id)//klass_seminar_id
+        {
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
+            ViewBag.model = model;
+            ViewBag.TitleText = model.seminar_name;
             return View();
         }
         public bool SendPW2Email(string data)
         {
-            var uilist = from ui in db.student where ui.account.Equals(data) select ui;
+            var uilist = (from ui in db.student where ui.account.Equals(data) select ui).ToList();
             if (uilist.Count() == 0) return false;
             string email = uilist.ToList()[0].email;
             if (email == null || email == "") return false;
 
             SmtpClient client = new SmtpClient("smtp.163.com", 25);
-            MailMessage msg = new MailMessage("13600858179@163.com", email, "找回瓜皮账户", "感谢使用瓜皮课堂\n您的密码为" + uilist.ToList()[0].password);
+            MailMessage msg = new MailMessage("13600858179@163.com", email, "找回瓜皮账户", "感谢使用瓜皮课堂\n您的账号"+uilist[0].account+"的password为" + uilist[0].password);
             client.UseDefaultCredentials = false;
             System.Net.NetworkCredential basicAuthenticationInfo =
                 new System.Net.NetworkCredential("13600858179@163.com", "20100710A");
@@ -388,7 +391,7 @@ namespace ooad.Controllers
 
         
         bool is_judge = false;
-        int test_id = 1;
+        int test_id = 6;
         MSSQLContext db = new MSSQLContext();
     }
 }

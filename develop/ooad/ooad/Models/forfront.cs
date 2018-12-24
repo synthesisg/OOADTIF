@@ -25,11 +25,107 @@ namespace ooad.Models
         public round r;
         public List<seminar> s = new List<seminar>();
     }
-    public class scoreboard             //For score
+    public class scoreboard             //For Round Score
     {
         public round_score rs;
         public List<seminar_score> ss = new List<seminar_score>();
         public List<string> name = new List<string>();
+    }
+
+    //返回一个klass_seminar下已报名的队伍名
+    public class klass_seminar_enroll_state_model
+    {
+        public int ksid;
+        public string[] team_order;
+        public string seminar_name;
+
+        public klass_seminar_enroll_state_model(int klass_seminar_id)
+        {
+            ksid = klass_seminar_id;
+            klass_seminar ks = db.klass_seminar.Find(ksid);
+            seminar se = db.seminar.Find(ks.seminar_id);
+            seminar_name = se.seminar_name;
+            var alist = from a in db.attendance where a.klass_seminar_id == ks.id select a;
+
+            team_order = new string[se.max_team];
+            for (int i = 0; i < team_order.Length; i++) team_order[i] = "";
+            foreach (var a in alist)
+            {
+                team_order[a.team_order - 1] = db.team.Find(a.team_id).team_name;
+            }
+        }
+        
+        MSSQLContext db = new MSSQLContext();
+    }
+
+    public class BEnrollSmn_model
+    {
+        //base
+        public int sid, ksid;
+
+        //round
+        public int round;
+
+        //seminar
+        public string seminar_name;
+        public string introduction;
+        public string course_name;
+
+        //klass_seminar
+        public string status;
+
+        //attendance
+        public string enroll;
+        public string ppt="";
+
+        public BEnrollSmn_model(int klass_seminar_id, int student_id)
+        {
+            sid = student_id;
+            ksid = klass_seminar_id;
+            klass_seminar ks = db.klass_seminar.Find(ksid);
+            seminar se = db.seminar.Find(ks.seminar_id);
+
+            round = db.round.Find(se.round_id).round_serial;
+            seminar_name = se.seminar_name;
+            introduction = se.introduction;
+            course_name = db.course.Find(se.course_id).course_name;
+            switch(ks.status)
+            {
+                case 0:
+                    status = "未开始";
+                    break;
+                case 1:
+                    status = "正在进行";
+                    break;
+                case 2:
+                    status = "已结束";
+                    break;
+                case 3:
+                    status = "暂停";
+                    break;
+                default:
+                    status = "";
+                    break;
+            };
+
+            var teamlist = from kst in db.klass_student where kst.course_id == se.course_id select kst;
+            if (teamlist.Count()==0)
+            {
+                enroll = "未组队";
+                return;
+            }
+            int team_id = (int) teamlist.ToList()[0].team_id;
+            var alist = from a in db.attendance where a.team_id == team_id && a.klass_seminar_id == klass_seminar_id select a;
+            if (alist.Count() == 0)
+            {
+                enroll = "未报名";
+                return;
+            }
+            enroll = "第" + alist.ToList()[0].team_order.ToString() + "组";
+            ppt = alist.ToList()[0].ppt_name;
+        }
+
+        MSSQLContext db = new MSSQLContext();
     }
     public class teamlist
     {
@@ -49,7 +145,7 @@ namespace ooad.Models
         public List<seminar_klass> sklist = new List<seminar_klass>();
     }
 
-    //返回一个course_id下的所有队伍
+    //一个course_id下的所有队伍
     public class course_team
     {
         public course course;
@@ -109,10 +205,12 @@ namespace ooad.Models
         
         MSSQLContext db = new MSSQLContext();
     }
+
     public class seminar_report
     {
         public seminar seminar;
         List<line> list = new List<line>();
+
         public class line
         {
             public string team_name;
