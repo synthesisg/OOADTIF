@@ -20,10 +20,26 @@ namespace ooad.Models
         public int klass_id;
         public string name;
     }
-    public class round_seminar      //For ChsSpecSeminar
+    public class round_seminar      //For ChsSpecSeminar 返回某班一个round下的seminar
     {
         public round r;
         public List<seminar> s = new List<seminar>();
+        public List<int> klass_seminar_id = new List<int>();
+
+        public round_seminar(int klass_id, int round_id)
+        {
+            r = db.round.Find(round_id);
+            var slist = from s in db.seminar where s.round_id == r.id select s;
+            foreach (var item in slist)
+            {
+                s.Add(item);
+                var sr = from ksr in db.klass_seminar where ksr.klass_id == klass_id && ksr.seminar_id == item.id select ksr;
+                klass_seminar_id.Add(sr.ToList()[0].id);
+            }
+        }
+
+        MSSQLContext db = new MSSQLContext();
+
     }
     public class scoreboard             //For Round Score
     {
@@ -108,13 +124,13 @@ namespace ooad.Models
                     break;
             };
 
-            var teamlist = from kst in db.klass_student where kst.course_id == se.course_id select kst;
-            if (teamlist.Count()==0)
+            var kstlist = (from kst in db.klass_student where kst.course_id == se.course_id &&kst.student_id==student_id select kst).ToList();
+            if (kstlist[0].team_id==null)
             {
                 enroll = "未组队";
                 return;
             }
-            int team_id = (int) teamlist.ToList()[0].team_id;
+            int team_id = (int) kstlist[0].team_id;
             var alist = from a in db.attendance where a.team_id == team_id && a.klass_seminar_id == klass_seminar_id select a;
             if (alist.Count() == 0)
             {

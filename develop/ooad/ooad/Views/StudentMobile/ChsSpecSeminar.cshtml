@@ -31,8 +31,8 @@
 				int Csmn = 1;//临时变量 用于赋值id
 				foreach (dynamic s in item.s) {
 					int temp = totalRound + (totalRound - 1) * totalCSmn + Csmn;
-					<li id="@temp" onclick="Go2SpecSmn(@temp);f('@temp','@Csmn')" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
-					讨论课名
+					<li id="ksid_@item.klass_seminar_id[Csmn-1]" onclick="Go2SpecSmn(@item.klass_seminar_id[Csmn-1]);f('@temp','@Csmn')" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+					@s.seminar_name @item.klass_seminar_id[Csmn-1]
 					<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
 					</li>
 				Csmn++;
@@ -55,6 +55,6 @@
 		}
 	}
 	function Go2SpecSmn(n) {
-		window.location.href = "BUSmnInfo?round=" + n/3 +"&count="+n%3;
+        window.location.href = "BUSmnInfo/" + n;//?round=" + n/3 +"&count="+n%3;
 	}
 	</script>

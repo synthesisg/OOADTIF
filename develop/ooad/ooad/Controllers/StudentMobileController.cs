@@ -114,12 +114,7 @@ namespace ooad.Controllers
             List<round_seminar> rs = new List<round_seminar>();
             foreach(var r in rlist)
             {
-                round_seminar tmp = new round_seminar
-                {
-                    r = r,
-                };
-                var slist = from s in db.seminar where s.round_id == r.id select s;
-                foreach (var s in slist) tmp.s.Add(s);
+                round_seminar tmp = new round_seminar(id, r.id);
                 rs.Add(tmp);
             }
             ViewBag.rs = rs;
@@ -147,7 +142,7 @@ namespace ooad.Controllers
             var ks = db.klass_seminar.Find(id);
             var s = db.seminar.Find(ks.seminar_id);
             ViewBag.ks = ks;
-
+            ViewBag.s = s;
             ViewBag.TitleText = s.seminar_name;
             return View();
         }
@@ -189,16 +184,31 @@ namespace ooad.Controllers
             //要  ViewBag.TitleText =课程名 + 讨论课名
             return View();
         }
-        public ActionResult LaterUErollSmnInfo() {
-            //要  ViewBag.TitleText =课程名 + 讨论课名
+        public ActionResult LaterUErollSmnInfo(int id)  //klass_seminar_id
+        {
+            var ks = db.klass_seminar.Find(id);
+            var s = db.seminar.Find(ks.seminar_id);
+            ViewBag.ks = ks;
+            ViewBag.s = s;
+            ViewBag.TitleText = s.seminar_name;
             return View();
         }
-        public ActionResult LaterEnrollSmnInfo() {
-            //要  ViewBag.TitleText =课程名 + 讨论课名
+        public ActionResult LaterEnrollSmnInfo(int id)  //klass_seminar_id
+        {
+            var ks = db.klass_seminar.Find(id);
+            var s = db.seminar.Find(ks.seminar_id);
+            ViewBag.ks = ks;
+            ViewBag.s = s;
+            ViewBag.TitleText = s.seminar_name;
             return View();
         }
-        public ActionResult LaterEnrollEndSmnInfo() {
-            //要  ViewBag.TitleText =课程名 + 讨论课名
+        public ActionResult LaterEnrollEndSmnInfo(int id)  //klass_seminar_id
+        {
+            var ks = db.klass_seminar.Find(id);
+            var s = db.seminar.Find(ks.seminar_id);
+            ViewBag.ks = ks;
+            ViewBag.s = s;
+            ViewBag.TitleText = s.seminar_name;
             return View();
         }
         public bool SendPW2Email(string data)

@@ -10,10 +10,12 @@
 		@{
 			var temp = 0;
 			while (temp < 6) {
-				<div class="container" style="margin-top:10px;height:50px;background-color:#ffffff">
-					<p style="line-height:50px;padding:0px 1em;display:inline">第 @temp 组：</p>
-					<a id="@temp" onclick="enroll(@temp)">可报名</a>
-				</div>
+        <div class="container" style="margin-top:10px;height:50px;background-color:#ffffff">
+            <p style="line-height:50px;padding:0px 1em;display:inline">第 @temp 组：</p>
+            <a id="@temp" onclick="enroll(@temp)">可报名</a>
+
+            <!--@ViewBag.model.team_order[temp] 显示这个位置的队伍名 为空则可报名 你要判断下给不给链接=================================================================-->
+        </div>
 				temp++;
 			}
 		}
