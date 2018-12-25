@@ -168,6 +168,10 @@ namespace ooad.Controllers
             ViewBag.TitleText = model.seminar_name;
             return View();
         }
+        public ActionResult KlassSeminar(int id)//klass_seminar_id
+        {
+            return View();
+        }
         public ActionResult NowUEnrollSmnInfo() {
             //要  ViewBag.TitleText =课程名 + 讨论课名
             return View();
@@ -204,6 +208,15 @@ namespace ooad.Controllers
         }
         public ActionResult LaterEnrollEndSmnInfo(int id)  //klass_seminar_id
         {
+            var ks = db.klass_seminar.Find(id);
+            var s = db.seminar.Find(ks.seminar_id);
+            ViewBag.ks = ks;
+            ViewBag.s = s;
+            ViewBag.TitleText = s.seminar_name;
+            return View();
+        }
+        public ActionResult LaterSmnInfo(int id)  //klass_seminar_id
+       {
             var ks = db.klass_seminar.Find(id);
             var s = db.seminar.Find(ks.seminar_id);
             ViewBag.ks = ks;
