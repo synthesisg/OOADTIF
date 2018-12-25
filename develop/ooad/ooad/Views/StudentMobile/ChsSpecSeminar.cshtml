@@ -9,8 +9,8 @@
 		padding:0;
 	}
 </style>
+
 <div class="container" style="margin-top:20px;width:100%;margin:0;padding:0;">
-	<!--4 是轮次 3是每轮的讨论课门数-->
 	<!--需要修改f函数-->
 	<!--id命名规则 如果有n轮 1~n 为轮次id n~m为第一轮m-n门讨论课id-->
 	@{ int totalRound = 0;
@@ -19,8 +19,8 @@
 		}
 		int round=1;//临时变量 用于赋值id
 		foreach (dynamic item in ViewBag.rs) {
-		<ul style="line-height:40px;list-style-type:none;width:100%;">
-		<li id="@round" onclick="f('@round',1)" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;">
+		<ul id ="@round"style="line-height:40px;list-style-type:none;width:100%;">
+		<li onclick="f('@round')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;">
 			第 @round  轮
 			<span class="glyphicon glyphicon-align-justify" style="float:right;line-height:40px;margin-right:1em;"></span>
 		</li>
@@ -31,7 +31,7 @@
 				int Csmn = 1;//临时变量 用于赋值id
 				foreach (dynamic s in item.s) {
 					int temp = totalRound + (totalRound - 1) * totalCSmn + Csmn;
-					<li id="ksid_@item.klass_seminar_id[Csmn-1]" onclick="Go2SpecSmn(@item.klass_seminar_id[Csmn-1]);f('@temp','@Csmn')" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+					<li id="ksid_@item.klass_seminar_id[Csmn-1]" onclick="Go2SpecSmn(@item.klass_seminar_id[Csmn-1])" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
 					@s.seminar_name @item.klass_seminar_id[Csmn-1]
 					<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
 					</li>
@@ -43,18 +43,19 @@
 		}
 	}
 </div>
-	<script>
-	function f(str,csmn) {
-		for (var i = 0; i < csmn; i++) {
-			var sub_menu = document.getElementById(2);
-			var dis_v = sub_menu.style.display;
-			if (dis_v == "none") {
-				sub_menu.style.display = "block";
+
+<script>
+		function f(roundId) {
+			var liArr = document.querySelectorAll("ul[id='"+roundId+"'] li")
+			for (var i = 1; i < liArr.length; i++) {
+				if (liArr[i].style.display == "block") {
+					liArr[i].style.display = "none";
+				}
+				else
+					liArr[i].style.display = "block";
 			}
-			else sub_menu.style.display = "none";
-		}
 	}
 	function Go2SpecSmn(n) {
-        window.location.href = "BUSmnInfo/" + n;//?round=" + n/3 +"&count="+n%3;
+        window.location.href = "/StudentMobile/BUSmnInfo/" + n;
 	}
-	</script>
+</script>
