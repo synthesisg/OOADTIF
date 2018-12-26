@@ -12,7 +12,7 @@
 		<div style="padding: 100px 10px">
 			<h2 style="text-align:center">翻转课堂教师登陆</h2>
 			<br>
-			<form class="bs-example bs-example-form" role="form" method="post">
+			<form class="bs-example bs-example-form" role="form" method="post" onsubmit="validateLogin()">
 
 				<div class="input-group input-group-lg" style="margin:0 auto">
 					<input type="text" class="form-control" name="userName" placeholder="账户名" style="width:300px" />
@@ -23,7 +23,7 @@
 				</div>
 				<br>
 				<div class="input-group input-group input-group-lg" style="margin:0 auto">
-					<input type="submit" class="btn btn-primary btn-lg" value="登陆" style="background-color:#5ab4ac;width:300px" onclick="validateLogin()"/>
+					<input type="submit" class="btn btn-primary btn-lg" value="登陆" style="background-color:#5ab4ac;width:300px"/>
 				</div>
 			</form>
 		</div>
@@ -37,8 +37,12 @@
 <script type="text/javascript">
 	function validateLogin() {
 		if (document.getElementById("userName").value == "") {
-			alert("请输入用户名");
+			alert("请输入用户名！");
 			return false;
-        }
+		}
+		if (document.getElementById("userPassword").value == "") {
+			alert("密码不能为空！");
+			return false;
+		}
 	}
 </script>

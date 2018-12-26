@@ -14,8 +14,9 @@
                 var obj = document.getElementById("round_id");
                 var list = result.split("|");
                 if (list.length > 1) {
-                    obj.options.length = 0;
-                    for (var i = 0; i < list.length; i += 2) {
+					obj.options.length = 0;
+					obj.options.add(new Option("-- 请选择 --", 0));
+					for (var i = 0; i < list.length; i += 2) {
                         obj.options.add(new Option(list[i], list[i + 1]));
                     }
                 }
@@ -37,21 +38,19 @@
 <div class="input-group"style="margin:20px;">
 	<span class="input-group-addon">课程</span>
     <select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
-        @foreach (var co in ViewBag.colist)
-        {
+        @foreach (var co in ViewBag.colist) {
             <option value="@co.id">@co.course_name</option>
-        }
+		}
         <option value="-1" disabled selected="selected">-- 请选择 --</option>
     </select>
 </div>
 <div class="input-group" style="margin:20px;">
 	<span class="input-group-addon">轮次</span>
-    <select id="round_id" name="round_id" class="form-control">
+    <select id="round_id" name="round_id" class="form-control" onchange="queryMarkData(this.options[this.selectedIndex].value)">
         <option value="-1" disabled selected="selected">-- 请选择 --</option>
     </select>
 </div>
 
-<!--你要给我数据接口 不然我表格我写不出来啊。。-->
 <div class="container" style=" padding:5px; width:90%;  margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
 	<table class="table">
 		<thead>
@@ -64,15 +63,9 @@
 				<th>总成绩</th>
 			</tr>
 		</thead>
-		<tbody>
-			<!--ViewBag 给我信息我这里用foreach填-->
+		<tbody id="tbody">
 			<tr>
-				<td>2-9</td>
-				<td>1</td>
-				<td>5</td>
-				<td>5</td>
-				<td>5</td>
-				<td>5</td>
+				
 			</tr>
 		</tbody>
 	</table>
@@ -84,6 +77,38 @@
 <script type="text/javascript">
 	function dlMethod() {
 		//window.location.href = "文件的url地址";
-		//if成功 alert("success") 你写一下啊= =
+	}
+
+	function queryMarkData(round_id) {
+		$.ajax({
+			'url': "/TeacherWeb/queryMarkData",
+			'type': 'post',
+			'data': { round_id: round_id },
+			success: function (jsonstr) {
+				alert(jsonstr);
+				jobj = eval("(" + jsonstr + ")");
+				alert(jobj[0].total_score);
+
+				var tbody = document.getElementById("tbody");
+				for (var obj in jobj) {
+					var row = tbody.insertRow(0);
+					cell = row.insertCell(0);
+					cell.innerHTML = jobj[obj].total_score;
+					cell = row.insertCell(0);
+					cell.innerHTML = jobj[obj].report_score;
+					cell = row.insertCell(0);
+					cell.innerHTML = jobj[obj].question_score;
+					cell = row.insertCell(0);
+					cell.innerHTML = jobj[obj].presentation_score; 
+					cell = row.insertCell(0);
+					cell.innerHTML = " ";
+					cell = row.insertCell(0);
+					cell.innerHTML = jobj[obj].team_id;
+				}
+			},
+			error: function () {
+				alert(" link error");
+			}
+		})
 	}
 </script>

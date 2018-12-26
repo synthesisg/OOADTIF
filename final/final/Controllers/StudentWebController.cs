@@ -97,8 +97,14 @@ namespace final.Controllers
 
         public ActionResult SpecificSeminar(int id)//seminar_id
         {
+            if (is_judge) {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("StudentLogin");
+            }
+            else Session["user_id"] = test_id;
+
             seminar s = db.seminar.Find(id);
-            int sid=Int32.Parse(Request["user_id"]);
+            int sid=Int32.Parse(Session["user_id"].ToString());
             int klass_id = (from kss in db.klass_student where kss.course_id == s.course_id && kss.student_id == sid select kss).ToList()[0].klass_id;
             var kslist = from ks in db.klass_seminar where ks.seminar_id == id && ks.klass_id == klass_id select ks; 
             //讨论课信息
@@ -245,7 +251,23 @@ namespace final.Controllers
             objFileStream.Close();
             return FileName;
         }
-
+        public string querySeminarData(int roundN) {
+            int round_id = roundN;
+            var slist = from s in db.seminar where s.round_id == round_id select s;
+            //[图片]ViewBag.rs = slist;
+            return Newtonsoft.Json.JsonConvert.SerializeObject(slist.ToList());
+        }
+        public string getmark(int course_id) {
+            return "123";
+            int sid = Int32.Parse(Request["user_id"]);
+            var klass_list = (from k in db.klass where k.course_id == course_id select k.id).ToList();
+            int team_id = new qt().c2t(course_id, sid);
+            var rque = from r in db.round where r.course_id == course_id select r;
+            List<int> rid = new List<int>();
+            foreach (var r in rque) rid.Add(r.id);
+            var rscore = from rs in db.round_score where (rid.Contains(rs.round_id) && rs.team_id == team_id) select rs;
+            return Newtonsoft.Json.JsonConvert.SerializeObject(rscore.ToList());
+        }
 
         bool is_judge = false;
         int test_id = 166;

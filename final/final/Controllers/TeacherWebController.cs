@@ -135,20 +135,6 @@ namespace final.Controllers
             var rco = from co in db.course where co.teacher_id == teacher_id select co;
             ViewBag.colist = rco;
 
-            SeminarInfo smnInfo = new SeminarInfo
-            {
-                round = 1,
-                title = "需求设计",
-                msg = "这是第一次讨论课信息"
-            };
-            SeminarInfo smnInfo2 = new SeminarInfo
-            {
-                round = 2,
-                title = "界面设计",
-                msg = "这是第二次讨论课信息"
-            };
-            SeminarInfo[] arrSmn = { smnInfo, smnInfo2 };
-            ViewBag.arrSeminar = arrSmn;
             return View();
 
             //确定round后
@@ -207,13 +193,13 @@ namespace final.Controllers
             ViewBag.colist = colist;
 
             return View();
-
-            //确定round后
-            int round_id = 1;
-            var rslist = from rs in db.round_score where rs.round_id == round_id select rs;
-            ViewBag.rs = rslist;
+            
         }
-
+        public string queryMarkData(int round_id) {
+            var rslist = from rs in db.round_score where rs.round_id == round_id select rs;
+            ViewBag.rslistCount = rslist.Count();
+            return Newtonsoft.Json.JsonConvert.SerializeObject(rslist.ToList());
+        }
 
 
         private void LoadList(string path, int class_id)   //"Data Source=" + Server.MapPath("~/Files/NET.xls") + ";"
@@ -325,7 +311,15 @@ namespace final.Controllers
             objFileStream.Close();
             return FileName;
         }
-
+        public int queryCourseRound(int courseId) {
+            return 3;
+        }
+        public string querySeminarData(int roundN) {
+            int round_id = roundN;
+            var slist = from s in db.seminar where s.round_id == round_id select s;
+            //[图片]ViewBag.rs = slist;
+            return Newtonsoft.Json.JsonConvert.SerializeObject(slist.ToList());
+        }
 
         public class SeminarInfo
         {

@@ -7,10 +7,8 @@
 	<h2 style="color:#5ab4ac">下载讨论课材料</h2>
 </div>
 <div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
-
-	<h3>@ViewBag.obMsg.title</h3>
-	<h3>讨论课报名截止时间: @ViewBag.obMsg.signUpTime</h3>
-	<h3>报告提交截止时间: @ViewBag.obMsg.reportTime</h3>
+	<h3>@ViewBag.sr.seminar.seminar_name</h3>
+	<h3>讨论课报名截止时间: @ViewBag.sr.seminar.enroll_start_time </h3>
 </div>
 
 <div class="container" style=" padding:5px; width:90%; background-color:#f0f0f0; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
@@ -21,28 +19,33 @@
 				<td></td>
 				<td></td>
 				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<th>小组名</th>
 				<th>组长</th>
 				<th>提交情况</th>
 				<th>课程报告</th>
+				<th>展示材料</th>
 			</tr>
 
 		</thead>
 		<!--ViewBag 给我信息我这里填-->
-		<tbody>
+		<tbody id="tbody">
+			@{ int i = 0;
+				while (i < ViewBag.sr.listLength) {
 			<tr>
-				<td>TIF</td>
-				<td>Rammohan </td>
-				<td>显示是否提交</td>
-				<td>
-					<button id="n" type="button" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
-						下载
-					</button>
-				</td>
+				<td>@ViewBag.sr.list[i].team_name</td>
+				<td>@ViewBag.sr.list[i].leader_name</td>
+				<td>@ViewBag.sr.list[i].status</td>
+				<td><a onclick="downLoad()" style="cursor:pointer">1 @ViewBag.sr.list[i].url</a></td>
+				<td><a onclick="downLoad()" style="cursor:pointer">1 @ViewBag.sr.list[i].url</a></td>
+
 			</tr>
-		</tbody>
+					i++;
+				}
+			}
+			</tbody>
 	</table>
 </div>
 

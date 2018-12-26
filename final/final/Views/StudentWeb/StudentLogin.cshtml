@@ -13,7 +13,7 @@
 		<div style="padding: 100px 10px">
 			<h2 style="text-align:center">翻转课堂学生登陆</h2>
 			<br>
-			<form class="bs-example bs-example-form" role="form" method="post">
+			<form class="bs-example bs-example-form" role="form" method="post" onsubmit="validateLogin()">
 
 				<div class="input-group input-group-lg" style="margin:0 auto">
 					<input type="text" class="form-control" id="userName" name="userName" placeholder="账户名" style="width:300px" />
@@ -39,6 +39,10 @@
 		if (document.getElementById("userName").value == "") {
 			alert("请输入用户名");
 			return false;
-        }
+		}
+		if (document.getElementById("userPassword").value == "") {
+			alert("请输入用户名");
+			return false;
+		}
 	}
 </script>

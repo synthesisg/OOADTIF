@@ -13,28 +13,107 @@
 <!-- content body -->
 
 <div style="margin:20px;">
-	<h3 style="color:#5ab4ac">第 1次讨论课</h3>
-	<h4>需求分析</h4>
-	<p>这节课啊是balabalabalabala一大堆从数据库里拿出来的屎</p>
+	<h3 style="color:#5ab4ac">第 @ViewBag.s.seminar_serial 次讨论课</h3>
+	<h4>@ViewBag.s.seminar_name</h4>
+	<p>@ViewBag.s.introduction</p>
 	<hr />
 	<h4>已报名信息</h4>
-	<p>小组编号1</p>
-	<p>小组编号2</p>
+	<div class="container" style=" padding:5px; width:90%;  margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>展示次序</th>
+					<th>小组序号</th>
+					<th>组长</th>
+					<th>展示材料</th>
+					<th></th>	
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="tbody">
+				<!--ViewBag 给我信息我这里用foreach填-->
+				@{int i = 1;
+					foreach (var item in ViewBag.model.team_order) {
+				<tr>
+					<td>@i</td>
+					<td>@item</td>
+					<td></td>
+					<td>下载链接</td>
+					@{
+						if (ViewBag.model.status == 0) {//课前
+							if (item != "") {//如果该次序被报名
+								string myteamname = "2-9";
+								if (myteamname == item) {//如果是自己报名
+									<td>
+										<form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post">
+											<input type="hidden" id="uploadFile" name="uploadFile" value="@ViewBag.model.ksid" />
+											<input type="hidden" id="fileType" name="fileType" value="PPT" />
+											<input type="file" name="file" />
+											<button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
+												PPT提交
+											</button>
+										</form>
+									</td>
+									<td>
+										<button type="button" onclick="CancelSignUp()" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+											取消报名
+										</button>
+									</td>
+								}
+							}
+							else {//如果没人报名
+								<td>
+									<button type="button" onclick="SignUp()" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+										报名
+									</button>
+								</td>
+							}
+						}
+						else if (ViewBag.model.status == 1 || ViewBag.model.status == 3) {
+							string myteamname = "2-9";
+							if (myteamname == item) {//如果是自己报名
+								<td>
+									<form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post">
+										<input type="hidden" id="uploadFile" name="uploadFile" value="@ViewBag.model.ksid" />
+										<input type="hidden" id="fileType" name="fileType" value="PPT" />
+										<input type="file" name="file" />
+										<button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
+											重新上传
+										</button>
+									</form>
+								</td>
+							}
+						}
+						else if (ViewBag.model.status == 2) {
+							string myteamname = "2-9";
+							if (myteamname == item) {//如果是自己报名
+								<td>
+									<form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post">
+										<input type="hidden" id="uploadFile" name="uploadFile" value="@ViewBag.model.ksid" />
+										<input type="hidden" id="fileType" name="fileType" value="PPT" />
+										<input type="file" name="file" />
+										<button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
+											重新上传
+										</button>
+									</form>
+								</td>
+							}
+						}
+					}
+				</tr>
+						i++;
+					}
+				}
+			</tbody>
+		</table>
+	</div>
 </div>
 <hr/>
 <!--如已报名这里显示已报名 显示取消报名按钮 需要小组报名信息-->
-<h3 style="margin:20px;">如已报名这里显示已报名，没有报名按钮，需要小组报名信息，点击后刷新页面</h3>
-<div style="margin:20px;">
-	<button id="n" value="download" onclick="SignUp()" type="button" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
-		报名
-	</button>
-</div>
-<h3 style="margin:20px;">如已报名 根据时间显示，需要讨论课信息当期时间</h3>
-
 <script>
 	function SignUp() {
 		//传个消息给你 报名成功alert成功 失败就失败
-		alert("成功")
+		alert("成功");
 		window.location.reload();
 	}
 

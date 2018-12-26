@@ -71,7 +71,7 @@ namespace final.Models
         public int ksid;
         public string[] team_order;
         public string seminar_name;
-
+        public IndexOutOfRangeException status;//================================
         public klass_seminar_enroll_state_model(int klass_seminar_id)
         {
             ksid = klass_seminar_id;
@@ -241,8 +241,8 @@ namespace final.Models
     public class seminar_report
     {
         public seminar seminar;
-        List<line> list = new List<line>();
-
+        public List<line> list = new List<line>();
+        public int listLength;
         public class line
         {
             public string team_name;
@@ -268,6 +268,7 @@ namespace final.Models
                 };
                 list.Add(tmp);
             }
+            listLength = list.Count;
         }
 
         MSSQLContext db = new MSSQLContext();

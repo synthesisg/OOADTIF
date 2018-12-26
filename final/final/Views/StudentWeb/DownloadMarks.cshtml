@@ -11,7 +11,7 @@
 <div class="input-group" style="margin:20px;">
 	<span class="input-group-addon">课程</span>
 	<!--这URL变了 你function要改你去写Controller吧= = -->
-	<select id="course_id" name="course_id" class="form-control" onChange="f(this.options[this.selectedIndex].value)">
+	<select id="course_id" name="course_id" class="form-control" onChange="getMark(this.options[this.selectedIndex].value)">
 		@foreach (var co in ViewBag.colist) {
 			<option value="@co.id">@co.course_name</option>
 		}
@@ -32,13 +32,8 @@
 		</thead>
 		<tbody>
 			<!--ViewBag 给我信息我这里用foreach填-->
-			<tr>
-				<td>1</td>
-				<td>5</td>
-				<td>5</td>
-				<td>5</td>
-				<td>5</td>
-			</tr>
+				<tr>
+				</tr>
 		</tbody>
 	</table>
 
@@ -51,27 +46,17 @@
 		//window.location.href = "文件的url地址";
 		//if成功 alert("success") 你写一下啊= =
 	}
-	function f(pos) {
+	function getMark(courseId) {
 		$.ajax({
-			'url': "/TeacherWeb/RRoundInfo",
+			'url': "/StudentWeb/getmark",
 			'type': "post",
-			'data': { data: pos },
+			'data': { course_id: courseId },
             'success': function (result) {
-                var obj = document.getElementById("round_id");
-                var list = result.split("|");
-                if (list.length > 1) {
-                    obj.options.length = 0;
-                    for (var i = 0; i < list.length; i += 2) {
-                        obj.options.add(new Option(list[i], list[i + 1]));
-                    }
-                }
-                else {
-                    obj.options.length = 0;
-                    obj.options.add(new Option("-- 请选择 --", 0));
-                }
+				alert(result);
             },
 			'error': function () {
-				alert("发送失败！")
+				alert(courseId);
+				alert("发送失败！");
 			}
 		})
 	}
