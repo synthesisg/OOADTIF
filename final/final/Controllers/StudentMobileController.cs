@@ -137,30 +137,6 @@ namespace final.Controllers
             ViewBag.TitleText = model.seminar_name;
             return View();
         }
-        public ActionResult BUSmnInfo(int id)//klass_seminar_id
-        {
-            var ks = db.klass_seminar.Find(id);
-            var s = db.seminar.Find(ks.seminar_id);
-            ViewBag.ks = ks;
-            ViewBag.s = s;
-            ViewBag.TitleText = s.seminar_name;
-            return View();
-        }
-        public ActionResult BEnrollSmn(int id)  //klass_seminar_id          讨论课详细信息(报名前)界面
-        {
-            if (is_judge)
-            {
-                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("StudentLogin");
-            }
-            else Session["user_id"] = test_id;
-
-            var model = new BEnrollSmn_model(id, Int32.Parse(Session["user_id"].ToString()));
-            ViewBag.model = model;
-
-            ViewBag.TitleText = model.course_name + model.seminar_name;
-            return View();
-        }
         public ActionResult BChangeEnrollSmn(int id)//klass_seminar_id
         {
             klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
@@ -178,6 +154,7 @@ namespace final.Controllers
             else Session["user_id"] = test_id;
 
             BEnrollSmn_model model = new BEnrollSmn_model(id, Int32.Parse(Session["user_id"].ToString()));
+            ViewBag.model = model;
             return View();
         }
         public ActionResult NowSmnPPT()

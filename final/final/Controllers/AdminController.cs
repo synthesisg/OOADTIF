@@ -60,14 +60,17 @@ namespace final.Controllers
                     Response.Write("<script type='text/javascript'>alert('Modify Success!');</script>");
                 }
             }
-
+            List<teacher> teacherlist = new List<teacher>();
             if (Request["Search"] != null)
             {
                 string search = Request["Search"];
-                Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.teacherlist = (from ui in db.teacher where ((ui.account.Contains(search) || ui.teacher_name.Contains(search))) select ui).ToList());
+                teacherlist = (from ui in db.teacher where ((ui.account.Contains(search) || ui.teacher_name.Contains(search))) select ui).ToList();
             }
             else
-                Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.teacherlist = (from ui in db.teacher select ui).ToList());
+                teacherlist = (from ui in db.teacher select ui).ToList();
+
+            Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.teacherlist = teacherlist);
+            ViewBag.datacount = teacherlist.Count();
             return View();
         }
         public ActionResult TeacherDel(int id)
@@ -142,14 +145,19 @@ namespace final.Controllers
                     Response.Write("<script type='text/javascript'>alert('Modify Success!');</script>");
                 }
             }
+            List<student> studentlist = new List<student>();
             if (Request["Search"] != null)
             {
                 string search = Request["Search"];
-                Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.studentlist = (from ui in db.student where ((ui.account.Contains(search) || ui.student_name.Contains(search))) select ui).ToList());
+                studentlist = (from ui in db.student where ((ui.account.Contains(search) || ui.student_name.Contains(search))) select ui).ToList();
 
             }
             else
-                Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.studentlist = (from ui in db.student select ui).ToList());
+              studentlist = (from ui in db.student select ui).ToList();
+
+            Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.studentlist = studentlist);
+
+            ViewBag.datacount = studentlist.Count();
             return View();
         }
         public ActionResult StudentInfoMod(int id)
