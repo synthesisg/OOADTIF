@@ -13,108 +13,154 @@
 <!-- content body -->
 
 <div style="margin:20px;">
-	<h3 style="color:#5ab4ac">第 @ViewBag.s.seminar_serial 次讨论课</h3>
-	<h4>@ViewBag.s.seminar_name</h4>
-	<p>@ViewBag.s.introduction</p>
-	<hr />
-	<h4>已报名信息</h4>
-	<div class="container" style=" padding:5px; width:90%;  margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
-		<table class="table">
-			<thead>
-				<tr>
-					<th>展示次序</th>
-					<th>小组序号</th>
-					<th>组长</th>
-					<th>展示材料</th>
-					<th></th>	
-					<th></th>
-				</tr>
-			</thead>
-			<tbody id="tbody">
-				<!--ViewBag 给我信息我这里用foreach填-->
-				@{int i = 1;
-					foreach (var item in ViewBag.model.team_order) {
-				<tr>
-					<td>@i</td>
-					<td>@item</td>
-					<td></td>
-					<td>下载链接</td>
-					@{
-						if (ViewBag.model.status == 0) {//课前
-							if (item != "") {//如果该次序被报名
-								string myteamname = "2-9";
-								if (myteamname == item) {//如果是自己报名
-									<td>
-										<form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post">
-											<input type="hidden" id="uploadFile" name="uploadFile" value="@ViewBag.model.ksid" />
-											<input type="hidden" id="fileType" name="fileType" value="PPT" />
-											<input type="file" name="file" />
-											<button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
-												PPT提交
-											</button>
-										</form>
-									</td>
-									<td>
-										<button type="button" onclick="CancelSignUp()" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
-											取消报名
-										</button>
-									</td>
-								}
-							}
-							else {//如果没人报名
-								<td>
-									<button type="button" onclick="SignUp()" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
-										报名
-									</button>
-								</td>
-							}
-						}
-						else if (ViewBag.model.status == 1 || ViewBag.model.status == 3) {
-							string myteamname = "2-9";
-							if (myteamname == item) {//如果是自己报名
-								<td>
-									<form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post">
-										<input type="hidden" id="uploadFile" name="uploadFile" value="@ViewBag.model.ksid" />
-										<input type="hidden" id="fileType" name="fileType" value="PPT" />
-										<input type="file" name="file" />
-										<button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
-											重新上传
-										</button>
-									</form>
-								</td>
-							}
-						}
-						else if (ViewBag.model.status == 2) {
-							string myteamname = "2-9";
-							if (myteamname == item) {//如果是自己报名
-								<td>
-									<form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post">
-										<input type="hidden" id="uploadFile" name="uploadFile" value="@ViewBag.model.ksid" />
-										<input type="hidden" id="fileType" name="fileType" value="PPT" />
-										<input type="file" name="file" />
-										<button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
-											重新上传
-										</button>
-									</form>
-								</td>
-							}
-						}
-					}
-				</tr>
-						i++;
-					}
-				}
-			</tbody>
-		</table>
-	</div>
+    <h3 style="color:#5ab4ac">第 @ViewBag.s.seminar_serial 次讨论课</h3>
+    <h4>@ViewBag.s.seminar_name</h4>
+    <p>@ViewBag.s.introduction</p>
+    <hr />
+    <h4>已报名信息</h4>
+    <p>status = @ViewBag.model.status</p>
+    <p>ksid = @ViewBag.model.ksid</p>
+    <p>my_team_name = @ViewBag.model.my_team_name</p>
+    <input type="hidden" id="ksid" name="ksid" value="@ViewBag.ksid"/>
+    <div class="container" style=" padding:5px; width:90%;  margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>展示次序</th>
+                    <th>小组序号</th>
+                    <th>组长</th>@{
+                        if (ViewBag.model.status == 0)
+                        {<th> 展示材料</th>}
+                        else
+                        {<th> 报告材料</th>}
+                    }
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                <!--ViewBag 给我信息我这里用foreach填-->
+                @{int i = 1;
+                    foreach (var item in ViewBag.model.team_order)
+                    {
+                <tr>
+                    <td>@i</td>
+                    <td>@ViewBag.model.team_serial[i - 1]</td>
+                    <td>@ViewBag.model.leader_name[i - 1]</td>
+                    @{
+                        if (ViewBag.model.status == 0)//课前开放私人ppt
+                        {
+                            if (ViewBag.model.my_team_name == ViewBag.model.team_order[i - 1])
+                            {
+                                <td><a href="/File/Download_stu?ksid=@ViewBag.model.ksid&order=@i&path=@ViewBag.model.ppt_name[i - 1]"> @ViewBag.model.ppt_name[i - 1]</a></td> }
+                            else
+                            {
+                                <td> @ViewBag.model.ppt_name[i - 1]</td>
+                            }
+                        }
+                        else if (ViewBag.model.status == 1 || ViewBag.model.status == 3) //课中开放全部ppt
+                        {
+                            <td><a href="/File/Download_stu?ksid=@ViewBag.model.ksid&order=@i&path=@ViewBag.model.report_name[i - 1]"> @ViewBag.model.report_name[i - 1]</a></td>
+                        }
+                        else//课后开放私人report
+                        {
+                            if (ViewBag.model.my_team_name == ViewBag.model.team_order[i - 1])
+                            {
+                                <td><a href="/File/Download_stu?ksid=@ViewBag.model.ksid&order=@i&path=@ViewBag.model.report_name[i - 1]"> @ViewBag.model.report_name[i - 1]</a></td> }
+                            else
+                            {
+                                <td> @ViewBag.model.report_name[i - 1]</td>
+                            }
+                        }
+                    }
+                    @{
+                        if (ViewBag.model.status == 0)  //课前
+                        {
+                            if (item != "" && item != null)
+                            {//如果该次序被报名
+                                if (ViewBag.model.my_team_name == ViewBag.model.team_order[i - 1])
+                                {//如果是自己报名
+                                    <td>
+                                        <form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post" action="/File/Upload_stu">
+                                            <input type="hidden" id="ksid" name="ksid" value="@ViewBag.model.ksid" />
+                                            <input type="hidden" id="filetype" name="filetype" value="ppt" />
+                                            <input type="file" name="afile" id="afile" />
+                                            <button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
+                                                PPT提交
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <button type="button" onclick="CancelSignUp(@i)" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+                                            取消报名
+                                        </button>
+                                    </td>
+                                }
+                            }
+                            else
+                            {//如果没人报名
+                                <td>
+                                    <button type="button" onclick="SignUp(@i)" class="btn btn-primary btn-lg" style="margin:0 auto; background-color:#e1e1e1;color:#5ab4ac;border:hidden">
+                                        报名
+                                    </button>
+                                </td>
+                            }
+                        }
+                        else if (ViewBag.model.status == 1 || ViewBag.model.status == 3)//进行中 暂停
+                        {
+                            if (ViewBag.model.my_team_name == ViewBag.model.team_order[i - 1])
+                            {//如果是自己报名
+                                <td>
+                                    <form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post" action="/File/Upload_stu">
+                                        <input type="hidden" id="ksid" name="ksid" value="@ViewBag.model.ksid" />
+                                        <input type="hidden" id="filetype" name="filetype" value="ppt" />
+                                        <input type="file" name="afile" id="afile" />
+                                        <button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
+                                            重新上传
+                                        </button>
+                                    </form>
+                                </td>
+                            }
+                        }
+                        else if (ViewBag.model.status == 2)     //已结束
+                        {
+                            if (ViewBag.model.my_team_name == ViewBag.model.team_order[i - 1])
+                            {//如果是自己报名
+                                <td>
+                                    <form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post" action="/File/Upload_stu">
+                                        <input type="hidden" id="ksid" name="ksid" value="@ViewBag.model.ksid" />
+                                        <input type="hidden" id="filetype" name="filetype" value="report" />
+                                        <input type="file" name="afile" id="afile" />
+                                        <button type="submit" class="btn btn-primary" value="提交" style="width:100%;margin-top:20px;">
+                                            重新上传
+                                        </button>
+                                    </form>
+                                </td>
+                            }
+                        }
+                    }
+                </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 <hr/>
 <!--如已报名这里显示已报名 显示取消报名按钮 需要小组报名信息-->
 <script>
-	function SignUp() {
-		//传个消息给你 报名成功alert成功 失败就失败
+	function SignUp(order) {
+        //传个消息给你 报名成功alert成功 失败就失败
+        var ksid = document.getElementById("ksid").value;
+        //ksid和order都传ajax 下面cancel一样
 		alert("成功");
 		window.location.reload();
-	}
+    }
 
+    function CancelSignUp(order) {
+        //传个消息给你 报名成功alert成功 失败就失败
+        alert("成功");
+        window.location.reload();
+    }
 </script>

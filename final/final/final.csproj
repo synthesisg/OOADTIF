@@ -154,6 +154,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\StudentMobileController.cs" />
     <Compile Include="Controllers\StudentWebController.cs" />
@@ -241,6 +242,7 @@
     <Content Include="Views\TeacherWeb\InnerReport.cshtml" />
     <Content Include="Views\TeacherWeb\TeacherImport.cshtml" />
     <Content Include="Views\TeacherWeb\TeacherLogin.cshtml" />
+    <Content Include="Views\StudentMobile\BQueryEnrollSmn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

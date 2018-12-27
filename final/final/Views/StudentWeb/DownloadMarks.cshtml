@@ -42,9 +42,9 @@
 	</button>
 </div>
 <script type="text/javascript">
-	function dlMethod() {
-		//window.location.href = "文件的url地址";
-		//if成功 alert("success") 你写一下啊= =
+    function dlMethod() {
+        var id = document.getElementById("course_id").value;
+        window.location.href = "crtmarkxls/" + id;
 	}
 	function getMark(courseId) {
 		$.ajax({
@@ -55,7 +55,6 @@
 				alert(result);
             },
 			'error': function () {
-				alert(courseId);
 				alert("发送失败！");
 			}
 		})

@@ -16,10 +16,9 @@ namespace final.Controllers
 {
     public class StudentWebController : Controller
     {
-        // GET: StudentWeb
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("StudentLogin");
         }
         public ActionResult StudentLogin()
         {
@@ -51,7 +50,7 @@ namespace final.Controllers
             }
             return View();
         }
-        public ActionResult ChsLesson(int round_id = 0)
+        public ActionResult ChsLesson()
         {
             if (is_judge)
             {
@@ -71,30 +70,10 @@ namespace final.Controllers
             }
             ViewBag.colist = co;
 
-            //*
-            string n = Request["round"];
-            //数据库查询第n轮讨论课的信息并用ViewBag返回
-            ViewBag.obMsg = new SeminarInfo
-            {
-                round = 1,
-                count = 1,
-                title = "需求分析",
-                msg = "讨论课信息",
-                signUpTime = "报名起止时间",
-                reportTime = "报告截止时间"
-            };
-            //*/
-
-            if (round_id != 0)
-            {
-                var slist = from s in db.seminar where s.round_id == round_id select s;
-                ViewBag.seminarlist = slist.ToList();
-            }
+            
             return View();
         }
-
-
-
+        
         public ActionResult SpecificSeminar(int id)//seminar_id
         {
             if (is_judge) {
@@ -107,12 +86,10 @@ namespace final.Controllers
             int sid=Int32.Parse(Session["user_id"].ToString());
             int klass_id = (from kss in db.klass_student where kss.course_id == s.course_id && kss.student_id == sid select kss).ToList()[0].klass_id;
             var kslist = from ks in db.klass_seminar where ks.seminar_id == id && ks.klass_id == klass_id select ks; 
-            //讨论课信息
+            
             ViewBag.s = s;
-            //报名信息
-            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(kslist.ToList()[0].id);
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(kslist.ToList()[0].id, sid);
             ViewBag.model = model;
-            //这里要讨论课数据，根据传的round和n来
             return View();
         }
         public ActionResult DownloadMarks()
@@ -137,75 +114,43 @@ namespace final.Controllers
             ViewBag.colist = co;
 
             return View();
-            int course_id = 1;
-
-
-            int team_id = new qt().c2t(course_id, sid);
-
-            if (team_id > 0)
-            {
-                var rque = from r in db.round where r.course_id == course_id select r;
-                List<int> rid = new List<int>();
-                foreach (var r in rque) rid.Add(r.id);
-                var rscore = from rs in db.round_score where (rid.Contains(rs.round_id) && rs.team_id == team_id) select rs;
-                ViewBag.rscore = rscore.ToList();
-            }
-            else
-            {
-                //未组队
-            }
-            return View();
         }
-        public string crtmarkxls()
+
+
+        //Createxls
+        public ActionResult crtmarkxls(int id)  //course_id
         {
-            int course_id = 666;
-            int sid = Int32.Parse(Request["user_id"]);
+            int sid = Int32.Parse(Session["user_id"].ToString());
 
-            var klass_list = (from k in db.klass where k.course_id == course_id select k.id).ToList();
+            var klass_list = (from k in db.klass where k.course_id == id select k.id).ToList();
 
-            int team_id = new qt().c2t(course_id, sid);
+            int team_id = new qt().c2t(id, sid);
 
-            var rque = from r in db.round where r.course_id == course_id select r;
+            var rque = from r in db.round where r.course_id == id select r;
             List<int> rid = new List<int>();
             foreach (var r in rque) rid.Add(r.id);
             var rscore = from rs in db.round_score where (rid.Contains(rs.round_id) && rs.team_id == team_id) select rs;
-
             DataTable dt = new DataTable();
             dt.Columns.Add(new DataColumn("Round", typeof(string)));
-            dt.Columns.Add(new DataColumn("Presentaion", typeof(string)));
-            dt.Columns.Add(new DataColumn("Report", typeof(string)));
-            dt.Columns.Add(new DataColumn("Question", typeof(string)));
-            dt.Columns.Add(new DataColumn("Total", typeof(string)));
+            dt.Columns.Add(new DataColumn("Presentaion", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Report", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Question", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Total", typeof(decimal)));
 
             int cnt = 1;
             foreach (var rs in rscore)
             {
                 DataRow dr = dt.NewRow();
                 dr = dt.NewRow();
-                dr["Round"] = cnt++;
-                dr["Presentation"] = rs.presentation_score;
-                dr["Report"] = rs.report_score;
-                dr["Question"] = rs.question_score;
-                dr["Total"] = rs.total_score;
+                dr[0] = cnt++;
+                dr[1] = (rs.presentation_score==null?0: rs.presentation_score);
+                dr[2] = (rs.report_score == null ? 0 : rs.report_score);
+                dr[3] =  (rs.question_score == null ? 0 : rs.question_score);
+                dr[4] = (rs.total_score == null ? 0 : rs.total_score);
                 dt.Rows.Add(dr);
             }
-            return DataToExcel(dt);
+            return Redirect("/File/Download?path=" + DataToExcel(dt));
         }
-
-        public string RRoundInfo(string data)
-        {
-            int course_id = Int32.Parse(data);
-            var rlist = from r in db.round where r.course_id == course_id select r;
-            if (rlist.Count() > 0)
-            {
-                string back = "";
-                foreach (var r in rlist) back += r.round_serial.ToString() + '|' + r.id.ToString() + '|';
-                return back.Remove(back.Length - 1, 1);
-            }
-            else return "";
-        }
-
-
         public string DataToExcel(DataTable m_DataTable)
         {
             var dt = DateTime.Now;
@@ -249,26 +194,82 @@ namespace final.Controllers
             }
             objStreamWriter.Close();
             objFileStream.Close();
-            return FileName;
-        }
-        public string querySeminarData(int roundN) {
-            int round_id = roundN;
-            var slist = from s in db.seminar where s.round_id == round_id select s;
-            //[图片]ViewBag.rs = slist;
-            return Newtonsoft.Json.JsonConvert.SerializeObject(slist.ToList());
-        }
-        public string getmark(int course_id) {
-            return "123";
-            int sid = Int32.Parse(Request["user_id"]);
-            var klass_list = (from k in db.klass where k.course_id == course_id select k.id).ToList();
-            int team_id = new qt().c2t(course_id, sid);
-            var rque = from r in db.round where r.course_id == course_id select r;
-            List<int> rid = new List<int>();
-            foreach (var r in rque) rid.Add(r.id);
-            var rscore = from rs in db.round_score where (rid.Contains(rs.round_id) && rs.team_id == team_id) select rs;
-            return Newtonsoft.Json.JsonConvert.SerializeObject(rscore.ToList());
+            return string.Format("{0:yyyyMMddHHmmssffff}", dt) + ".xls";
         }
 
+        //AJAX:
+        public string RRoundInfo(string data)
+        {
+            int course_id = Int32.Parse(data);
+            var rlist = from r in db.round where r.course_id == course_id select r;
+            if (rlist.Count() > 0)
+            {
+                string back = "";
+                foreach (var r in rlist) back += r.round_serial.ToString() + '|' + r.id.ToString() + '|';
+                return back.Remove(back.Length - 1, 1);
+            }
+            else return "";
+        }
+        public string querySeminarData(int roundN)
+        {
+            int round_id = roundN;
+            var slist = from s in db.seminar where s.round_id == round_id select s;
+            return Newtonsoft.Json.JsonConvert.SerializeObject(slist.ToList());
+        }
+        public string getmark(int course_id)
+        {
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            scoreboard_course model = new scoreboard_course(course_id, sid);
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(model);
+        }
+        public bool signup(string data)
+        {
+            int ksid = 1;
+            byte order = 1;
+
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            int team_id = new qt().k2t(db.klass_seminar.Find(ksid).klass_id, sid);
+            if (team_id == 0) return false;
+
+            var alist_order = from a in db.attendance where a.klass_seminar_id == ksid && a.team_order == order select a;
+            if (alist_order.Count() > 0) return false;//这坑有人了
+            var alistteam = from a in db.attendance where a.klass_seminar_id == ksid && a.team_id == team_id select a;
+            if (alistteam.Count() > 0)//改变报名次序
+            {
+                attendance at = alistteam.ToList()[0];
+                at.team_order = order;
+            }
+            else
+            {
+                attendance NewA = new attendance
+                {
+                    klass_seminar_id = ksid,
+                    team_id = team_id,
+                    team_order = order,
+                    is_present = 0
+                };
+                db.attendance.Add(NewA);
+            }
+            return true;
+        }
+        public bool cancelsignup(string data)
+        {
+            int ksid = 1;
+            byte order = 1;
+
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            int team_id = new qt().k2t(db.klass_seminar.Find(ksid).klass_id, sid);
+            if (team_id == 0) return false;
+            
+            var alistteam = from a in db.attendance where a.klass_seminar_id == ksid && a.team_id == team_id select a;
+            if (alistteam.Count() == 0)//未报名
+                return false;
+            attendance at = alistteam.ToList()[0];
+            db.attendance.Remove(at);
+            db.SaveChanges();
+            return false;
+        }
         bool is_judge = false;
         int test_id = 166;
         MSSQLContext db = new MSSQLContext();

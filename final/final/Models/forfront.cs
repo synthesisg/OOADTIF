@@ -17,6 +17,11 @@ namespace final.Models
     public class qt
     {
         public qt() { }
+
+        public int ks2t(int klass_seminar_id,int student_id)
+        {
+            return k2t(db.klass_seminar.Find(klass_seminar_id).klass_id, student_id);
+        }
         public int k2t(int klass_id,int student_id)
         {
             return c2t(db.klass.Find(klass_id).course_id, student_id);
@@ -30,6 +35,19 @@ namespace final.Models
             return tl.ToList()[0];                                                                                     //本班队伍id
         }
 
+
+        //klass_seminar_id to seminar_serial
+        public byte ks2se(int klass_seminar_id)  
+        {
+            return db.seminar.Find(db.klass_seminar.Find(klass_seminar_id).seminar_id).seminar_serial;
+        }
+
+        //team_id to klass_serial+team_serial
+        public string t2ts(int team_id)
+        {
+            team t = db.team.Find(team_id);
+            return t.klass_serial.ToString() + '-' + t.team_serial.ToString();
+        }
         MSSQLContext db = new MSSQLContext();
     }
     public class personclass        //For Seminar
@@ -61,30 +79,100 @@ namespace final.Models
     public class scoreboard             //For Round Score
     {
         public round_score rs;
-        public List<seminar_score> ss = new List<seminar_score>();
+        public round r;
         public List<string> name = new List<string>();
+
+
+        public List<round_score> list = new List<round_score>();
+        public List<seminar_score> ss = new List<seminar_score>();
+        public List<string> team_serial = new List<string>();
+        public List<byte> seminar_serial = new List<byte>();
+
+        public scoreboard() { }//远古版本
+
+        public scoreboard(int round_id) //Teacher 得到一轮score
+        {
+            r = db.round.Find(round_id);
+            list = (from rs in db.round_score where r.id == rs.round_id select rs).ToList();                        //这轮的总成绩
+            var slist = (from s in db.seminar where s.round_id == r.id select s.id).ToList();                       //这轮的seminar_id
+            var kslist = (from ks in db.klass_seminar where slist.Contains(ks.seminar_id) select ks.id).ToList();   //这轮的ksid
+            ss = (from ss in db.seminar_score where kslist.Contains(ss.klass_seminar_id) select ss).ToList();       //这轮的seminar_score
+            foreach(var item in ss)
+            {
+                seminar_serial.Add(new qt().ks2se(item.klass_seminar_id));
+                team_serial.Add(new qt().t2ts(item.team_id));
+            }
+        }
+
+        MSSQLContext db = new MSSQLContext();
     }
 
+    //某course下所有seminar成绩
+    public class scoreboard_course            
+    {
+        public List<seminar_score> ss = new List<seminar_score>();
+        public List<int> serial=new List<int>();
+        public bool is_valid=true;
+        public scoreboard_course(int course_id, int student_id)//For Student
+        {
+            int team_id = new qt().c2t(course_id, student_id);
+            if(team_id==0)
+            {
+                is_valid = false;
+                return;
+            }
+            int klass_id = db.team.Find(team_id).klass_id;
+
+            var kslist = (from ks in db.klass_seminar where ks.klass_id == klass_id select ks.id).ToList();
+            ss = (from ss in db.seminar_score where kslist.Contains(ss.klass_seminar_id) && ss.team_id == team_id select ss).ToList();
+            for (int i = 0; i < ss.Count(); i++) serial.Add(db.seminar.Find(db.klass_seminar.Find(ss[i].klass_seminar_id).seminar_id).seminar_serial);
+        }
+
+        MSSQLContext db = new MSSQLContext();
+    }
     //返回一个klass_seminar下已报名的队伍名
     public class klass_seminar_enroll_state_model
     {
         public int ksid;
-        public string[] team_order;
+        public int status;
+        public string[] team_order; //team_name
+        public string[] leader_name;
+        public string[] team_serial;//klass+serial
+        public string[] ppt_name;
+        public string[] ppt_url;
         public string seminar_name;
-        public IndexOutOfRangeException status;//================================
-        public klass_seminar_enroll_state_model(int klass_seminar_id)
+        public string my_team_name="";
+        public klass_seminar_enroll_state_model(int klass_seminar_id, int student_id = 0)
         {
             ksid = klass_seminar_id;
             klass_seminar ks = db.klass_seminar.Find(ksid);
             seminar se = db.seminar.Find(ks.seminar_id);
             seminar_name = se.seminar_name;
             var alist = from a in db.attendance where a.klass_seminar_id == ks.id select a;
-
+            status = ks.status;
             team_order = new string[se.max_team];
+            leader_name = new string[se.max_team];
+            team_serial = new string[se.max_team];
+            ppt_name = new string[se.max_team];
+            ppt_url = new string[se.max_team];
+
             for (int i = 0; i < team_order.Length; i++) team_order[i] = "";
             foreach (var a in alist)
             {
-                team_order[a.team_order - 1] = db.team.Find(a.team_id).team_name;
+                team t = db.team.Find(a.team_id);
+                team_order[a.team_order - 1] = t.team_name;
+                leader_name[a.team_order - 1] = db.student.Find(t.leader_id).student_name;
+                team_serial[a.team_order - 1] = t.klass_serial.ToString() + '-' + t.team_serial;
+                ppt_name[a.team_order - 1] = a.ppt_name;
+                ppt_url[a.team_order - 1] = a.ppt_url;
+            }
+
+            if (student_id > 0) 
+            {
+                int kid = ks.klass_id;
+                int team_id = new qt().k2t(kid, student_id);
+                if (team_id > 0) my_team_name = db.team.Find(team_id).team_name;
+                else my_team_name = "No Team.";
             }
         }
         
@@ -95,7 +183,9 @@ namespace final.Models
     {
         //base
         public int sid, ksid;
-
+        public seminar seminar;
+        public klass_seminar klass_seminar;
+        public attendance attendance;
         //round
         public int round;
 
@@ -103,58 +193,89 @@ namespace final.Models
         public string seminar_name;
         public string introduction;
         public string course_name;
+        public byte serial;
+        public bool could_enroll = true;
+        public bool could_report = false;
 
         //klass_seminar
         public string status;
+        public short seminar_status;
 
         //attendance
         public string enroll;
-        public string ppt="";
+        public short enroll_status;
 
         public BEnrollSmn_model(int klass_seminar_id, int student_id)
         {
             sid = student_id;
             ksid = klass_seminar_id;
-            klass_seminar ks = db.klass_seminar.Find(ksid);
-            seminar se = db.seminar.Find(ks.seminar_id);
+            klass_seminar  = db.klass_seminar.Find(ksid);
+            seminar = db.seminar.Find(klass_seminar.seminar_id);
 
-            round = db.round.Find(se.round_id).round_serial;
-            seminar_name = se.seminar_name;
-            introduction = se.introduction;
-            course_name = db.course.Find(se.course_id).course_name;
-            switch(ks.status)
+            DateTime now = DateTime.Now;
+            if ((seminar.enroll_start_time <= now && now <= seminar.enroll_end_time) == false) 
+                could_enroll = false;
+
+            round = db.round.Find(seminar.round_id).round_serial;
+            seminar_name = seminar.seminar_name;
+            introduction = seminar.introduction;
+            serial = seminar.seminar_serial;
+            course_name = db.course.Find(seminar.course_id).course_name;
+            seminar_status = klass_seminar.status;
+            switch (klass_seminar.status)
             {
                 case 0:
                     status = "未开始";
                     break;
                 case 1:
                     status = "正在进行";
+                    could_enroll = false;
                     break;
                 case 2:
                     status = "已结束";
+                    could_enroll = false;
                     break;
                 case 3:
                     status = "暂停";
+                    could_enroll = false;
                     break;
                 default:
                     status = "";
                     break;
             };
 
-            int team_id = new qt().c2t(se.course_id, student_id);
+            int team_id = new qt().c2t(seminar.course_id, student_id);
             if (team_id==0)
             {
                 enroll = "未组队";
+                enroll_status = 0;
+                could_enroll = false;
                 return;
             }
-            var alist = from a in db.attendance where a.team_id == team_id && a.klass_seminar_id == klass_seminar_id select a;
+            var alist = (from a in db.attendance where a.team_id == team_id && a.klass_seminar_id == klass_seminar_id select a).ToList();
             if (alist.Count() == 0)
             {
                 enroll = "未报名";
+                enroll_status = 0;
+
+                //验证本轮报名次数上限
+                int kid = klass_seminar.klass_id;
+                int rid = seminar.round_id;
+                int maxi = 0;
+                var krlist = (from kr in db.klass_round where kr.klass_id == kid && kr.round_id == rid select kr).ToList();
+                if (krlist.Count() > 0) maxi = (int)krlist[0].enroll_number;
+                    else maxi = 1;
+                var slist = (from s in db.seminar where s.round_id == rid select s.id).ToList();
+                int klass_id = db.team.Find(team_id).klass_id;
+                var kslist = (from ks in db.klass_seminar where slist.Contains(ks.seminar_id) && ks.klass_id==klass_id select ks.id).ToList();
+                int acount = (from a in db.attendance where kslist.Contains(a.klass_seminar_id) select a).Count();
+                if (acount >= maxi) could_enroll = false;
                 return;
             }
-            enroll = "第" + alist.ToList()[0].team_order.ToString() + "组";
-            ppt = alist.ToList()[0].ppt_name;
+            enroll_status = 1;
+            attendance = alist[0];
+            enroll = "第" + alist[0].team_order.ToString() + "组";
+            if (now < klass_seminar.report_ddl) could_report = true;
         }
 
         MSSQLContext db = new MSSQLContext();
@@ -245,10 +366,16 @@ namespace final.Models
         public int listLength;
         public class line
         {
+            public int id;
+
             public string team_name;
             public string leader_name;
-            public bool status;
-            public string url;
+            public bool report_status;
+            public string report_url;
+            public string report_name="";
+            public bool ppt_status;
+            public string ppt_url;
+            public string ppt_name="";
         }
         public seminar_report(int seminar_id)
         {
@@ -263,8 +390,13 @@ namespace final.Models
                 {
                     team_name = t.team_name,
                     leader_name = db.student.Find(t.leader_id).student_name,
-                    status = a.report_url != null,
-                    url = a.report_url
+                    report_status = (a.report_url != null),
+                    report_url = a.report_url,
+                    report_name = a.report_name,
+                    ppt_status = (a.ppt_url != null),
+                    ppt_url = a.ppt_url,
+                    ppt_name = a.ppt_name,
+                    id = a.id
                 };
                 list.Add(tmp);
             }

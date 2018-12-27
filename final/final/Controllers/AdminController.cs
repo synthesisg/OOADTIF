@@ -46,20 +46,6 @@ namespace final.Controllers
             if (Session["is_admin"] == null || (bool)Session["is_admin"] == false)
                 return Logout();
 
-
-            if (Request.HttpMethod == "POST")
-            {
-                string sid = Request["newpass"];
-                int id = Convert.ToInt32(sid);
-                teacher ui = db.teacher.Find(id);
-                string newpwd = Request["inputpwd_" + Request["newpass"]];
-                if (newpwd != null && newpwd != "")
-                {
-                    ui.password = newpwd;
-                    db.SaveChanges();
-                    Response.Write("<script type='text/javascript'>alert('Modify Success!');</script>");
-                }
-            }
             List<teacher> teacherlist = new List<teacher>();
             if (Request["Search"] != null)
             {
@@ -82,6 +68,17 @@ namespace final.Controllers
             if (ui != null)
             {
                 db.teacher.Remove(ui);
+                db.SaveChanges();
+                Response.Write("<script type='text/javascript'>alert('Delete Success!');</script>");
+            }
+            return RedirectToAction("TeacherInfo");
+        }
+        public ActionResult TeacherReset(int id)
+        {
+            teacher ui = db.teacher.Find(id);
+            if (ui != null)
+            {
+                ui.password = "123456";
                 db.SaveChanges();
                 Response.Write("<script type='text/javascript'>alert('Delete Success!');</script>");
             }
@@ -176,6 +173,17 @@ namespace final.Controllers
             }
             ViewBag.uimod = ui;
             return View();
+        }
+        public ActionResult StudentReset(int id)
+        {
+            student ui = db.student.Find(id);
+            if (ui != null)
+            {
+                ui.password = "123456";
+                db.SaveChanges();
+                Response.Write("<script type='text/javascript'>alert('Delete Success!');</script>");
+            }
+            return RedirectToAction("TeacherInfo");
         }
         public ActionResult StudentCreate()
         {

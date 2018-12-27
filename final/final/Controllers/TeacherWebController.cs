@@ -136,11 +136,6 @@ namespace final.Controllers
             ViewBag.colist = rco;
 
             return View();
-
-            //确定round后
-            int round_id = 1;
-            var slist = from s in db.seminar where s.round_id == round_id select s;
-            ViewBag.s = slist.ToList();
         }
         public string RRoundInfo(string data)
         {
@@ -157,17 +152,6 @@ namespace final.Controllers
 
         public ActionResult InnerReport(int id)//seminar_id
         {
-            string n = Request["round"];
-            //数据库查询第n次讨论课的信息并用ViewBag返回
-            ViewBag.obMsg = new SeminarInfo
-            {
-                round = 1,
-                title = "需求分析",
-                msg = "讨论课信息",
-                signUpTime = "报名起止时间",
-                reportTime = "报告截止时间"
-            };
-
             seminar_report sr = new seminar_report(id);
             ViewBag.sr = sr;
             return View();
@@ -195,10 +179,9 @@ namespace final.Controllers
             return View();
             
         }
-        public string queryMarkData(int round_id) {
-            var rslist = from rs in db.round_score where rs.round_id == round_id select rs;
-            ViewBag.rslistCount = rslist.Count();
-            return Newtonsoft.Json.JsonConvert.SerializeObject(rslist.ToList());
+        public string queryMarkData(int round_id)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(new scoreboard(round_id));
         }
 
 
@@ -266,6 +249,33 @@ namespace final.Controllers
             db.SaveChanges();
         }
 
+        public ActionResult crtmarkxls(int id)  //round_id
+        {
+            var sb=new scoreboard(id);
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("小组编号", typeof(string)));
+            dt.Columns.Add(new DataColumn("参与讨论课", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Presentation", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Report", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Question", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Total", typeof(decimal)));
+
+            int cnt = sb.list.Count();
+            for (int i = 0; i < cnt; i++) 
+            {
+                DataRow dr = dt.NewRow();
+                dr = dt.NewRow();
+                dr[0] = sb.team_serial[i];
+                dr[1] = sb.seminar_serial[i];
+                dr[2] = (sb.ss[i].presentation_score == null ? 0 : sb.ss[i].presentation_score);
+                dr[3] = (sb.ss[i].report_score == null ? 0 : sb.ss[i].report_score);
+                dr[4] = (sb.ss[i].question_score == null ? 0 : sb.ss[i].question_score);
+                dr[5] = (sb.ss[i].total_score == null ? 0 : sb.ss[i].total_score);
+                dt.Rows.Add(dr);
+            }
+            return Redirect("/File/Download?path=" + DataToExcel(dt));
+        }
         public string DataToExcel(DataTable m_DataTable)
         {
             var dt = DateTime.Now;
@@ -309,15 +319,12 @@ namespace final.Controllers
             }
             objStreamWriter.Close();
             objFileStream.Close();
-            return FileName;
+            return string.Format("{0:yyyyMMddHHmmssffff}", dt) + ".xls";
         }
-        public int queryCourseRound(int courseId) {
-            return 3;
-        }
-        public string querySeminarData(int roundN) {
+        public string querySeminarData(int roundN)
+        {
             int round_id = roundN;
             var slist = from s in db.seminar where s.round_id == round_id select s;
-            //[图片]ViewBag.rs = slist;
             return Newtonsoft.Json.JsonConvert.SerializeObject(slist.ToList());
         }
 

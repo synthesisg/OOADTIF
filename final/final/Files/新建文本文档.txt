@@ -1,0 +1,4 @@
+Files/cache
+名单类存放 包括导入名单与成绩生成
+Files/ksid
+文档类存放

@@ -122,22 +122,21 @@ namespace final.Controllers
             ViewBag.TitleText = db.course.Find(k.course_id).course_name;
             return View();
         }
-        public ActionResult BUEnrollSmn(int id)     //klass_seminar_id 报名界面
+        public ActionResult BUEnrollSmn(int id)     //klass_seminar_id 报名
         {
-            if (is_judge)
-            {
-                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("StudentLogin");
-            }
-            else Session["user_id"] = test_id;
-
-            int student_id = Int32.Parse(Session["user_id"].ToString());
             klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
             ViewBag.model = model;
             ViewBag.TitleText = model.seminar_name;
             return View();
         }
-        public ActionResult BChangeEnrollSmn(int id)//klass_seminar_id
+        public ActionResult BChangeEnrollSmn(int id)//klass_seminar_id 修改
+        {
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
+            ViewBag.model = model;
+            ViewBag.TitleText = model.seminar_name;
+            return View();
+        }
+        public ActionResult BQueryEnrollSmn(int id)//klass_seminar_id 查看
         {
             klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
             ViewBag.model = model;
@@ -153,8 +152,17 @@ namespace final.Controllers
             }
             else Session["user_id"] = test_id;
 
+            int sid = Int32.Parse(Session["user_id"].ToString());
             BEnrollSmn_model model = new BEnrollSmn_model(id, Int32.Parse(Session["user_id"].ToString()));
             ViewBag.model = model;
+            int team_id = new qt().ks2t(id, sid);
+            if(team_id==0)
+            {
+                ViewBag.enroll = false;
+                ViewBag.ddl = true;
+                return View();
+            }
+
             return View();
         }
         public ActionResult NowSmnPPT()
@@ -189,20 +197,17 @@ namespace final.Controllers
         {
             return "a";
         }
-        public string Enroll(string str)
+        public string Enroll(byte order,int ksid)
         {
-            byte order = (byte)Int32.Parse(str);
-            if (Session["klass_seminar_id"] == null || Session["klass_seminar_id"].ToString() == "") return "fail";
-            if (Session["is_student"] == null || (bool)Session["is_student"] == false) return "fail";
+            if (Session["is_student"] == null || (bool)Session["is_student"] == false) return "Identity verification error.";
 
             int sid = Int32.Parse(Session["user_id"].ToString());
-            int ksid = Int32.Parse(Session["klass_seminar_id"].ToString());
             var alist = from a in db.attendance where a.klass_seminar_id == ksid && a.team_order == order select a;
-            if (alist.Count() > 0) return "fail";
+            if (alist.Count() > 0) return "该位次已有人报名";
 
             int klass_id = db.klass_seminar.Find(ksid).klass_id;
             int team_id = new qt().k2t(klass_id,sid);
-            if (team_id == 0) return "fail";
+            if (team_id == 0) return "未加入队伍";
 
             team t = db.team.Find(team_id);
             attendance tmp = new attendance
@@ -212,6 +217,19 @@ namespace final.Controllers
                 team_order = order
             };
             db.attendance.Add(tmp);
+            db.SaveChanges();
+            return "success";
+        }
+        public string CancelEnroll(int ksid)
+        {
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            int team_id = new qt().k2t(db.klass_seminar.Find(ksid).klass_id, sid);
+            if (team_id == 0) return "no team";
+
+            var alistteam = from a in db.attendance where a.klass_seminar_id == ksid && a.team_id == team_id select a;
+            if (alistteam.Count() == 0) return "team no enroll";
+            attendance at = alistteam.ToList()[0];
+            db.attendance.Remove(at);
             db.SaveChanges();
             return "success";
         }

@@ -32,7 +32,9 @@
     </div>
     <div class="container" style="width:90%;margin-top:40px;text-align:center;">
         <button type="submit" class="btn btn-primary btn-lg" onclick="mod()" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%">修改</button>
-        <button type="button" class="btn btn-primary btn-lg" style="background-color:#e1e1e1;border:none;width:20%">取消</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href = '/Admin/TeacherInfo'" style="background-color:#e1e1e1;border:none;width:20%">取消</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href = '/Admin/TeacherDel/@ViewBag.uimod.id'" style="background-color:#e1e1e1;border:none;width:20%">删除</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href = '/Admin/TeacherReset/@ViewBag.uimod.id'" style="background-color:#e1e1e1;border:none;width:20%">重置密码</button>
     </div>
 </form>
 <!--前端先弹 / 后端先改 -->

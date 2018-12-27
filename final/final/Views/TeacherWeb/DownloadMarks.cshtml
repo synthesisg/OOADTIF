@@ -75,9 +75,10 @@
 	</button>
 </div>
 <script type="text/javascript">
-	function dlMethod() {
-		//window.location.href = "文件的url地址";
-	}
+    function dlMethod() {
+        var id = document.getElementById("round_id").value;
+        window.location.href = "crtmarkxls/" + id;
+    }
 
 	function queryMarkData(round_id) {
 		$.ajax({
@@ -85,9 +86,7 @@
 			'type': 'post',
 			'data': { round_id: round_id },
 			success: function (jsonstr) {
-				alert(jsonstr);
 				jobj = eval("(" + jsonstr + ")");
-				alert(jobj[0].total_score);
 
 				var tbody = document.getElementById("tbody");
 				for (var obj in jobj) {
