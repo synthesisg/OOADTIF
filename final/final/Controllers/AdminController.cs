@@ -25,13 +25,15 @@ namespace final.Controllers
                     string pwd = Request["adminpwd"];
                     Session["user"] = user;
                     Session["pswd"] = pwd;
+                    ViewBag.mes = "";
                     var alist = from a in db.admin where (a.account == user && a.password == pwd) select a.id;
-                    if (alist.Count() > 0)
-                    {
+                    if (alist.Count() > 0) {
                         Session["is_admin"] = true;
                         Response.Redirect("TeacherInfo");
                     }
-                    else Session["is_admin"] = false;
+                    else { Session["is_admin"] = false;
+                        ViewBag.mes = "账号或密码错误";
+                    }
                     break;
             }
             return View();

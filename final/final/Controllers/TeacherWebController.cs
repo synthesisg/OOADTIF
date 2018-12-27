@@ -30,23 +30,24 @@ namespace final.Controllers
                 case "POST":        //login
                     string user = Request["userName"];
                     string pwd = Request["userPassword"];
+                    ViewBag.mes = "";
                     var uilist = from ui in db.teacher where (ui.account == user && ui.password == pwd) select ui;
                     if (uilist.Count() > 0) //success
                     {
                         List<teacher> ui = new List<teacher>();
                         foreach (var u in uilist) ui.Add(u);
-                        if (ui[0].is_active == 0)
-                        {
+                        if (ui[0].is_active == 0) {
                             Response.Write("<script type='text/javascript'>alert('Not Active!');</script>");
                         }
-                        else
-                        {
+                        else {
                             Session["user_id"] = ui[0].id;
                             Session["is_teacher"] = true;
                             Response.Redirect("TeacherImport");
                         }
                     }
-                    else Session["is_teacher"] = false;
+                    else { Session["is_teacher"] = false;
+                        ViewBag.mes = "账号或密码错误";
+                    }
                     break;
             }
             return View();

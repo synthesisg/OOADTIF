@@ -26,24 +26,25 @@ namespace final.Controllers
                 case "POST":        //login
                     string user = Request["userName"];
                     string pwd = Request["userPassword"];
+                    ViewBag.mes = "";
                     var uilist = from ui in db.student where (ui.account == user && ui.password == pwd) select ui;
                     if (uilist.Count() > 0) //success
                     {
                         List<student> ui = new List<student>();
                         foreach (var u in uilist) ui.Add(u);
-                        if (ui[0].is_active == 0)
-                        {
+                        if (ui[0].is_active == 0) {
                             Session["tmp_id"] = ui[0].id;
                             return RedirectToAction("Activate");
                         }
-                        else
-                        {
+                        else {
                             Session["user_id"] = ui[0].id;
                             Session["is_student"] = true;
                             return RedirectToAction("Seminar");
                         }
                     }
-                    else Session["is_student"] = false;
+                    else { Session["is_student"] = false;
+                        ViewBag.mes = "账号或密码错误";
+                    }
                     break;
             }
             return View();

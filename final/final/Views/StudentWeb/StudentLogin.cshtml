@@ -24,7 +24,7 @@
 				</div>
 				<br>
 				<div class="input-group input-group input-group-lg" style="margin:0 auto">
-					<input type="submit" class="btn btn-primary btn-lg" value="登陆" style="background-color:#5ab4ac;width:300px" onclick=" validateLogin()"/>
+					<input type="submit" class="btn btn-primary btn-lg" value="登陆" style="background-color:#5ab4ac;width:300px" onclick=" validateLogin()" />
 				</div>
 			</form>
 		</div>
@@ -43,6 +43,12 @@
 		if (document.getElementById("userPassword").value == "") {
 			alert("请输入用户名");
 			return false;
+		}
+	}
+	window.onload = function () {
+		var mes = '@ViewBag.mes';
+		if (mes !="" ) {
+			alert(mes);
 		}
 	}
 </script>
