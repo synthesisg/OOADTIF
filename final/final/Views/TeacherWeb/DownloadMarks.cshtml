@@ -87,23 +87,40 @@
 			'data': { round_id: round_id },
 			success: function (jsonstr) {
 				jobj = eval("(" + jsonstr + ")");
-
+				alert(jsonstr);
 				var tbody = document.getElementById("tbody");
-				for (var obj in jobj) {
-					var row = tbody.insertRow(0);
+				var i = 0;
+				for (var obj in jobj.list) {
+					var row = tbody.insertRow(i);
 					cell = row.insertCell(0);
-					cell.innerHTML = jobj[obj].total_score;
+					cell.innerHTML = jobj.list[obj].total_score;
 					cell = row.insertCell(0);
-					cell.innerHTML = jobj[obj].report_score;
+					cell.innerHTML = jobj.list[obj].report_score;
 					cell = row.insertCell(0);
-					cell.innerHTML = jobj[obj].question_score;
+					cell.innerHTML = jobj.list[obj].question_score;
 					cell = row.insertCell(0);
-					cell.innerHTML = jobj[obj].presentation_score; 
+					cell.innerHTML = jobj.list[obj].presentation_score;
 					cell = row.insertCell(0);
 					cell.innerHTML = " ";
 					cell = row.insertCell(0);
-					cell.innerHTML = jobj[obj].team_id;
+					cell.innerHTML = jobj.list[obj].team_id;
+					i++;
 				}
+				//for (var obj in jobj) {
+				//	var row = tbody.insertRow(0);
+				//	cell = row.insertCell(0);
+				//	cell.innerHTML = jobj[obj].total_score;
+				//	cell = row.insertCell(0);
+				//	cell.innerHTML = jobj[obj].report_score;
+				//	cell = row.insertCell(0);
+				//	cell.innerHTML = jobj[obj].question_score;
+				//	cell = row.insertCell(0);
+				//	cell.innerHTML = jobj[obj].presentation_score; 
+				//	cell = row.insertCell(0);
+				//	cell.innerHTML = " ";
+				//	cell = row.insertCell(0);
+				//	cell.innerHTML = jobj[obj].team_id;
+				//}
 			},
 			error: function () {
 				alert(" link error");
