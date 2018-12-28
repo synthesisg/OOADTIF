@@ -118,20 +118,31 @@ namespace final.Controllers
             ViewBag.co = colist;
             return View();
         }
-
-        public void createclass()
-        {
-            int course_id = 1;
-            klass NewKlass = new klass
-            {
-                course_id = course_id,
-                grade = long.Parse(Request["grade"].ToString()),
-                klass_serial = byte.Parse(Request["klass_serial"].ToString()),
-                klass_location = Request["klass_location"].ToString(),
-                klass_time = Request["klass_time"].ToString()
-            };
-            db.klass.Add(NewKlass);
+        public ActionResult ChsSpecSeminar() {
+            return View();
         }
+        public ActionResult SetSeminarSerial() {
+            return View();
+        }
+        public ActionResult CreateSeminar() {
+            return View();
+        }
+        public ActionResult CreateClass() {
+            return View();
+        }
+        //public void createclass()
+        //{
+        //    int course_id = 1;
+        //    klass NewKlass = new klass
+        //    {
+        //        course_id = course_id,
+        //        grade = long.Parse(Request["grade"].ToString()),
+        //        klass_serial = byte.Parse(Request["klass_serial"].ToString()),
+        //        klass_location = Request["klass_location"].ToString(),
+        //        klass_time = Request["klass_time"].ToString()
+        //    };
+        //    db.klass.Add(NewKlass);
+        //}
         public void createcourse()
         {
             int teacher_id = 1;

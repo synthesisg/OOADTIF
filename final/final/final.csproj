@@ -243,10 +243,17 @@
     <Content Include="Views\TeacherWeb\TeacherImport.cshtml" />
     <Content Include="Views\TeacherWeb\TeacherLogin.cshtml" />
     <Content Include="Views\StudentMobile\BQueryEnrollSmn.cshtml" />
+    <Content Include="Views\Shared\TMobileLayout\_TMobileLayout4.cshtml" />
+    <Content Include="Views\TeacherMobile\Seminar.cshtml" />
+    <Content Include="Views\Shared\TMobileLayout\_TMobileLayout3.cshtml" />
+    <Content Include="Views\TeacherMobile\ChsSpecSeminar.cshtml" />
+    <Content Include="Views\TeacherMobile\SetSeminarSerial.cshtml" />
+    <Content Include="Views\TeacherMobile\CreateClass.cshtml" />
+    <Content Include="Views\TeacherMobile\CreateSeminar.cshtml" />
+    <Content Include="Views\StudentMobile\CreateTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\TeacherMobile\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

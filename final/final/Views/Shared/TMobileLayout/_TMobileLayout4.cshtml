@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<style type="text/css">
+		body {
+			background-color: #f0f0f0;
+			margin: 0;
+			padding: 0;
+		}
+		div {
+			margin:0;
+			padding:0;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" style="height:50px ;width:100%; margin-top:5px; background-color:#1fa5e5;border-radius:2px;">
+		<button id="back" style="background-color:#1fa5e5;border:none;display:inline" type="button" class="btn btn-default" onclick="back()">
+			<span class="glyphicon glyphicon-chevron-left"></span>
+		</button>
+
+		<p style="text-align:center;display:inline;line-height:50px;font-size:16px">@ViewBag.TitleText</p>
+
+		<div class="dropdown" style="float:right;line-height:50px">
+			<button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+				菜单
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				<li>
+					<a href="Seminar">讨论课</a>
+				</li>
+				<li>
+					<a href="#">个人</a>
+				</li>
+				<li>
+					<a href="#">代办</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div style="margin-top:5px">
+		@RenderBody()
+	</div>
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+</body>
+</html>
+<script>
+	function back() {
+		window.history.back();
+	}
+</script>

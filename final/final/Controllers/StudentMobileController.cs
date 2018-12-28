@@ -319,6 +319,9 @@ namespace final.Controllers
                 ViewBag.ct = ct.list;
             }
         }
+        public ActionResult CreateTeam() {
+            return View();
+        }
         public void studentlist(int id)        //course_id
         {
             var klist = (from k in db.klass where k.course_id == id select k.id).ToList();
@@ -326,40 +329,40 @@ namespace final.Controllers
             var slist= (from ts in db.team_student where tlist.Contains(ts.team_id) select ts.student_id).ToList();
             var sidlist = from ks in db.klass_student where ks.course_id == id && (slist.Contains(ks.student_id) == false) select ks.student_id;
         }
-        public void createteam()
-        {
-            int klass_id = 1;
-            string team_name = "";
+        //public void createteam()
+        //{
+        //    int klass_id = 1;
+        //    string team_name = "";
 
-            int course_id = db.klass.Find(klass_id).course_id;
-            var tlist = from t in db.team where t.course_id == course_id select t;
-            int sid = Int32.Parse(Request["user_id"]);
-            team NewTeam = new team
-            {
-                klass_id = klass_id,
-                course_id = course_id,
-                leader_id = sid,
-                team_name = team_name,
-                team_serial = (byte)(tlist.Count() + 1),
-                status = 0
-            };
-            db.team.Add(NewTeam);
-            db.SaveChanges();
+        //    int course_id = db.klass.Find(klass_id).course_id;
+        //    var tlist = from t in db.team where t.course_id == course_id select t;
+        //    int sid = Int32.Parse(Request["user_id"]);
+        //    team NewTeam = new team
+        //    {
+        //        klass_id = klass_id,
+        //        course_id = course_id,
+        //        leader_id = sid,
+        //        team_name = team_name,
+        //        team_serial = (byte)(tlist.Count() + 1),
+        //        status = 0
+        //    };
+        //    db.team.Add(NewTeam);
+        //    db.SaveChanges();
 
-            klass_team Newks = new klass_team
-            {
-                klass_id = klass_id,
-                team_id = NewTeam.id
-            };
-            db.klass_team.Add(Newks);
-            team_student Newts = new team_student
-            {
-                team_id = NewTeam.id,
-                student_id = sid
-            };
-            db.team_student.Add(Newts);
-            db.SaveChanges();
-        }
+        //    klass_team Newks = new klass_team
+        //    {
+        //        klass_id = klass_id,
+        //        team_id = NewTeam.id
+        //    };
+        //    db.klass_team.Add(Newks);
+        //    team_student Newts = new team_student
+        //    {
+        //        team_id = NewTeam.id,
+        //        student_id = sid
+        //    };
+        //    db.team_student.Add(Newts);
+        //    db.SaveChanges();
+        //}
         public void remove()
         {
             int klass_id = 1;
