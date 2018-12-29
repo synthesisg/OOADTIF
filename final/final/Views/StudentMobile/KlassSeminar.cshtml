@@ -48,7 +48,9 @@
         <div class="container" style="background-color:#f0f0f0">
             <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">课程情况:</p>
             <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.status</p>
-            <a href="/StudentMobile/BUEnrollSmn/@ViewBag.model.ksid">报名情况</a>
+            <a href="/StudentMobile/BQueryEnrollSmn/@ViewBag.model.ksid">报名情况</a>
+            @if (ViewBag.model.seminar_status != 0)
+            {<a href="/StudentMobile/NowSmnPPT/@ViewBag.model.ksid">查看PPT</a>}
         </div>
     </div>
     @{
@@ -130,21 +132,15 @@
                 </div>
             }
         }
-        else if (ViewBag.seminar_status == 1)//讨论课正在进行或处于暂停（没有暂停了 需求已改）
+        else if (ViewBag.model.seminar_status == 1)//讨论课正在进行或处于暂停（没有暂停了 需求已改）
         {
-            <div class="container" style="width:100%;margin-top:30px;">
-                <button type="button" class="btn btn-primary" style="width:100%" onclick="window.location.href='/StudentMobile/NowSmnDisplay/@ViewBag.model.ksid'">
-                    进入讨论课
-                </button>
-            </div>
-
             <div class="container" style="width:100%">
                 <div class="container" style="background-color:#ffffff">
                     <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">报名：</p>
                     <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.enroll</p>
                 </div>
             </div>
-            if (ViewBag.model.attendance.ppt_name == null || ViewBag.model.attendance.ppt_name == "")
+            if (ViewBag.model.attendance == null || ViewBag.model.attendance.ppt_name == null || ViewBag.model.attendance.ppt_name == "")
             {
                 <div class="container" style="width:100%">
 
@@ -167,8 +163,13 @@
                     </div>
                 </div>
             }
+            <div class="container" style="width:100%;margin-top:30px;">
+                <button type="button" class="btn btn-primary" style="width:100%" onclick="window.location.href='/StudentMobile/NowSmnDisplay/@ViewBag.model.ksid'">
+                    进入讨论课
+                </button>
+            </div>
         }
-        else if (ViewBag.seminar_status == 2)   //已结束
+        else if (ViewBag.model.seminar_status == 2)   //已结束
         {
             if (ViewBag.model.enroll_status == 1)
             {
@@ -178,9 +179,10 @@
                         <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.enroll</p>
                     </div>
                 </div>
-
-                if (ViewBag.model.attendance.report_name == null || ViewBag.model.attendance.report_name == "")
+                if (ViewBag.model.attendance != null)   //有队伍再谈提交
                 {
+                    if (ViewBag.model.attendance.report_name == null || ViewBag.model.attendance.report_name == "")
+                    {
                     <div class="container" style="width:100%">
 
                         <div class="container" style="background-color:#ffffff">
@@ -188,9 +190,9 @@
                             <p style="height:40px;line-height:40px;display:inline;"> 未提交 </p>
                         </div>
                     </div>
-                }
-                else
-                {
+                    }
+                    else
+                    {
                     <div class="container" style="width:100%">
 
                         <div class="container" style="background-color:#ffffff">
@@ -201,22 +203,22 @@
 
                         </div>
                     </div>
-                }
+                    }
 
-                if (ViewBag.model.could_report) //report未ddl
-                {
+                    if (ViewBag.model.could_report) //report未ddl
+                    {
                     <div class="container" style="width:100%;margin-top:30px;">
                         <form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post" action="/File/Upload_stu">
                             <input type="hidden" id="ksid" name="ksid" value="@ViewBag.model.ksid" />
                             <input type="hidden" id="filetype" name="filetype" value="report" />
                             <input type="file" name="afile" id="afile" />
-                            <button type="submit" class="btn btn-primary"  onclick="if (!CheckExistFile()) return false;" value="提交" style="width:100%;margin-top:20px;">
+                            <button type="submit" class="btn btn-primary" onclick="if (!CheckExistFile()) return false;" value="提交" style="width:100%;margin-top:20px;">
                                 书面报告提交
                             </button>
                         </form>
                     </div>
+                    }
                 }
-
             }
         }
         else

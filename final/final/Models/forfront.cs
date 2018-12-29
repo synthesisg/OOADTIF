@@ -5,15 +5,7 @@ using System.Web;
 using final.Models;
 namespace final.Models
 {
-    public class SeminarInfo
-    {
-        public int round;
-        public int count;
-        public string title;
-        public string msg;
-        public string signUpTime;
-        public string reportTime;
-    }
+    //Query
     public class qt
     {
         public qt() { }
@@ -48,6 +40,11 @@ namespace final.Models
             team t = db.team.Find(team_id);
             return t.klass_serial.ToString() + '-' + t.team_serial.ToString();
         }
+        public string k2ks(int klass_id)
+        {
+            klass k = db.klass.Find(klass_id);
+            return k.grade.ToString() + '-' + k.klass_serial.ToString();
+        }
         MSSQLContext db = new MSSQLContext();
     }
     public class personclass        //For Seminar
@@ -55,7 +52,39 @@ namespace final.Models
         public int klass_id;
         public string name;
     }
-    public class round_seminar      //For ChsSpecSeminar 返回某班一个round下的seminar
+    public class astulist
+    {
+        public List<int> student_id=new List<int>();
+        public List<string> account=new List<string>();
+        public List<string> name=new List<string>();
+        public int cnt;
+        public astulist(List<int> sidlist,string str)
+        {
+            foreach (int sid in sidlist)
+            {
+                student s = db.student.Find(sid);
+                if (str == "")
+                {
+                    student_id.Add(s.id);
+                    account.Add(s.account);
+                    name.Add(s.student_name);
+                }
+                else
+                {
+                    if(s.account.Contains(str)||s.student_name.Contains(str))
+                    {
+                        student_id.Add(s.id);
+                        account.Add(s.account);
+                        name.Add(s.student_name);
+                    }
+                }
+            }
+            cnt = student_id.Count();
+        }
+        MSSQLContext db = new MSSQLContext();
+    }
+    //[student]For ChsSpecSeminar 返回某班一个round下的seminar
+    public class round_seminar      
     {
         public round r;
         public List<seminar> s = new List<seminar>();
@@ -76,6 +105,7 @@ namespace final.Models
         MSSQLContext db = new MSSQLContext();
 
     }
+
     public class scoreboard             //For Round Score
     {
         public round_score rs;
@@ -107,7 +137,7 @@ namespace final.Models
         MSSQLContext db = new MSSQLContext();
     }
 
-    //某course下所有seminar成绩
+    //[student]某course下所有seminar成绩
     public class scoreboard_course            
     {
         public List<seminar_score> ss = new List<seminar_score>();
@@ -130,7 +160,8 @@ namespace final.Models
 
         MSSQLContext db = new MSSQLContext();
     }
-    //返回一个klass_seminar下已报名的队伍名
+
+    //[all]返回一个klass_seminar下已报名的队伍名
     public class klass_seminar_enroll_state_model
     {
         public int ksid;
@@ -205,7 +236,7 @@ namespace final.Models
         public string enroll;
         public short enroll_status;
 
-        public BEnrollSmn_model(int klass_seminar_id, int student_id)
+        public BEnrollSmn_model(int klass_seminar_id, int student_id=0)
         {
             sid = student_id;
             ksid = klass_seminar_id;
@@ -298,7 +329,7 @@ namespace final.Models
         public List<seminar_klass> sklist = new List<seminar_klass>();
     }
 
-    //一个course_id下的所有队伍
+    //[all]一个course_id下的所有队伍
     public class course_team
     {
         public course course;
@@ -359,6 +390,7 @@ namespace final.Models
         MSSQLContext db = new MSSQLContext();
     }
 
+    //[teacher]seminar下文件列表
     public class seminar_report
     {
         public seminar seminar;

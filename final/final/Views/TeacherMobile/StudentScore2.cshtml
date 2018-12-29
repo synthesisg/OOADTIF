@@ -1,0 +1,24 @@
+﻿
+@{
+    Layout = "~/Views/Shared/StudentLayout/_StudentLayout4.cshtml";
+}
+
+<div style="height:360px;width:100%;overflow:auto">
+    @{ int teamSeminar = 0; <!--小组在本轮参加的讨论课次数-->
+        while (teamSeminar++ < 2)
+        {
+            <div class="container" style="width:100%">
+                <div class="container" style="background-color:#ffffff;margin:1px;">
+                    <span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:6.5em">讨论课名</span><br />
+                    <span style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-left:1em;margin-right:3.5em">展示:</span>
+                    <span style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3.5em">提问:</span>
+                    <span style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3.5em">书面报告:</span>
+                    <input type="submit" class="btn btn-primary"  value="修改成绩" style="border-bottom:outset;border-bottom-color:#1fa5e5;background-color:#ffffff;color:#000000;width:90px;height:30px;font-size:1px;margin-left:6.5em;margin-bottom:10px;margin-top:10px;">
+                </div>
+            </div>
+        }
+    }
+</div>
+<div class="input-group input-group input-group-lg" style="margin: 10px auto">
+    <input type="submit" class="btn btn-primary btn-lg" value="导出成绩" style="background-color:#1fa5e5;width:300px;">
+</div>

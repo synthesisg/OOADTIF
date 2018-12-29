@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "course";
+    Layout = "~/Views/Shared/StudentLayout/_StudentLayout4.cshtml";
+}
+
+<body>
+    @{int round = 0;
+        while (round++ < 4)
+        {
+            <hr />
+            <ul style="line-height:40px;list-style-type:none;width:90%;">
+                <li id="@round" onclick="f(@round)" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;">
+                    OOAD    @round  
+                    <span class="glyphicon glyphicon-align-justify" style="float:right;line-height:40px;margin-right:1em;"></span>
+                 </li>
+                    @{ int CSmn = 0;
+                        while (CSmn++ < 3)
+                        {
+                            int temp = 4 + (round - 1) * 3 + CSmn;
+                        <li id="@temp" onclick="Go2SpecSmn(@temp)" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+                            讨论课名
+                            <span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
+                            </li>
+
+                            }
+                        }
+                    </ul>
+                        }
+             }
+                    </div>
+                        <script>
+                            function f(str) {
+                                for (var i = 0; i < 3; i++) {
+                                    var sub_menu = document.getElementById(@round +(str - 1) * 3 + i);
+                                    var dis_v = sub_menu.style.display;
+                                    if (dis_v == "none") {
+                                        sub_menu.style.display = "block";
+                                    }
+                                    else sub_menu.style.display = "none";
+                                }
+                            }
+                            function Go2SpecSmn(n) {
+                                window.location.href = "BUSmnInfo?round=" + n / 3 + "&count=" + n % 3;
+                            }
+                        </script>
+
+</body>

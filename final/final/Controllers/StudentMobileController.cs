@@ -152,26 +152,21 @@ namespace final.Controllers
                     return RedirectToAction("StudentLogin");
             }
             else Session["user_id"] = test_id;
+            
 
-            int sid = Int32.Parse(Session["user_id"].ToString());
             BEnrollSmn_model model = new BEnrollSmn_model(id, Int32.Parse(Session["user_id"].ToString()));
             ViewBag.model = model;
-            int team_id = new qt().ks2t(id, sid);
-            if(team_id==0)
-            {
-                ViewBag.enroll = false;
-                ViewBag.ddl = true;
-                return View();
-            }
 
             return View();
         }
-        public ActionResult NowSmnPPT()
+        public ActionResult NowSmnPPT(int id)//ksid
         {
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id, 0);
+            ViewBag.model = model;
             //要  ViewBag.TitleText = 课程名 + 讨论课名
             return View();
         }
-        public ActionResult NowSmnDisplay()
+        public ActionResult NowSmnDisplay(int id)//ksid
         {
             //要  ViewBag.TitleText = 课程名 + 讨论课名
             return View();
@@ -193,10 +188,6 @@ namespace final.Controllers
             client.Send(msg);
 
             return true;
-        }
-        public string Move2CourSeminar(string str)
-        {
-            return "a";
         }
         public string Enroll(byte order,int ksid)
         {
@@ -319,50 +310,69 @@ namespace final.Controllers
                 ViewBag.ct = ct.list;
             }
         }
-        public ActionResult CreateTeam() {
+        public ActionResult CreateTeam(int id)  //course_id
+        {
+            var klist = (from k in db.klass where k.course_id == id select k.id).ToList();
+            string[] klass_serial = new string[klist.Count()]; 
+            int[] klass_id = new int[klist.Count()];
+            for (int i = 0; i < klist.Count(); i++)
+            {
+                klass_serial[i] = new qt().k2ks(klist[i]);
+                klass_id[i] = klist[i];
+            }
+            ViewBag.klass_serial = klass_serial;
+            ViewBag.klass_id = klass_id;
+            ViewBag.stulist = studentlist(id);
+            ViewBag.course_id = id;
             return View();
         }
-        public void studentlist(int id)        //course_id
+        //course下未组队学生
+        public astulist studentlist(int id, string str = "")
         {
             var klist = (from k in db.klass where k.course_id == id select k.id).ToList();
             var tlist = (from kt in db.klass_team where klist.Contains(kt.klass_id) select kt.team_id).ToList();
             var slist= (from ts in db.team_student where tlist.Contains(ts.team_id) select ts.student_id).ToList();
-            var sidlist = from ks in db.klass_student where ks.course_id == id && (slist.Contains(ks.student_id) == false) select ks.student_id;
+            List<int> sidlist = (from ks in db.klass_student where ks.course_id == id && (slist.Contains(ks.student_id) == false) select ks.student_id).ToList();
+            return new astulist(sidlist, str);
         }
-        //public void createteam()
-        //{
-        //    int klass_id = 1;
-        //    string team_name = "";
+        public string search(string sid, int cid)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(studentlist(cid, sid));
+        }
+        public void _createteam()//method
+        {
+            int klass_id = 1;
+            string team_name = "";
 
-        //    int course_id = db.klass.Find(klass_id).course_id;
-        //    var tlist = from t in db.team where t.course_id == course_id select t;
-        //    int sid = Int32.Parse(Request["user_id"]);
-        //    team NewTeam = new team
-        //    {
-        //        klass_id = klass_id,
-        //        course_id = course_id,
-        //        leader_id = sid,
-        //        team_name = team_name,
-        //        team_serial = (byte)(tlist.Count() + 1),
-        //        status = 0
-        //    };
-        //    db.team.Add(NewTeam);
-        //    db.SaveChanges();
+            int course_id = db.klass.Find(klass_id).course_id;
+            var tlist = from t in db.team where t.course_id == course_id select t;
+            int sid = Int32.Parse(Request["user_id"]);
+            team NewTeam = new team
+            {
+                klass_id = klass_id,
+                course_id = course_id,
+                leader_id = sid,
+                team_name = team_name,
+                team_serial = (byte)(tlist.Count() + 1),
+                status = 0
+            };
+            db.team.Add(NewTeam);
+            db.SaveChanges();
 
-        //    klass_team Newks = new klass_team
-        //    {
-        //        klass_id = klass_id,
-        //        team_id = NewTeam.id
-        //    };
-        //    db.klass_team.Add(Newks);
-        //    team_student Newts = new team_student
-        //    {
-        //        team_id = NewTeam.id,
-        //        student_id = sid
-        //    };
-        //    db.team_student.Add(Newts);
-        //    db.SaveChanges();
-        //}
+            klass_team Newks = new klass_team
+            {
+                klass_id = klass_id,
+                team_id = NewTeam.id
+            };
+            db.klass_team.Add(Newks);
+            team_student Newts = new team_student
+            {
+                team_id = NewTeam.id,
+                student_id = sid
+            };
+            db.team_student.Add(Newts);
+            db.SaveChanges();
+        }
         public void remove()
         {
             int klass_id = 1;
