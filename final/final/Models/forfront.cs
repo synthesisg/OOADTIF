@@ -359,6 +359,7 @@ namespace final.Models
         MSSQLContext db = new MSSQLContext();
     }
 
+    //精确到 course->klass_seminar
     public class course_seminar
     {
         //课程course ->  轮round -> 某节课seminar -> 某个班的某节klass_seminar -> attendance

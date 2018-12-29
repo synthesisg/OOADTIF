@@ -61,7 +61,7 @@ namespace final.Controllers
                 case "GET":         //load
                     return View();
                 case "POST":        //login
-                    student ui = db.student.Find(Int32.Parse(Session["tmp_id"].ToString()));
+                    teacher ui = db.teacher.Find(Int32.Parse(Session["tmp_id"].ToString()));
                     ui.password = Request["newPassword"];
                     ui.is_active = 1;
                     db.SaveChanges();
@@ -89,20 +89,21 @@ namespace final.Controllers
 
             return true;
         }
-        public ActionResult Seminar(int id)//course_id
+        public ActionResult Seminar(int id)//course_id 叫某course更贴切?
         {
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
                     return RedirectToAction("Login");
             }
-            else Session["user_id"] = 1;
+            else Session["user_id"] = test_id;
 
             int tid = Int32.Parse(Session["user_id"].ToString());
             course_seminar cs = new course_seminar(id);
             ViewBag.cs = cs;
             return View();
         }
+        //仅course 后续跳转至chsseminar
         public ActionResult Course()
         {
             if (is_judge)
@@ -110,12 +111,12 @@ namespace final.Controllers
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
                     return RedirectToAction("Login");
             }
-            else Session["user_id"] = 1;
+            else Session["user_id"] = test_id;
 
 
             int tid = Int32.Parse(Session["user_id"].ToString());
-            var colist = from co in db.course where co.teacher_id == tid select co;
-            ViewBag.co = colist;
+            var colist = (from co in db.course where co.teacher_id == tid select co.id).ToList();
+            ViewBag.colist = colist;
             return View();
         }
         public ActionResult ChsSpecSeminar() {
@@ -124,24 +125,75 @@ namespace final.Controllers
         public ActionResult SetSeminarSerial() {
             return View();
         }
-        public ActionResult CreateSeminar() {
+        public ActionResult StudentScore1() { return View(); }
+        public ActionResult StudentScore2() { return View(); }
+        public ActionResult CreateSeminar(int id)//course_id
+        {
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    var rlist = (from r in db.round where r.course_id == id select r).ToList();
+                    ViewBag.rlist = rlist;
+                    return View();
+                case "POST":        //create
+                    int rid = Int32.Parse(Request["roundInfo"]);
+                    if (rid == 0) 
+                    {
+                        int cnt = (from r in db.round where r.course_id == id select r).Count() + 1;
+                        round NewRound = new round
+                        {
+                            course_id = id,
+                            presentation_score_method = 0,
+                            question_score_method = 0,
+                            report_score_method = 0,
+                            round_serial = (byte)cnt
+                        };
+                        db.round.Add(NewRound);
+                        db.SaveChanges();
+                        rid = NewRound.id;
+                    }
+                    int serial = (from s in db.seminar where s.course_id == id select s).Count() + 1 ;
+                    seminar NewSeminar = new seminar
+                    {
+                        course_id = id,
+                        enroll_start_time = Convert.ToDateTime(Request["start_date"]),
+                        enroll_end_time = Convert.ToDateTime(Request["end_date"]),
+                        introduction = Request["content"],
+                        seminar_name = Request["title"],
+                        max_team = byte.Parse(Request["groupCount"]),
+                        round_id = rid,
+                        seminar_serial = (byte)serial,
+                        is_visible = 1,//===================================================================================[seminar_visible]===================
+                    };
+                    db.seminar.Add(NewSeminar);
+                    db.SaveChanges();
+                    return View();
+            }
             return View();
         }
-        public ActionResult CreateClass() {
+        public ActionResult CreateClass(int id)//course_id
+        {
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    return View();
+                case "POST":        //create
+                    klass NewKlass = new klass
+                    {
+                        course_id = id,
+                        grade = long.Parse(Request["grade"].ToString()),
+                        klass_serial = byte.Parse(Request["klass_serial"].ToString()),
+                        klass_location = Request["klassPlace"].ToString(),
+                        klass_time = Request["klassTime"].ToString()
+                    };
+                    db.klass.Add(NewKlass);
+                    return View();
+            }
             return View();
         }
         //public void createclass()
         //{
-        //    int course_id = 1;
-        //    klass NewKlass = new klass
-        //    {
-        //        course_id = course_id,
-        //        grade = long.Parse(Request["grade"].ToString()),
-        //        klass_serial = byte.Parse(Request["klass_serial"].ToString()),
-        //        klass_location = Request["klass_location"].ToString(),
-        //        klass_time = Request["klass_time"].ToString()
-        //    };
-        //    db.klass.Add(NewKlass);
+        //    
         //}
         public void createcourse()
         {
