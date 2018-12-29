@@ -89,7 +89,7 @@ namespace final.Controllers
 
             return true;
         }
-        public ActionResult Seminar(int id)//course_id 叫某course更贴切?
+        public ActionResult Seminar(int id)//没懂什么界面
         {
             if (is_judge)
             {
@@ -103,6 +103,7 @@ namespace final.Controllers
             ViewBag.cs = cs;
             return View();
         }
+
         //仅course 后续跳转至chsseminar
         public ActionResult Course()
         {
@@ -119,7 +120,19 @@ namespace final.Controllers
             ViewBag.colist = colist;
             return View();
         }
-        public ActionResult ChsSpecSeminar() {
+
+        public ActionResult ChsSpecSeminar(int id)//course_id
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int tid = Int32.Parse(Session["user_id"].ToString());
+            course_seminar cs = new course_seminar(id);
+            ViewBag.cs = cs;
             return View();
         }
         public ActionResult SetSeminarSerial() {

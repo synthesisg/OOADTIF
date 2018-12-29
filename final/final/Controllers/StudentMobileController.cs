@@ -159,6 +159,61 @@ namespace final.Controllers
 
             return View();
         }
+        public ActionResult courseinfor(int id)//course_id
+        {
+            course c = db.course.Find(id);
+            ViewBag.c = c;
+
+            //本门课人数上下限mls   返回一个member_limit_strategy或null 唯一 id 与course_id 相同(大概)
+            ViewBag.mls=db.member_limit_strategy.Find(id);
+
+            /* 所有本门课的策略 ts (T/F)
+             * 返回
+             * ac true代表全部 false代表符合其一
+             * strccs 代表冲突课程“A|B|C”或null
+             * cmlslist List<course_member_limit_strategy>模型 代表选修课人数上下限
+             * cmlsname List<string>模型  对应课程名
+             */
+            var tslist = (from ts in db.team_strategy where ts.course_id == id select ts).ToList();
+            if (tslist.Count() > 0)
+            {
+                ViewBag.ts = true;
+
+                //先确定and还是or
+                var tsfirst = (from ts in db.team_strategy where ts.course_id == id && ts.strategy_serial == 1 select ts).ToList()[0];
+                bool ac = (tsfirst.strategy_name == "TeamAndStrategy" ? true : false);
+                ViewBag.ac = ac;
+                string strccs = "";
+                List<course_member_limit_strategy> cmlslist = new List<course_member_limit_strategy>();
+                List<string> cmlsname = new List<string>();
+                foreach (var ts in tslist)
+                {
+                    int tid = ts.strategy_serial;
+                    switch (ts.strategy_name)
+                    {
+                        case "ConflictCourseStrategy":
+                            var ccslist = (from ccs in db.conflict_course_strategy where ccs.id == tid select ccs.course_id).ToList();
+                            foreach (var cid in ccslist)
+                            {
+                                if (cid != id) strccs += db.course.Find(cid).course_name + '|';
+                            }
+                            ViewBag.strccs = strccs.Remove(strccs.Length - 1, 1);
+                            break;
+                        case "CourseMemberLimitStrategy":         //不唯一 针对选修xx课程的组队
+                            course_member_limit_strategy cmls = db.course_member_limit_strategy.Find(tid);
+                            cmlslist.Add(cmls);
+                            cmlsname.Add(db.course.Find(cmls.course_id).course_name);
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                ViewBag.ts = false;
+            }
+            
+            return View();
+        }
         public ActionResult NowSmnPPT(int id)//ksid
         {
             klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id, 0);
@@ -166,7 +221,7 @@ namespace final.Controllers
             //要  ViewBag.TitleText = 课程名 + 讨论课名
             return View();
         }
-        public ActionResult NowSmnDisplay(int id)//ksid
+        public ActionResult NowSmnDisplay(int id)//ksid 过程环节
         {
             //要  ViewBag.TitleText = 课程名 + 讨论课名
             return View();

@@ -698,7 +698,11 @@ insert into klass_team(klass_id,team_id) values
 
 set IDENTITY_INSERT member_limit_strategy ON
 insert  into member_limit_strategy(id,min_member,max_member) values 
-(1,3,5);
+(16,3,5);
+(17,0,9);
+(18,0,9);
+(19,0,9);
+(20,0,9);
 set IDENTITY_INSERT member_limit_strategy OFF
 
 

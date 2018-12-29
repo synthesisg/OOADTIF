@@ -95,7 +95,6 @@ D:\git\OOADTIF\OOADTIF\final\final\bin\zh-Hans\System.Web.Razor.resources.dll
 D:\git\OOADTIF\OOADTIF\final\final\bin\zh-Hans\System.Web.WebPages.resources.dll
 D:\git\OOADTIF\OOADTIF\final\final\bin\zh-Hans\System.Web.WebPages.Deployment.resources.dll
 D:\git\OOADTIF\OOADTIF\final\final\bin\zh-Hans\System.Web.WebPages.Razor.resources.dll
-D:\git\OOADTIF\OOADTIF\final\final\obj\Debug\final.csprojAssemblyReference.cache
 D:\git\OOADTIF\OOADTIF\final\final\obj\Debug\final.csproj.CoreCompileInputs.cache
 D:\git\OOADTIF\OOADTIF\final\final\obj\Debug\final.csproj.CopyComplete
 D:\git\OOADTIF\OOADTIF\final\final\obj\Debug\final.dll
@@ -202,3 +201,10 @@ C:\gitpro\OOADTIF\final\final\obj\Debug\final.csproj.CoreCompileInputs.cache
 C:\gitpro\OOADTIF\final\final\obj\Debug\final.csproj.CopyComplete
 C:\gitpro\OOADTIF\final\final\obj\Debug\final.dll
 C:\gitpro\OOADTIF\final\final\obj\Debug\final.pdb
+D:\git\OOADTIF\OOADTIF\final\final\bin\System.Net.Http.Formatting.dll
+D:\git\OOADTIF\OOADTIF\final\final\bin\System.Web.Http.dll
+D:\git\OOADTIF\OOADTIF\final\final\bin\System.Web.Http.WebHost.dll
+D:\git\OOADTIF\OOADTIF\final\final\bin\System.Net.Http.Formatting.xml
+D:\git\OOADTIF\OOADTIF\final\final\bin\System.Web.Http.xml
+D:\git\OOADTIF\OOADTIF\final\final\bin\System.Web.Http.WebHost.xml
+D:\git\OOADTIF\OOADTIF\final\final\obj\Debug\final.csprojAssemblyReference.cache

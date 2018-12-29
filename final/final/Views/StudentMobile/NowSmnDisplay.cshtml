@@ -1,22 +1,72 @@
 ﻿
 @{
-	ViewBag.Title = "NowSmnDisplay";
-	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+    ViewBag.Title = "NowSmnDisplay";
+    Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
 
-	ViewBag.group1 = "1-1";
-	ViewBag.group2 = "1-9";
-	ViewBag.group3 = "1-4";
+    ViewBag.group1 = "1-1";
+    ViewBag.group2 = "1-9";
+    ViewBag.group3 = "1-4";
 
-	//websoc展示同学提问与何组正在进行展示
+    //websoc展示同学提问与何组正在进行展示
 }
+<script>
+        var ws;
+        $().ready(function () {
+            $('#conn').click(function () {
+                ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=' + $("#user").val());
+                $('#msg').append('<p>正在连接</p>');
 
+                ws.onopen = function () {
+                    $('#msg').append('<p>已经连接</p>');
+                }
+                ws.onmessage = function (evt) {
+                    $('#msg').append('<p>' + evt.data + '</p>');
+                }
+                ws.onerror = function (evt) {
+                    $('#msg').append('<p>' + JSON.stringify(evt) + '</p>');
+                }
+                ws.onclose = function () {
+                    $('#msg').append('<p>已经关闭</p>');
+                }
+            });
+
+            $('#close').click(function () {
+                ws.close();
+            });
+
+            $('#send').click(function () {
+                if (ws.readyState == WebSocket.OPEN) {
+                    ws.send($("#to").val() + "|" + $('#content').val());
+                }
+                else {
+                    $('#tips').text('连接已经关闭');
+                }
+            });
+
+        });
+</script>
 
 <!--需要 上面得数据要数组！ 小组可以是报名该次讨论课小组全部的信息  -->
-@for (var i = 0; i < 3@*ViewBag.group.Length*@ ; i++) {
-		<div class="container" style="width:100%;margin-top:2px">
-			<div class="container" style="background-color:#ffffff">
-				<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">第 @i 组:</p>
-				<p style="height:40px;line-height:40px;display:inline;">@Html.Raw(ViewBag.group1)</p>
-			</div>
-		</div>
-}
+@for (var i = 0; i < 3@*ViewBag.group.Length*@ /**/
+                                                          ; i++)
+            {
+                <div class="container" style="width:100%;margin-top:2px">
+                    <div class="container" style="background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">第 @i 组:</p>
+                        <p style="height:40px;line-height:40px;display:inline;">@Html.Raw(ViewBag.group1)</p>
+                    </div>
+                </div>
+            }
+
+
+                <div>
+                    <input id="user" type="text" />
+                    <input id="conn" type="button" value="连接" />
+                    <input id="close" type="button" value="关闭" /><br />
+                    <span id="tips"></span>
+                    <input id="content" type="text" />
+                    <input id="send" type="button" value="发送" /><br />
+                    <input id="to" type="text" />目的用户
+                    <div id="msg">
+                    </div>
+                </div>
