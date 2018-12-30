@@ -13,7 +13,7 @@
 			<textarea rows="4" cols="35" id="content"name="content" style="margin-top:5px"></textarea>
 			<br />
 			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;">讨论课可见:</p>
-			<input name="" type="checkbox" value="" />可见
+			<input name="visible" type="checkbox" value="1" />可见
 		</div>
 	</div>
 	<div class="container" style="width:100%">
@@ -29,7 +29,7 @@
 			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:4em">所属Round:</p>
 
 			<select id="roundInfo" name="roundInfo" style="width:40%;">
-				<option value="请选择" selected="selected">请选择</option>
+				<option value="0" selected="selected">新增一轮</option>
 
 				@{
 					int length = ViewBag.rlist.Count;

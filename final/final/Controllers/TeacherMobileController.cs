@@ -107,7 +107,7 @@ namespace final.Controllers
             return View();
         }
 
-        public ActionResult ChsSpecSeminar(int id)//course_id
+        public ActionResult ChsSpecSeminar(int id)//course_id 返回round+seminar
         {
             if (is_judge)
             {
@@ -121,7 +121,60 @@ namespace final.Controllers
             ViewBag.cs = cs;
             return View();
         }
-        public ActionResult SetSeminarSerial() {
+        public ActionResult ChsSpecKlass(int id)//seminar_id
+        {
+            var kslist = (from ks in db.klass_seminar where ks.seminar_id == id select ks).ToList();
+            List<string> serial = new List<string>();
+            foreach (var ks in kslist) serial.Add(new qt().k2ks(ks.klass_id));
+            seminar s = db.seminar.Find(id);
+            ViewBag.s = s;
+            ViewBag.ks = kslist;
+            ViewBag.serial = serial;
+            ViewBag.seminar_title = db.seminar.Find(id).seminar_name;
+            return View();
+        }
+        public ActionResult SetSeminarSerial(int id)//round_id
+        {
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    //本轮讨论课
+                    ViewBag.seminar_name = (from s in db.seminar where s.round_id == id select s.seminar_name).ToList();
+
+                    //成绩设置
+                    ViewBag.round = db.round.Find(id);//0平均1最高
+
+                    //报名次数  是否需要增加kr按钮？还是默认创1？
+                    var krlist = (from kr in db.klass_round where kr.round_id == id select kr).ToList();
+                    List<string> klass_serial = new List<string>();
+                    List<int> enroll_number = new List<int>();
+                    List<int> klassid = new List<int>();    //加上前缀k_作为input的name/id  name='k_@ViewBag.klassid[i]'
+                    foreach (var kr in krlist)
+                    {
+                        klass_serial.Add(new qt().k2ks(kr.klass_id));
+                        enroll_number.Add((int)kr.enroll_number);
+                        klassid.Add(kr.klass_id);
+                    }
+                    ViewBag.klass_serial = klass_serial;
+                    ViewBag.enroll_number = enroll_number;
+                    ViewBag.klassid = klassid;
+                    return View();
+
+                case "POST":        //modify
+                    round r = db.round.Find(id);
+                    r.presentation_score_method = byte.Parse(Request["presentation_score_method"]);
+                    r.question_score_method = byte.Parse(Request["question_score_method"]);
+                    r.report_score_method = byte.Parse(Request["report_score_method"]);
+
+                    var krdlist = (from kr in db.klass_round where kr.round_id == id select kr).ToList();
+                    foreach (var kr in krdlist)
+                    {
+                        kr.enroll_number = byte.Parse(Request["k_" + kr.klass_id.ToString()]);
+                    }
+                    db.SaveChanges();
+                        break;//============================================================================================================[setround]=================
+            }
+
             return View();
         }
         public ActionResult StudentScore1() { return View(); }
@@ -136,7 +189,13 @@ namespace final.Controllers
                     return View();
                 case "POST":        //create
                     int rid = Int32.Parse(Request["roundInfo"]);
-                    if (rid == 0) 
+                    byte vis = 0;
+                    string str = Request["visible"];
+                    if (str != null) vis = 1;
+
+                    if (str == null) return Content("null"); else return Content("1");
+
+                    if (rid == 0)
                     {
                         int cnt = (from r in db.round where r.course_id == id select r).Count() + 1;
                         round NewRound = new round
@@ -151,7 +210,7 @@ namespace final.Controllers
                         db.SaveChanges();
                         rid = NewRound.id;
                     }
-                    int serial = (from s in db.seminar where s.course_id == id select s).Count() + 1 ;
+                    int serial = (from s in db.seminar where s.course_id == id select s).Count() + 1;
                     seminar NewSeminar = new seminar
                     {
                         course_id = id,
@@ -162,7 +221,7 @@ namespace final.Controllers
                         max_team = byte.Parse(Request["groupCount"]),
                         round_id = rid,
                         seminar_serial = (byte)serial,
-                        is_visible = 1,//===================================================================================[seminar_visible]===================
+                        is_visible = vis
                     };
                     db.seminar.Add(NewSeminar);
                     db.SaveChanges();
@@ -190,10 +249,6 @@ namespace final.Controllers
             }
             return View();
         }
-        //public void createclass()
-        //{
-        //    
-        //}
         public void createcourse()
         {
             int teacher_id = 1;
@@ -217,7 +272,10 @@ namespace final.Controllers
             //team_strategy 每门课必须一个
 
         }
-        public ActionResult KlassSeminar() {
+        public ActionResult KlassSeminar(int id)//ksid
+        {
+            BEnrollSmn_model model = new BEnrollSmn_model(id, 0);
+            ViewBag.model = model;
             return View();
         }
         void daiban()
@@ -279,6 +337,19 @@ namespace final.Controllers
                 }
             }
             db.SaveChanges();
+        }
+
+        public bool DelSeminar(int seminarId)
+        {
+            return new Del().DelSeminar(seminarId);
+        }
+        public bool DelKlass(int id)
+        {
+            return new Del().DelKlass(id);
+        }
+        public bool DelCourse(int id)
+        {
+            return new Del().DelCourse(id);
         }
 
         public bool chgpwd(string data)

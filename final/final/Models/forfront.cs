@@ -47,6 +47,92 @@ namespace final.Models
         }
         MSSQLContext db = new MSSQLContext();
     }
+
+    //Delete
+    public class Del
+    {
+        public bool DelKlassSeminar(int id)
+        {
+            klass_seminar ks = db.klass_seminar.Find(id);
+            if (ks == null) return false;
+
+            var alist = from a in db.attendance where a.klass_seminar_id == id select a;
+            foreach (var a in alist) db.attendance.Remove(a);
+            var qlist = from q in db.question where q.klass_seminar_id == id select q;
+            foreach (var q in qlist) db.question.Remove(q);
+            var sclist = from sc in db.seminar_score where sc.klass_seminar_id == id select sc;
+            foreach (var sc in sclist) db.seminar_score.Remove(sc);
+
+            db.klass_seminar.Remove(ks);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public bool DelSeminar(int id)
+        {
+            seminar s = db.seminar.Find(id);
+            if (s == null) return false;
+
+            var kslist = from ks in db.klass_seminar where ks.seminar_id == id select ks;
+            foreach (var ks in kslist)
+                DelKlassSeminar(ks.id);
+
+            db.seminar.Remove(s);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public bool DelKlass(int id)
+        {
+            klass k = db.klass.Find(id);
+            if (k == null) return false;
+
+            var kslist = from ks in db.klass_seminar where ks.klass_id == id select ks;
+            foreach (var ks in kslist)
+                DelKlassSeminar(ks.id);
+
+            var tlist = (from t in db.team where t.klass_id == id select t).ToList();
+            List<int> tid = new List<int>();
+            foreach (var t in tlist)
+            {
+                tid.Add(t.id);
+                db.team.Remove(t);
+            }
+            var kstlist = from ks in db.klass_student where ks.klass_id == id select ks;
+            foreach (var ks in kstlist) db.klass_student.Remove(ks);
+            var krlist = from kr in db.klass_round where kr.klass_id == id select kr;
+            foreach (var kr in krlist) db.klass_round.Remove(kr);
+            var ktlist = from kt in db.klass_team where kt.klass_id == id select kt;
+            foreach (var kt in ktlist) db.klass_team.Remove(kt);
+
+            db.klass.Remove(k);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public bool DelCourse(int id)
+        {
+            course c = db.course.Find(id);
+            if (c == null) return false;
+
+            var kidlist = (from k in db.klass where k.course_id == id select k.id).ToList();
+            foreach (var kid in kidlist) DelKlass(kid);
+            var rlist = (from r in db.round where r.course_id == id select r).ToList();
+            foreach (var r in rlist) db.round.Remove(r);
+            var slist = (from s in db.seminar where s.course_id == id select s.id).ToList();
+            foreach (var sid in slist) DelSeminar(sid);
+
+            db.course.Remove(c);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        MSSQLContext db = new MSSQLContext();
+    }
     public class personclass        //For Seminar
     {
         public int klass_id;
@@ -63,7 +149,7 @@ namespace final.Models
             foreach (int sid in sidlist)
             {
                 student s = db.student.Find(sid);
-                if (str == "")
+                if (str == "" || str==null)
                 {
                     student_id.Add(s.id);
                     account.Add(s.account);
@@ -365,7 +451,7 @@ namespace final.Models
         //课程course ->  轮round -> 某节课seminar -> 某个班的某节klass_seminar -> attendance
         //              klass_round 某轮报名次数限制
         public course course;
-        List<round_seminar_klass> rs = new List<round_seminar_klass>();
+        public List<round_seminar_klass> rs = new List<round_seminar_klass>();
 
         public course_seminar(int course_id)
         {
@@ -434,6 +520,53 @@ namespace final.Models
                 list.Add(tmp);
             }
             listLength = list.Count;
+        }
+
+        MSSQLContext db = new MSSQLContext();
+    }
+
+    public class team_share
+    {
+        share_team_application sta;
+        public team_share(int id, int op = 1)
+        {
+            sta = db.share_team_application.Find(id);
+            if(op==0)//reject
+            {
+                db.share_team_application.Remove(sta);
+                db.SaveChanges();
+                return;
+            }
+            //agree
+            sta.status = 1;
+            int mc = sta.main_course_id, subc = sta.sub_course_id;
+            db.course.Find(sta.sub_course_id).team_main_course_id = sta.main_course_id;
+
+            //copy team
+            var tlist = (from t in db.team where t.course_id == mc select t).ToList();
+            foreach(team t in tlist)
+            {
+                List<int> sidlist = (from ts in db.team_student where ts.team_id == t.id select ts.student_id).ToList();
+
+                List<int> actsidlist = (from ks in db.klass_student where ks.course_id == subc && sidlist.Contains(ks.student_id) select ks.student_id).ToList();
+                team NewTeam = new team
+                {
+                    course_id = subc,
+                    team_name = t.team_name,
+                    klass_id = 0,
+                    klass_serial = 0,
+                    leader_id = 0,
+                    status = 0,
+                    team_serial = 0,
+                };
+                db.team.Add(NewTeam);
+                db.SaveChanges();
+
+                db.klass_team.Add(new klass_team { klass_id = NewTeam.klass_id, team_id = NewTeam.id });
+                foreach(var sid in actsidlist)
+                    db.team_student.Add(new team_student { student_id = sid, team_id = NewTeam.id });
+                db.SaveChanges();
+            }
         }
 
         MSSQLContext db = new MSSQLContext();

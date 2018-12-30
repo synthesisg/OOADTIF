@@ -367,6 +367,13 @@ namespace final.Controllers
         }
         public ActionResult CreateTeam(int id)  //course_id
         {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("StudentLogin");
+            }
+            else Session["user_id"] = test_id;
+
             var klist = (from k in db.klass where k.course_id == id select k.id).ToList();
             string[] klass_serial = new string[klist.Count()]; 
             int[] klass_id = new int[klist.Count()];
@@ -381,6 +388,7 @@ namespace final.Controllers
             ViewBag.course_id = id;
             return View();
         }
+
         //course下未组队学生
         public astulist studentlist(int id, string str = "")
         {
@@ -394,25 +402,34 @@ namespace final.Controllers
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(studentlist(cid, sid));
         }
-        public void _createteam()//method
+        public ActionResult _createteam()//method
         {
-            int klass_id = 1;
-            string team_name = "";
-
+            int klass_id = Int32.Parse(Request["klass_id"]);
+            string team_name = Request["groupName"];
             int course_id = db.klass.Find(klass_id).course_id;
-            var tlist = from t in db.team where t.course_id == course_id select t;
-            int sid = Int32.Parse(Request["user_id"]);
+            int sid = Int32.Parse(Session["user_id"].ToString());
+
+            //合法检验
+            if (db.course.Find(course_id).team_main_course_id != null) return Content("子课程无队伍更改功能");
+            List<int> stulist=studentlist(course_id).student_id;
+            if (stulist.Contains(sid)) return Content("您已有队伍，sid=" + sid);
+
+            string[] sidstrlist = Request["sidlist"].Split(',');
+            List<int> sidlist = new List<int>();
+            foreach (var str in sidstrlist) sidlist.Add(Int32.Parse(str));
+
+            int serial = (from t in db.team where t.course_id == course_id select t).Count() + 1;
             team NewTeam = new team
             {
                 klass_id = klass_id,
                 course_id = course_id,
                 leader_id = sid,
                 team_name = team_name,
-                team_serial = (byte)(tlist.Count() + 1),
+                team_serial = (byte)serial,
                 status = 0
             };
             db.team.Add(NewTeam);
-            db.SaveChanges();
+            db.SaveChanges();   //Create team_id
 
             klass_team Newks = new klass_team
             {
@@ -426,6 +443,33 @@ namespace final.Controllers
                 student_id = sid
             };
             db.team_student.Add(Newts);
+            db.SaveChanges();
+
+            add(sidlist,NewTeam.id);
+
+            return RedirectToAction("Seminar");//==========================================================================导回未写====================
+        }
+        public void add(List<int> student_id, int team_id)
+        {
+            var ktlist = from kt in db.klass_team where kt.team_id == team_id select kt.klass_id;
+            int klass_id = ktlist.ToList()[0];
+            int course_id = db.klass.Find(klass_id).course_id;
+
+            //检查是否有队
+            List<int> stuid = studentlist(db.team.Find(team_id).course_id).student_id;
+            foreach (int sid in student_id)
+            {
+                if (stuid.Contains(sid))
+                {
+                    team_student Newts = new team_student
+                    {
+                        student_id = sid,
+                        team_id = team_id
+                    };
+                    db.team_student.Add(Newts);
+                }
+            }
+            //============================================================================================================================【入队合法校验】
             db.SaveChanges();
         }
         public void remove()
@@ -454,28 +498,7 @@ namespace final.Controllers
             }
             db.SaveChanges();
         }
-        public void add()
-        {
-            int team_id = 1;
-            List<int> student_id = new List<int>();
-
-            var ktlist = from kt in db.klass_team where kt.team_id == team_id select kt.klass_id;
-            int klass_id = ktlist.ToList()[0];
-            int course_id = db.klass.Find(klass_id).course_id;
-
-            //============================================================================================================================【检查是否有队 略】
-            foreach(int sid in student_id)
-            {
-                team_student Newts = new team_student
-                {
-                    student_id = sid,
-                    team_id = team_id
-                };
-                db.team_student.Add(Newts);
-            }
-            //============================================================================================================================【入队合法校验】
-            db.SaveChanges();
-        }
+        
         public void submit_team_valid()
         {
             int team_id = 1;

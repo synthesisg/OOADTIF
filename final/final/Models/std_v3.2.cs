@@ -42,7 +42,7 @@ namespace final.Models
         public int id { get; set; }
         public int klass_id { get; set; }
         public int course_id { get; set; }
-        public int leader_id { get; set; }
+        public int leader_id { get; set; }//?
         public string team_name { get; set; }
         public byte team_serial { get; set; }
         public byte? klass_serial { get; set; }

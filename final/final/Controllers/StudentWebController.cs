@@ -257,7 +257,6 @@ namespace final.Controllers
         public bool cancelsignup(string data)
         {
             int ksid = 1;
-            byte order = 1;
 
             int sid = Int32.Parse(Session["user_id"].ToString());
             int team_id = new qt().k2t(db.klass_seminar.Find(ksid).klass_id, sid);

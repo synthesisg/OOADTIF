@@ -32,7 +32,7 @@
                 @for (int i = 0; i < ViewBag.stulist.cnt; i++)
                 {
                     <tr>
-                        <td><input type="checkbox" value="@ViewBag.stulist.student_id[i]" /></td>
+                        <td><input type="checkbox" name="sidlist" value="@ViewBag.stulist.student_id[i]" /></td>
                         <td><p>@ViewBag.stulist.account[i]</p></td>
                         <td><p>@ViewBag.stulist.name[i]</p></td>
                     </tr>
@@ -55,7 +55,8 @@
     function searchStudent()
     {
         var sid = document.getElementById("sear").value;
-        if (sid != "") {
+        //if (sid != "")
+        {
             $.ajax({
                 'url': "/StudentMobile/search",
                 'type': "post",
@@ -89,7 +90,7 @@
 							cell = row.insertCell(0);
 							cell.innerHTML = "<td><p>" + jobj.account[i] + "</p></td>";
 							cell = row.insertCell(0);
-							cell.innerHTML = "<td><input type='checkbox' value=" + jobj.student_id[i] + " /></td>";
+                            cell.innerHTML = "<td><input type='checkbox' name='sidlist' value=" + jobj.student_id[i] + " /></td>";
 						}
                     }
                 },

@@ -1,89 +1,91 @@
 ﻿
 @{
-	ViewBag.Title = "ChsSpecSeminar";
-	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+    ViewBag.Title = "ChsSpecSeminar";
+    Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
 
 <style>
-	ul {
-		margin: 0;
-		padding: 0;
-	}
+    ul {
+        margin: 0;
+        padding: 0;
+    }
 </style>
 <!--和学生端一样的数据-->
 <!--需要round_id-->
+
+<p>要找个地方显示 @ViewBag.cs.course.course_name 比如上面中间</p>
 <div class="container" style="margin-top:20px;width:100%;margin:0;padding:0;">
-	<!--需要修改f函数-->
-	<!--id命名规则 如果有n轮 1~n 为轮次id n~m为第一轮m-n门讨论课id-->
-	@{ int totalRound = 0;
-		foreach (dynamic item in ViewBag.rs) {
-			totalRound++;
-		}
-		int round = 1;//临时变量 用于赋值id
-		foreach (dynamic item in ViewBag.rs) {
-			<ul id="@round" style="line-height:40px;list-style-type:none;width:100%;">
-				<li onclick="f('@round')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;">
-					第 @round  轮
-					<span class="glyphicon glyphicon-align-justify" style="float:right;line-height:40px;margin-right:1em;"></span>
-				</li>
-				<li onclick="window.location.href='/TeacherWeb/SetSeminarSerial'" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
-							本轮轮次设置
-							<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
-				</li>
-				@{ int totalCSmn = 0;
-					foreach (dynamic s in item.s) {
-						totalCSmn++;
-					}
-					int Csmn = 1;//临时变量 用于赋值id
-					foreach (dynamic s in item.s) {
-						int temp = totalRound + (totalRound - 1) * totalCSmn + Csmn;
-						<li id="ksid_@item.klass_seminar_id[Csmn-1]" onclick="Go2SpecSmn(@item.klass_seminar_id[Csmn-1])" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
-							@s.seminar_name
-							<a onclick="delSeminar()">删除该讨论课</a>
-							<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
-						</li>
-						Csmn++;
-					}
-				}
-			</ul>
-			round++;
-		}
-	}
+    <!--需要修改f函数-->
+    <!--id命名规则 如果有n轮 1~n 为轮次id n~m为第一轮m-n门讨论课id-->
+    @{ int totalRound = 0;
+        foreach (dynamic item in ViewBag.cs.rs)
+        {
+            totalRound++;
+        }
+        int round = 1;//临时变量 用于赋值id
+        foreach (var item in ViewBag.cs.rs)
+        {
+            <ul id="@round" style="line-height:40px;list-style-type:none;width:100%;">
+                <li onclick="f('@round')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;">
+                    第 @round  轮
+                    <span class="glyphicon glyphicon-align-justify" style="float:right;line-height:40px;margin-right:1em;"></span>
+                </li>
+                <li onclick="window.location.href='/TeacherMobile/SetSeminarSerial/@item.r.id'" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+                    本轮轮次设置
+                    <span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
+                </li>
+                @{
+                    int Csmn = 1;//临时变量 用于赋值id
+                    foreach (var s in item.sklist)
+                    {
+                        int temp = totalRound + (totalRound - 1) * 5 + Csmn;
+                        <li id="sid_@s.seminar.id" onclick="Go2SpecSmn(@s.seminar.id)" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+                            @s.seminar.seminar_name
+                            <a onclick="delSeminar(@s.seminar.id)">删除该讨论课</a>
+                            <span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
+                        </li>
+                        Csmn++;
+                    }
+                }
+            </ul>
+            round++;
+        }
+    }
 </div>
 <!-- 需要修改courseid-->
-<button type="button" class="btn btn-default btn-lg" style="width:100%" onclick="window.location.href='CreateSeminar/'+courseid">
-	<span class="glyphicon glyphicon-plus"></span> 创建新讨论课
+<button type="button" class="btn btn-default btn-lg" style="width:100%" onclick="window.location.href='/TeacherMobile/CreateSeminar/'+@ViewBag.cs.course.id">
+    <span class="glyphicon glyphicon-plus"></span> 创建新讨论课
 </button>
 
 
 <script>
-	function f(roundId) {
-		var liArr = document.querySelectorAll("ul[id='" + roundId + "'] li")
-		for (var i = 1; i < liArr.length; i++) {
-			if (liArr[i].style.display == "block") {
-				liArr[i].style.display = "none";
-			}
-			else
-				liArr[i].style.display = "block";
-		}
-	}
-	function Go2SpecSmn(n) {
-		window.location.href = "ChsSpecKlass/" + n;
-	}
-	function delSeminar(seminarId) {
-		if (confirm("确认删除吗？")) {
-			$.ajax({
-				'url': "",
-				'type': "post",
-				'data': { seminarId: seminarId }.
-					success: function() {
-						alert("删除成功");
-						window.location.reload();
-					},
-				error: function () {
-					alert("删除失败！请重试");
-				}
-			})
-		}
-	}
+    function f(roundId) {
+        var liArr = document.querySelectorAll("ul[id='" + roundId + "'] li")
+        for (var i = 1; i < liArr.length; i++) {
+            if (liArr[i].style.display == "block") {
+                liArr[i].style.display = "none";
+            }
+            else
+                liArr[i].style.display = "block";
+        }
+    }
+    function Go2SpecSmn(n) {
+        window.location.href = "/TeacherMobile/ChsSpecKlass/" + n;
+    }
+    function delSeminar(seminarId) {
+        if (confirm("确认删除吗？")) {
+            $.ajax({
+                'url': "/TeacherMobile/DelSeminar",
+                'type': "post",
+                'data': { seminarId: seminarId },
+                success: function () {
+                    alert("删除成功");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("删除失败！请重试");
+                }
+            })
+        }
+    }
 </script>
