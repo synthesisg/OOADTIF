@@ -177,8 +177,31 @@ namespace final.Controllers
 
             return View();
         }
-        public ActionResult StudentScore1() { return View(); }
         public ActionResult StudentScore2() { return View(); }
+        public ActionResult QueryEnrollSmn(int id)//klass_seminar_id 查看
+        {
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
+            ViewBag.model = model;
+            ViewBag.TitleText = model.seminar_name;
+            return View();
+        }
+        public ActionResult MarkReport(int id) {//ksid=======================
+            ViewBag.model = new seminar_report(9);
+
+            return View();
+        }
+        public ActionResult CheckModAllMark() {
+            return View();
+        }
+        public ActionResult NowSmnDisplay() {
+            return View();
+        }
+        public ActionResult modSeminar() {
+            return View();
+        }
+        public ActionResult InSeminar() {
+            return View();
+        }
         public ActionResult CreateSeminar(int id)//course_id
         {
             switch (Request.HttpMethod)

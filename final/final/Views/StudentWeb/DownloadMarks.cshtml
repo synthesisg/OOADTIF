@@ -52,9 +52,7 @@
 			'type': "post",
 			'data': { course_id: courseId },
             'success': function (jsonstr) {
-				alert(jsonstr);
 				obj = eval("(" + jsonstr + ")");
-				alert(obj.ss);
 				var i = 0;
 				for (var ob in obj.ss) {
 					var row = tbody.insertRow(i);

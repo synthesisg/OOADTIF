@@ -1,16 +1,18 @@
-﻿@{
+﻿
+@{
+	ViewBag.Title = "modSeminar";
 	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
-	ViewBag.Title = "CreateSeminar";
 }
+<!--============================================================-->
 <form class="bs-example bs-example-form" method="post" onsubmit="if (!validateCreate()) return false;">
 	<div class="container" style="width:100%">
 		<div class="container" style="background-color:#ffffff;margin:1px;width:100%">
 			<div class="input-group" style="margin-top:5px">
 				<span class="input-group-addon">主题</span>
-				<input type="text" id="title"name="title" class="form-control">
+				<input type="text" id="title" name="title" class="form-control">
 			</div>
 			<h4>讨论课要求：</h4>
-			<textarea rows="4" cols="35" id="content"name="content" style="margin-top:5px"></textarea>
+			<textarea rows="4" cols="35" id="content" name="content" style="margin-top:5px"></textarea>
 			<br />
 			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;">讨论课可见:</p>
 			<input name="visible" type="checkbox" value="1" />可见
@@ -30,7 +32,6 @@
 
 			<select id="roundInfo" name="roundInfo" style="width:40%;">
 				<option value="0" selected="selected">新增一轮</option>
-
 				@{
 					int length = ViewBag.rlist.Count;
 					for (int i = 0; i < length; i++) {
@@ -40,41 +41,20 @@
 			</select><br />
 		</div>
 	</div>
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#ffffff;margin:1px;width:100%">
+			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;">书面报告提交截止时间</p>
+			@{//几个班循环几次===================================================
+				<p>2016-1</p>
+				<input type="datetime-local" id="end_date" name="end_date" style="line-height:15px;font-size:10px;" />
+				<br />
+			}
+		</div>
+	</div>
+	<div class="input-group input-group input-group-lg" style="margin: 80px auto;">
+		<input type="submit" name="delete" class="btn btn-primary btn-lg" value="删除" style="background-color:red;width:300px;">
+	</div>
 	<div class="input-group input-group input-group-lg" style="margin: 80px auto">
-		<input type="submit" class="btn btn-primary btn-lg" value="发布" style="background-color:#1fa5e5;width:300px;">
+		<input type="submit" name="save"class="btn btn-primary btn-lg" value="保存" style="background-color:#1fa5e5;width:300px;">
 	</div>
 </form>
-	
-<script>
-	function validateCreate() {
-		var title = document.getElementById("title");
-		var content = document.getElementById("content");
-		var start = document.getElementById("start_date");
-		var end = document.getElementById("end_date");
-		var count = document.getElementById("groupCount");
-		if (title.value == "") {
-			alert("主题不能为空");
-			return false;
-		}
-		if (content.value == "") {
-			alert("讨论课要求不能为空");
-			return false;
-		}
-		if (start == "" || end == "") {
-			alert("开始或截止日期未填写");
-			return false;
-		}
-		if (count!="") {
-			var reg = new RegExp("[0-9]+"); //正则表达式
-
-			if (count.value === "") { //输入不能为空
-				alert("请填写小组上限");
-				return false;
-			}
-			else if (!reg.test(count.value)) { //正则验证不通过，格式不对
-				alert("请输入数字");
-				return false;
-			}
-		}
-	}
-</script>
