@@ -89,23 +89,8 @@ namespace final.Controllers
 
             return true;
         }
-        public ActionResult Seminar(int id)//没懂什么界面
-        {
-            if (is_judge)
-            {
-                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
-            }
-            else Session["user_id"] = test_id;
-
-            int tid = Int32.Parse(Session["user_id"].ToString());
-            course_seminar cs = new course_seminar(id);
-            ViewBag.cs = cs;
-            return View();
-        }
-
         //仅course 后续跳转至chsseminar
-        public ActionResult Course()
+        public ActionResult Seminar()
         {
             if (is_judge)
             {
@@ -116,8 +101,9 @@ namespace final.Controllers
 
 
             int tid = Int32.Parse(Session["user_id"].ToString());
-            var colist = (from co in db.course where co.teacher_id == tid select co.id).ToList();
+            var colist = (from co in db.course where co.teacher_id == tid select co).ToList();
             ViewBag.colist = colist;
+            ViewBag.a = "a";
             return View();
         }
 
@@ -230,6 +216,9 @@ namespace final.Controllers
             //team_and_strategy team_or_strategy  与或 对应策略
             //team_strategy 每门课必须一个
 
+        }
+        public ActionResult KlassSeminar() {
+            return View();
         }
         void daiban()
         {

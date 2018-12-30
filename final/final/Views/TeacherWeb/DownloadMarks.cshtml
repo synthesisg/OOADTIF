@@ -86,8 +86,9 @@
 			'type': 'post',
 			'data': { round_id: round_id },
 			success: function (jsonstr) {
+				alert(jsonstr);
 				jobj = eval("(" + jsonstr + ")");
-				alert(jobj.seminar_serial[1]);
+				alert(jobj.ss)
 				var tbody = document.getElementById("tbody");
 				var i = 0;
 				for (var obj in jobj.ss) {

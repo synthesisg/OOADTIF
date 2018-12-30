@@ -39,6 +39,7 @@
 						int temp = totalRound + (totalRound - 1) * totalCSmn + Csmn;
 						<li id="ksid_@item.klass_seminar_id[Csmn-1]" onclick="Go2SpecSmn(@item.klass_seminar_id[Csmn-1])" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
 							@s.seminar_name
+							<a onclick="delSeminar()">删除该讨论课</a>
 							<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
 						</li>
 						Csmn++;
@@ -49,19 +50,40 @@
 		}
 	}
 </div>
+<!-- 需要修改courseid-->
+<button type="button" class="btn btn-default btn-lg" style="width:100%" onclick="window.location.href='CreateSeminar/'+courseid">
+	<span class="glyphicon glyphicon-plus"></span> 创建新讨论课
+</button>
+
 
 <script>
-		function f(roundId) {
-			var liArr = document.querySelectorAll("ul[id='"+roundId+"'] li")
-			for (var i = 1; i < liArr.length; i++) {
-				if (liArr[i].style.display == "block") {
-					liArr[i].style.display = "none";
-				}
-				else
-					liArr[i].style.display = "block";
+	function f(roundId) {
+		var liArr = document.querySelectorAll("ul[id='" + roundId + "'] li")
+		for (var i = 1; i < liArr.length; i++) {
+			if (liArr[i].style.display == "block") {
+				liArr[i].style.display = "none";
 			}
+			else
+				liArr[i].style.display = "block";
+		}
 	}
 	function Go2SpecSmn(n) {
-        window.location.href = "/StudentMobile/KlassSeminar/" + n;
+		window.location.href = "ChsSpecKlass/" + n;
+	}
+	function delSeminar(seminarId) {
+		if (confirm("确认删除吗？")) {
+			$.ajax({
+				'url': "",
+				'type': "post",
+				'data': { seminarId: seminarId }.
+					success: function() {
+						alert("删除成功");
+						window.location.reload();
+					},
+				error: function () {
+					alert("删除失败！请重试");
+				}
+			})
+		}
 	}
 </script>

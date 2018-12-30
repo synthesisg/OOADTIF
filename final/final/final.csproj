@@ -264,12 +264,10 @@
     <Content Include="Views\TeacherMobile\CreateClass.cshtml" />
     <Content Include="Views\TeacherMobile\CreateSeminar.cshtml" />
     <Content Include="Views\StudentMobile\CreateTeam.cshtml" />
-    <Content Include="Views\TeacherMobile\CourseManage.cshtml" />
-    <Content Include="Views\TeacherMobile\StudentScore1.cshtml" />
     <Content Include="Views\TeacherMobile\StudentScore2.cshtml" />
-    <Content Include="Views\TeacherMobile\course.cshtml" />
-    <Content Include="Views\TeacherMobile\courseinfor.cshtml" />
     <Content Include="Views\Home\Chat.cshtml" />
+    <Content Include="Views\TeacherMobile\ChsSpecKlass.cshtml" />
+    <Content Include="Views\TeacherMobile\KlassSeminar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

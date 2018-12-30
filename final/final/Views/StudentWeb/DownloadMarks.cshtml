@@ -30,7 +30,7 @@
 				<th>总成绩</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="tbody">
 			<!--ViewBag 给我信息我这里用foreach填-->
 				<tr>
 				</tr>
@@ -51,8 +51,25 @@
 			'url': "/StudentWeb/getmark",
 			'type': "post",
 			'data': { course_id: courseId },
-            'success': function (result) {
-				alert(result);
+            'success': function (jsonstr) {
+				alert(jsonstr);
+				obj = eval("(" + jsonstr + ")");
+				alert(obj.ss);
+				var i = 0;
+				for (var ob in obj.ss) {
+					var row = tbody.insertRow(i);
+					cell = row.insertCell(0);
+					cell.innerHTML = obj.ss[ob].total_score;
+					cell = row.insertCell(0);
+					cell.innerHTML = obj.ss[ob].report_score;
+					cell = row.insertCell(0);
+					cell.innerHTML = obj.ss[ob].question_score;
+					cell = row.insertCell(0);
+					cell.innerHTML = obj.ss[ob].presentation_score;
+					cell = row.insertCell(0);
+					cell.innerHTML = obj.serial[i];
+					i++;
+				}
             },
 			'error': function () {
 				alert("发送失败！");
