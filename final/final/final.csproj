@@ -273,6 +273,16 @@
     <Content Include="Views\TeacherMobile\CheckModAllMark.cshtml" />
     <Content Include="Views\TeacherMobile\modSeminar.cshtml" />
     <Content Include="Views\TeacherMobile\InSeminar.cshtml" />
+    <Content Include="Views\StudentMobile\StudentIndividual.cshtml" />
+    <Content Include="Views\StudentMobile\StudentMyCourse.cshtml" />
+    <Content Include="Views\StudentMobile\CourseInfo.cshtml" />
+    <Content Include="Views\StudentMobile\StudentTeam.cshtml" />
+    <Content Include="Views\StudentMobile\StudentMyTeam.cshtml" />
+    <Content Include="Views\StudentMobile\AccountAndSet.cshtml" />
+    <Content Include="Views\StudentMobile\ChangePassword.cshtml" />
+    <Content Include="Views\StudentMobile\ChangeEmail.cshtml" />
+    <Content Include="Views\TeacherMobile\SetReportDDL.cshtml" />
+    <Content Include="Views\StudentMobile\CheckMark.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

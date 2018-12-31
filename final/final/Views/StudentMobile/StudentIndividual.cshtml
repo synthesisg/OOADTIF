@@ -1,0 +1,33 @@
+﻿
+@{
+	ViewBag.Title = "StudentIndividual";
+	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout3.cshtml";
+	ViewBag.TitleText = "个人";
+}
+<style>
+	div .row{
+	margin-top:10px;
+	padding:0;
+	width:100%;
+	background-color:#ffffff;
+	}
+</style>
+<div class="row">
+	<div class="col-xs-1 col-sm-1">
+	</div>
+	<div class="col-xs-11 col-sm-11">
+		<h3>name</h3>
+		<p>id</p>
+	</div>
+</div>
+
+<div class="row">
+	<!--add id==============================================-->>
+	<button type="button" class="btn btn-default btn-lg btn-block" onclick="window.localStorage.href='/StudentMobile/StudentMyCourse'">我的课程
+		<span class="glyphicon glyphicon-chevron-right"style="float:right"></span>
+	</button>
+	<button type="button" class="btn btn-default btn-lg btn-block">账户与设置
+		<span class="glyphicon glyphicon-chevron-right" style="float:right"></span>
+	</button>
+</div>
+

@@ -11,11 +11,10 @@
 </style>
 <div class="row" style="background-color:#ffffff;width:100%">
 	<p style="text-align:center"> @ViewBag.seminar_name</p>
+	<p id="groupDis" style="display:inline;color:orangered;margin-left:3em">当前展示小组：2-1</p>
+	<p id="questionDis" style="float:right;display:inline;color:green">已有j位同学提问</p>
 </div>
-<div class="row" style="background-color:#ffffff;width:100%">
-	<p style="text-align:center"> now display group 2-1</p>
-</div>
-<div class="row" style="background-color:#ffffff;width:100%">
+<div class="row" style="background-color:#ffffff;width:100%;margin-top:10px">
 	<div class="col-sm-4 col-xs-4"><p style="text-align:center">选择小组</p></div>
 	<div class="col-sm-8 col-xs-8">
 		<select id="group_id" name="group_id" class="form-control" onChange="getData(this.options[this.selectedIndex].value)">
@@ -26,13 +25,21 @@
 		</select>
 	</div>
 </div>
-<div class="row" style="background-color:#ffffff;width:100%">
+<div class="row" style="background-color:#ffffff;width:100%;">
 	<div class="col-sm-4 col-xs-1"></div>
 	<div class="input-group">
 		<span class="input-group-addon">展示分数</span>
 		<input type="text" class="form-control">
 	</div>
 </div>
+
+<div class="row" style="background-color:#ffffff;width:100%;margin-top:10px">
+	<div class="col-sm-4 col-xs-4"><p style="text-align:center">选择小组</p></div>
+	<div class="col-sm-8 col-xs-8">
+		<select id="ques_id" name="ques_id" class="form-control"></select>
+	</div>
+</div>
+
 <div class="row" style="background-color:#ffffff;width:100%">
 	<div class="col-sm-4 col-xs-1"></div>
 	<div class="input-group">
@@ -40,37 +47,58 @@
 		<input type="text" class="form-control">
 	</div>
 </div>
-<div class="row" style="background-color:#ffffff;width:100%">
-	<div class="col-sm-4 col-xs-4"><p style="text-align:center">选择提问人</p></div>
-	<div class="col-sm-8 col-xs-8">
-		<select id="group_id" name="group_id" class="form-control" onChange="getData(this.options[this.selectedIndex].value)">
-			<option value="1-5">1-5</option>
-			<option value="1-3">1-3</option>
-			<option value="1-2">1-2</option>
-			<option value="1-6" disabled selected="selected">1-6</option>
-		</select>
-	</div>
-</div>
+
 <div style="margin-top:40px">
 	<button type="button" class="btn btn-primary btn-lg btn-block">保存分数</button>
 </div>
 <div>
-	<button type="button" class="btn btn-primary btn-lg btn-block">抽取提问</button>
+	<button type="button" class="btn btn-primary btn-lg btn-block" onclick="selectQuestion()">抽取提问</button>
 </div>
 <div>
-	<button type="button" class="btn btn-primary btn-lg btn-block">下组展示</button>
+	<button type="button" class="btn btn-primary btn-lg btn-block" onclick="nextGroup()">下组展示</button>
 </div>
 
-
-	<script>
-		function getData(n) {
-			$.ajax({
-				'url': "",
-				'type': "post",
-				'data': { id: n },
-				success: function () {
-					//修改input框分数的value
-				}
-			})
+<script>
+	function nextGroup() {
+		var p = document.getElementById("questionDis");
+		p.innerHTML = "已有0位同学提问";
+		//清空队列
+		document.getElementById("ques_id").options.length = 0;
+		if(true)//如果没结束
+			alert("请 group 1-3 开始展示 ");
+		else//如果讨论课结束了=============================
+		{
+			window.location.href = "/TeacherMobile/SetReportDDL/" + ksid;
 		}
-	</script>
+	}
+	function getData(n) {
+		$.ajax({
+			'url': "",
+			'type': "post",
+			'data': { id: n },
+			success: function () {
+				//修改input框分数的value
+			}
+		})
+	}
+	function modNowDisGroup(mes) {
+		var obj = document.getElementById("groupDis");
+		obj.value = "当前展示小组：" + mes;
+	}
+	function addNowQuestion(mes) {
+		//修改提问人数并刷新select
+		var obj = document.getElementById("questionDis");
+		obj.value = "当前提问人数为:" + mes;
+
+	}
+	function selectQuestion() {
+		//选择一位同学
+		//添加到select==================================
+		var select = document.getElementById("ques_id");
+		//name->text group_id->value
+		var varItem = new Option(name, group_id);
+		select.options.add(varItem);
+		//提问
+		alert("请 2-1 xxx同学提问");
+	}
+</script>

@@ -427,6 +427,10 @@ namespace final.Controllers
             ViewBag.model = model;
             return View();
         }
+        public ActionResult SetReportDDL(int id)//ksid
+        {
+            return View();
+        }
         void daiban()
         {
             teacher t = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));

@@ -226,6 +226,9 @@ namespace final.Controllers
             //要  ViewBag.TitleText = 课程名 + 讨论课名
             return View();
         }
+        public ActionResult CheckMark() {
+            return View();
+        }
         public bool SendPW2Email(string data)
         {
             var uilist = (from ui in db.student where ui.account.Equals(data) select ui).ToList();
@@ -388,7 +391,30 @@ namespace final.Controllers
             ViewBag.course_id = id;
             return View();
         }
-
+        public ActionResult StudentIndividual (){
+            return View();
+        }
+        public ActionResult StudentMyCourse() {
+            return View();
+        }
+        public ActionResult CourseInfo() {
+            return View();
+        }
+        public ActionResult StudentTeam() {
+            return View();
+        }
+        public ActionResult StudentMyTeam() {
+            return View();
+        }
+        public ActionResult AccountAndSet() {
+            return View();
+        }
+        public ActionResult ChangePassword() {
+            return View();
+        }
+        public ActionResult ChangeEmail() {
+            return View();
+        }
         //course下未组队学生
         public astulist studentlist(int id, string str = "")
         {
