@@ -53,7 +53,8 @@
 			'data': { course_id: courseId },
             'success': function (jsonstr) {
 				obj = eval("(" + jsonstr + ")");
-				var i = 0;
+                var i = 0;
+                $("tbody").html("");
 				for (var ob in obj.ss) {
 					var row = tbody.insertRow(i);
 					cell = row.insertCell(0);

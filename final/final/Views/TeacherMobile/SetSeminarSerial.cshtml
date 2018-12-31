@@ -3,50 +3,60 @@
 	ViewBag.Title = "SetSeminarSerial";
 	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
-
+<form method="post">
 <h3 style="text-align:center">成绩设置</h3>
 <div class="row" style="margin-top:20px;">
 	<p style="display:inline;margin:3em">展示</p>
-	<select id="group_id" name="group_id" class="form-control" style="display:inline">
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-	</select>
+    <select id="presentation_score_method" name="presentation_score_method" class="form-control" style="display:inline">
+        @if (ViewBag.round.presentation_score_method == null || ViewBag.round.presentation_score_method == 0)
+        {
+            <option value="0" selected="selected">平均分</option>
+            <option value="1">最高分</option>
+        }
+        else
+        {
+            <option value="0">平均分</option>
+            <option value="1" selected="selected">最高分</option>
+        }
+    </select>
 </div>
 <div class="row" style="margin-top:20px;">
 	<p style="display:inline;margin:3em">提问</p>
-	<select id="group_id" name="group_id" class="form-control" style="display:inline">
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-	</select>
+    <select id="question_score_method" name="question_score_method" class="form-control" style="display:inline">
+        @if (ViewBag.round.question_score_method == null || ViewBag.round.question_score_method == 0)
+        {
+            <option value="0" selected="selected">平均分</option>
+            <option value="1">最高分</option>
+        }
+        else
+        {
+            <option value="0">平均分</option>
+            <option value="1" selected="selected">最高分</option>
+        }
+    </select>
 </div>
 <div class="row" style="margin-top:20px;">
 	<p style="display:inline;margin:3em">报告</p>
-	<select id="group_id" name="group_id" class="form-control" style="display:inline">
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-	</select>
+    <select id="report_score_method" name="report_score_method" class="form-control" style="display:inline">
+        @if (ViewBag.round.report_score_method == null || ViewBag.round.report_score_method == 0)
+        {
+            <option value="0" selected="selected">平均分</option>
+            <option value="1">最高分</option>
+        }
+        else
+        {
+            <option value="0">平均分</option>
+            <option value="1" selected="selected">最高分</option>
+        }
+    </select>
 </div>
 <h3 style="text-align:center">本轮讨论课报名次数</h3>
-@{//===============================================
+@for(int i=0;i< ViewBag.klass_serial.Count;i++)
+{
 <div class="row" style="margin-top:20px;">
-	<p style="display:inline;margin:3em">2016-1</p>
-	<select id="group_id" name="group_id" class="form-control" style="display:inline">
-		@{
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-		}
-	</select>
+    <p style="display:inline;margin:3em">@ViewBag.klass_serial[i]</p>
+	<input type="text" id="k_@ViewBag.klassid[i]" name="k_@ViewBag.klassid[i]" class="form-control" value="@ViewBag.enroll_number[i]" style="display:inline"/>
 </div>
 }
+<input type="submit" class="btn btn-primary btn-lg" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%"/>
+</form>

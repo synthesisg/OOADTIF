@@ -99,11 +99,17 @@ namespace final.Controllers
             }
             else Session["user_id"] = test_id;
 
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
 
             int tid = Int32.Parse(Session["user_id"].ToString());
             var colist = (from co in db.course where co.teacher_id == tid select co).ToList();
             ViewBag.colist = colist;
-            ViewBag.a = "a";
             return View();
         }
 
@@ -138,17 +144,12 @@ namespace final.Controllers
             switch (Request.HttpMethod)
             {
                 case "GET":         //load
-                    //本轮讨论课
                     ViewBag.seminar_name = (from s in db.seminar where s.round_id == id select s.seminar_name).ToList();
-
-                    //成绩设置
-                    ViewBag.round = db.round.Find(id);//0平均1最高
-
-                    //报名次数  是否需要增加kr按钮？还是默认创1？
+                    ViewBag.round = db.round.Find(id);
                     var krlist = (from kr in db.klass_round where kr.round_id == id select kr).ToList();
                     List<string> klass_serial = new List<string>();
                     List<int> enroll_number = new List<int>();
-                    List<int> klassid = new List<int>();    //加上前缀k_作为input的name/id  name='k_@ViewBag.klassid[i]'
+                    List<int> klassid = new List<int>();
                     foreach (var kr in krlist)
                     {
                         klass_serial.Add(new qt().k2ks(kr.klass_id));
@@ -172,12 +173,12 @@ namespace final.Controllers
                         kr.enroll_number = byte.Parse(Request["k_" + kr.klass_id.ToString()]);
                     }
                     db.SaveChanges();
-                        break;//============================================================================================================[setround]=================
+                    return RedirectToAction("SetSeminarSerial");
             }
 
             return View();
         }
-        public ActionResult StudentScore2() { return View(); }
+        public ActionResult StudentScore2() { return View(); }//===============================================================[???]===========================
         public ActionResult QueryEnrollSmn(int id)//klass_seminar_id 查看
         {
             klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
@@ -185,10 +186,42 @@ namespace final.Controllers
             ViewBag.TitleText = model.seminar_name;
             return View();
         }
-        public ActionResult MarkReport(int id) {//ksid=======================
-            ViewBag.model = new seminar_report(9);
+        public ActionResult MarkReport(int id)      //ksid
+        {
+            switch (Request.HttpMethod)
+            {
+                case "GET":
+                    ViewBag.model = new seminar_report("ksid", id);
+                    break;
+                case "POST":
+                    seminar_report sr= new seminar_report("ksid", id);
 
-            return View();
+                    foreach (var item in sr.list)
+                    {
+                        string str = Request[item.id.ToString()];
+                        decimal? score = (str == null ? null : (decimal?) decimal.Parse(str));
+
+                        int team_id = db.attendance.Find(item.id).team_id;
+
+                        var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == team_id select ss).ToList();
+                        if (sslist.Count() > 0)
+                        {
+                            sslist[0].report_score = score;
+                        }
+                        else
+                        {
+                            seminar_score NewSS = new seminar_score { klass_seminar_id = id, report_score = score, team_id = team_id };
+                            db.seminar_score.Add(NewSS);
+                        }
+                        db.SaveChanges();
+
+                        UpdateScore us = new UpdateScore();
+                        us.UpdateKlassSeminarScore(id);
+                        us.UpdateRoundScore(db.seminar.Find(db.klass_seminar.Find(id).seminar_id).round_id);
+                    }
+                    break;
+            }
+                    return View();
         }
         public ActionResult CheckModAllMark() {
             return View();
@@ -196,10 +229,90 @@ namespace final.Controllers
         public ActionResult NowSmnDisplay() {
             return View();
         }
-        public ActionResult modSeminar() {
+        public ActionResult modSeminar(int id)//seminar_id
+        {
+            switch (Request.HttpMethod)
+            {
+                case "GET":
+                    var rlist = (from r in db.round where r.course_id == id select r).ToList();
+                    ViewBag.rlist = rlist;
+                    seminar seminar = db.seminar.Find(id);
+                    ViewBag.seminar = seminar;
+                    ViewBag.enroll_start_time = ((DateTime)seminar.enroll_start_time).ToString("yyyy-MM-ddTHH:mm:ss.fff");
+                    ViewBag.enroll_end_time = ((DateTime)seminar.enroll_end_time).ToString("yyyy-MM-ddTHH:mm:ss.fff");
+                    var kslist = (from ks in db.klass_seminar where ks.seminar_id == id select ks).ToList();
+                    List<string> name = new List<string>();
+                    List<string> date = new List<string>();
+                    List<int> ksid = new List<int>();
+                    foreach(var ks in kslist)
+                    {
+                        name.Add(new qt().k2ks(ks.klass_id));
+                        if (ks.report_ddl != null)
+                            date.Add(((DateTime)ks.report_ddl).ToString("yyyy-MM-ddTHH:mm:ss.fff"));
+                        else date.Add(null);
+                        ksid.Add(ks.id);
+                    }
+                    ViewBag.name = name;
+                    ViewBag.date = date;
+                    ViewBag.ksid = ksid;
+                    break;
+                case "POST":
+                    int rid = Int32.Parse(Request["roundInfo"]);
+                    byte vis = 0;
+                    string str = Request["visible"];
+                    if (str != null) vis = 1;
+
+                    if (rid == 0)
+                    {
+                        int cnt = (from r in db.round where r.course_id == id select r).Count() + 1;
+                        round NewRound = new round
+                        {
+                            course_id = id,
+                            presentation_score_method = 0,
+                            question_score_method = 0,
+                            report_score_method = 0,
+                            round_serial = (byte)cnt
+                        };
+                        db.round.Add(NewRound);
+                        db.SaveChanges();
+                        rid = NewRound.id;
+                    }
+                    seminar s = db.seminar.Find(id);
+                    s.enroll_start_time = Convert.ToDateTime(Request["start_date"].Replace("T"," "));
+                    s.enroll_end_time = Convert.ToDateTime(Request["end_date"].Replace("T", " "));
+                    s.introduction = Request["content"];
+                    s.seminar_name = Request["title"];
+                    s.max_team = byte.Parse(Request["groupCount"]);
+                    s.round_id = rid;
+                    s.is_visible = vis;
+                    var ksrlist = (from ks in db.klass_seminar where ks.seminar_id == id select ks).ToList();
+                    foreach (var ks in ksrlist)
+                        ks.report_ddl = Convert.ToDateTime(Request["ks_" + ks.id.ToString()]);
+                    db.SaveChanges();
+
+                    //CreateKlassRound
+                    List<int> ridlist = (from r in db.round where r.course_id == id select r.id).ToList();
+                    List<int> kidlist = (from k in db.klass where k.course_id == id select k.id).ToList();
+                    foreach(var i in ridlist)
+                        foreach(var j in kidlist)
+                        {
+                            int cnt = (from kr in db.klass_round where kr.round_id == i && kr.klass_id == j select kr).Count();
+                            if (cnt == 0) 
+                            {
+                                klass_round NewKR = new klass_round { round_id = i, klass_id = j, enroll_number = 1 };
+                                db.klass_round.Add(NewKR);
+                            }
+                        }
+                    db.SaveChanges();
+
+                    return RedirectToAction("/Seminar");
+                    break;
+            }
             return View();
         }
-        public ActionResult InSeminar() {
+        public ActionResult InSeminar(int id)//ksid
+        {
+            ViewBag.seminar_name = db.seminar.Find(db.klass_seminar.Find(id).seminar_id).seminar_name;
             return View();
         }
         public ActionResult CreateSeminar(int id)//course_id
@@ -215,8 +328,6 @@ namespace final.Controllers
                     byte vis = 0;
                     string str = Request["visible"];
                     if (str != null) vis = 1;
-
-                    if (str == null) return Content("null"); else return Content("1");
 
                     if (rid == 0)
                     {
@@ -248,7 +359,22 @@ namespace final.Controllers
                     };
                     db.seminar.Add(NewSeminar);
                     db.SaveChanges();
-                    return View();
+
+                    //CreateKlassRound
+                    List<int> ridlist = (from r in db.round where r.course_id == id select r.id).ToList();
+                    List<int> kidlist = (from k in db.klass where k.course_id == id select k.id).ToList();
+                    foreach(var i in ridlist)
+                        foreach(var j in kidlist)
+                        {
+                            int cnt = (from kr in db.klass_round where kr.round_id == i && kr.klass_id == j select kr).Count();
+                            if(cnt==0)
+                            {
+                                klass_round NewKR = new klass_round { round_id = i, klass_id = j, enroll_number = 1 };
+                                db.klass_round.Add(NewKR);
+                            }
+                        }
+                    db.SaveChanges();
+                    return RedirectToAction("/Seminar");
             }
             return View();
         }

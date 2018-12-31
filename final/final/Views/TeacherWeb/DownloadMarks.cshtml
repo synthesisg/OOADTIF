@@ -86,9 +86,8 @@
 			'type': 'post',
 			'data': { round_id: round_id },
 			success: function (jsonstr) {
-				alert(jsonstr);
-				jobj = eval("(" + jsonstr + ")");
-				alert(jobj.ss)
+                jobj = eval("(" + jsonstr + ")");
+                $("#tbody").html("");
 				var tbody = document.getElementById("tbody");
 				var i = 0;
 				for (var obj in jobj.ss) {
@@ -107,21 +106,6 @@
 					cell.innerHTML = jobj.team_serial[i];
 					i++;
 				}
-				//for (var obj in jobj) {
-				//	var row = tbody.insertRow(0);
-				//	cell = row.insertCell(0);
-				//	cell.innerHTML = jobj[obj].total_score;
-				//	cell = row.insertCell(0);
-				//	cell.innerHTML = jobj[obj].report_score;
-				//	cell = row.insertCell(0);
-				//	cell.innerHTML = jobj[obj].question_score;
-				//	cell = row.insertCell(0);
-				//	cell.innerHTML = jobj[obj].presentation_score; 
-				//	cell = row.insertCell(0);
-				//	cell.innerHTML = " ";
-				//	cell = row.insertCell(0);
-				//	cell.innerHTML = jobj[obj].team_id;
-				//}
 			},
 			error: function () {
 				alert(" link error");

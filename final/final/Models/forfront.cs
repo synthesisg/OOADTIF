@@ -133,6 +133,67 @@ namespace final.Models
 
         MSSQLContext db = new MSSQLContext();
     }
+    public class UpdateScore
+    {
+        public UpdateScore() { }
+
+        //生成ksid的总分，与round无关
+        public void UpdateKlassSeminarScore(int ksid)
+        {
+            course c = db.course.Find(db.seminar.Find(db.klass_seminar.Find(ksid).seminar_id).course_id);
+            byte p = c.presentation_percentage, q = c.question_percentage, r = c.report_percentage;
+
+            var ksslist = from ss in db.seminar_score where ss.klass_seminar_id == ksid select ss;
+            foreach (var kss in ksslist)
+            {
+                kss.total_score = ((kss.presentation_score == null ? 0 : kss.presentation_score) * p + (kss.question_score == null ? 0 : kss.question_score) * q + (kss.report_score == null ? 0 : kss.report_score) * r) / 100;
+            }
+            db.SaveChanges();
+        }
+
+        //生成round_id的所有分数
+        public void UpdateRoundScore(int round_id)
+        {
+            round R = db.round.Find(round_id);
+            byte p = R.presentation_score_method, q = R.question_score_method, r = R.report_score_method;
+            course c = db.course.Find(db.round.Find(round_id).course_id);
+            byte _p = c.presentation_percentage, _q = c.question_percentage, _r = c.report_percentage;
+
+            var rslist = from rs in db.round_score where rs.round_id==round_id select rs;
+            foreach(var rs in rslist)
+            {
+                int team_id = rs.team_id;
+                var sslist = (from ss in db.seminar_score where ss.team_id == team_id select ss).ToList();
+
+                int cnt = 0;
+                decimal PS = 0, QS = 0, RS = 0;
+                foreach(var ss in sslist)
+                {
+                    cnt++;
+                    decimal _ps = (ss.presentation_score == null ? 0 : (decimal)ss.presentation_score);
+                    decimal _qs = (ss.question_score == null ? 0 : (decimal)ss.question_score);
+                    decimal _rs = (ss.report_score == null ? 0 : (decimal)ss.report_score);
+                    if (p == 1) PS = Math.Max(PS, _ps);
+                    else PS += _ps;
+                    if (q == 1) QS = Math.Max(QS, _qs);
+                    else QS += _qs;
+                    if (r == 1) RS = Math.Max(RS, _rs);
+                    else RS += _rs;
+                }
+
+                if (p == 0) PS /= cnt;
+                if (q == 0) QS /= cnt;
+                if (r == 0) RS /= cnt;
+
+                rs.presentation_score = PS;
+                rs.question_score = QS;
+                rs.report_score = RS;
+                rs.total_score = (PS * _p + QS * _q + RS * _r) / 100;
+            }
+            db.SaveChanges();
+        }
+        MSSQLContext db = new MSSQLContext();
+    };
     public class personclass        //For Seminar
     {
         public int klass_id;
@@ -495,6 +556,7 @@ namespace final.Models
             public bool ppt_status;
             public string ppt_url;
             public string ppt_name="";
+            public decimal? report_score;
         }
         public seminar_report(int seminar_id)
         {
@@ -521,7 +583,32 @@ namespace final.Models
             }
             listLength = list.Count;
         }
+        public seminar_report(string str,int klass_seminar_id)
+        {
+            //str="ksid";
+            var alist = from a in db.attendance where a.klass_seminar_id==klass_seminar_id select a;
+            foreach (var a in alist)
+            {
+                team t = db.team.Find(a.team_id);
+                var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == klass_seminar_id && ss.team_id == t.id select ss).ToList();
 
+                line tmp = new line
+                {
+                    team_name = t.team_name,
+                    leader_name = db.student.Find(t.leader_id).student_name,
+                    report_status = (a.report_url != null),
+                    report_url = a.report_url,
+                    report_name = a.report_name,
+                    ppt_status = (a.ppt_url != null),
+                    ppt_url = a.ppt_url,
+                    ppt_name = a.ppt_name,
+                    id = a.id,
+                    report_score = (sslist == null ? null : sslist[0].report_score)
+                };
+                list.Add(tmp);
+            }
+            listLength = list.Count;
+        }
         MSSQLContext db = new MSSQLContext();
     }
 
