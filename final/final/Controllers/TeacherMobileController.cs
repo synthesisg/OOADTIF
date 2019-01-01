@@ -432,6 +432,30 @@ namespace final.Controllers
         {
             return View();
         }
+        public ActionResult TeacherIndividual() {
+            return View();
+        }
+        public ActionResult AccountAndSet() {
+            return View();
+        }
+        public ActionResult ChangePassword() {
+            return View();
+        }
+        public ActionResult ChangeEmail() {
+            return View();
+        }
+        public ActionResult TeacherMyCourse() {
+            return View();
+        }
+        public ActionResult CheckStuScore() {
+            return View();
+        }
+        public ActionResult CheckStuGroup() {
+            return View();
+        }
+        public ActionResult courseInfo() {
+            return View();
+        }
         void daiban()
         {
             teacher t = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));

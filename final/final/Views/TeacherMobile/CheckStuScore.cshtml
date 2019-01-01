@@ -1,0 +1,67 @@
+﻿
+@{
+	ViewBag.Title = "CheckStuScore";
+	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+}
+<style>
+	ul {
+		line-height: 40px;
+		list-style-type: none;
+		width: 100%;
+		margin:0;
+		padding:0;
+	}
+	li {
+	width:100%;
+	color:#000000;
+	border-style:none;
+	border-radius:5px;
+	text-align:center;
+	}
+</style>
+@{
+	int roundCount = 2;
+	for (int i = 1; i < roundCount + 1; i++) {
+		<ul id="roundId">
+			<li style="background-color:#1fa5e5;"onclick="f('roundId')">第 @i 轮</li>
+			@{
+				int groupCount = 2;
+				for (int j = 0; j < groupCount + 1; j++) {
+					<li id="groupId" style="background-color:#ffffff" onclick="f2('roundId','groupId')">groupName TotalScore
+						<ul>
+							<li>
+								<h4>SeminarName</h4>
+								<p>提问:questionScore 展示:displayScore 报告:reportScore</p>
+							</li>
+						</ul>
+					</li>
+				}
+			}
+		</ul>
+	}
+}
+<button class="btn btn-primary btn-block" style="margin-top:40px">
+	导出成绩
+</button>
+<script>
+	function f(roundId) {
+		var liArr = document.querySelectorAll("ul[id='"+roundId+"'] li")
+		for (var i = 1; i < liArr.length; i++) {
+			if (liArr[i].style.display == "block") {
+				liArr[i].style.display = "none";
+			}
+			else
+				liArr[i].style.display = "block";
+		}
+	}
+	function f2(roundId,groupId) {
+		var liArr = document.querySelectorAll("ul[id='" + roundId + "'] li[id='"+groupId+"'] ul li")
+		for (var i = 0; i < liArr.length; i++) {
+			if (liArr[i].style.display == "block") {
+				liArr[i].style.display = "none";
+			}
+			else
+				liArr[i].style.display = "block";
+		}
+	}
+</script>

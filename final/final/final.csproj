@@ -283,6 +283,14 @@
     <Content Include="Views\StudentMobile\ChangeEmail.cshtml" />
     <Content Include="Views\TeacherMobile\SetReportDDL.cshtml" />
     <Content Include="Views\StudentMobile\CheckMark.cshtml" />
+    <Content Include="Views\TeacherMobile\TeacherIndividual.cshtml" />
+    <Content Include="Views\TeacherMobile\AccountAndSet.cshtml" />
+    <Content Include="Views\TeacherMobile\ChangeEmail.cshtml" />
+    <Content Include="Views\TeacherMobile\ChangePassword.cshtml" />
+    <Content Include="Views\TeacherMobile\TeacherMyCourse.cshtml" />
+    <Content Include="Views\TeacherMobile\CheckStuScore.cshtml" />
+    <Content Include="Views\TeacherMobile\CheckStuGroup.cshtml" />
+    <Content Include="Views\TeacherMobile\CourseInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,92 @@
+﻿
+@{
+	ViewBag.Title = "CourseInfo";
+	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+}
+
+<!--与学生该界面相同但多一个删除课程按钮 请填一下JS里的CourseId我没找到 ====================-->
+<div class="container" style="width:100%;height :auto;">
+	<div class="container" style="background-color:#ffffff;margin:1px;height:100px">
+		课程简介
+		<p>@ViewBag.c.introduction</p>
+	</div>
+	<div class="container" style="background-color:#ffffff;margin:1px;height :auto;">
+		<p>
+			成绩计算规则<br />
+			<span style="font-size:12px;margin-left:40%">
+				课堂展示： @ViewBag.c.presentation_percentage %<br />
+			</span>
+			<span style="font-size:12px;margin-left:40%">
+				课堂提问：@ViewBag.c.question_percentage %<br />
+			</span>
+			<span style="font-size:12px;margin-left:40%">
+				书面报告：@ViewBag.c.report_percentage %
+			</span>
+		</p>
+	</div>
+	<div class="container" style="background-color:#ffffff;margin:1px;">
+		<p style="height:30px;line-height:30px;display:inline">组队开始时间: @ViewBag.c.team_start_time</p><br /><br />
+		<p style="height:30px;line-height:30px;display:inline">组队截止时间: @ViewBag.c.team_end_time</p><br />
+	</div>
+	<div class="container" style="background-color:#ffffff;margin:1px;">
+		<span style="margin-left:40%">组队要求</span>
+	</div>
+	<div class="container" style="background-color:#ffffff;margin:1px;">
+		<span>组员基本要求</span><hr />
+		<div class="container" style="background-color:#ffffff;">
+			<span style="font-size:12px;margin-left:10px;">小组总人数（含组长）: @ViewBag.mls.min_member ~ @ViewBag.mls.max_member</span><br />
+			@if (ViewBag.cmlslist != null) {
+				<span style="font-size:12px;margin-left:10px;">组内选修课程人数：</span><br />
+				for (int i = 0; i < ViewBag.cmlslist.Count; i++) {
+					<span style="font-size:12px;margin-left:40px;">@ViewBag.cmlsname[i]： @ViewBag.cmlslist[i].min_member ~ @ViewBag.cmlslist[i].max_member</span><br />
+				}
+				<p style="margin-left:0px;font-size:8px;">
+					@if (ViewBag.ac == true) {
+					<p>以上选修课程 选课人数均需达到要求。</p>
+				}
+				else {
+					<p>以上选修课程 选课人数满足其一即可。</p>
+				}
+					</p>
+				}
+		</div>
+	</div>
+	<div class="container" style="background-color:#ffffff;margin:1px;">
+		<span>冲突课程：</span>
+		@if (ViewBag.cmlslist != null) {
+			<div class="container" style="background-color:#ffffff;">
+				@for (int i = 0; i < ViewBag.strccs.Count; i++) {
+					<span style="font-size:12px;margin-left:40px;">@ViewBag.strccs[i]</span><br />
+				}
+				<p style="margin-left:0px;font-size:8px;">
+					选修不同冲突课程的学生不可同组，<br />
+					注意同课程名不同教师为不同课程。
+				</p>
+			</div>
+		}
+		else { <p>无</p>}
+	</div>
+</div>
+<button class="btn btn-default btn-block" style="background-color:red;margin-top:30px;" onclick="delCourse('courseId')">
+	删除课程
+</button>
+
+<script>
+	function delCourse(courseID) {
+		if (confirm("确认删除吗")) {
+			$.ajax({
+				'url': "",
+				'type': "post",
+				'data': { courseID: courseID },
+				success: function () {
+					alert("删除成功");
+					window.location.href = "/TeacherMobile/TeacherMyCourse";
+				}
+				error: function () {
+					alert("删除失败！");
+				}
+			})
+		}
+
+	}
+</script>
