@@ -1,32 +1,37 @@
 ﻿
 @{
-	ViewBag.Title = "StudentMyTeam";
-	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+    ViewBag.Title = "StudentMyTeam";
+    Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml" ;
 }
 
 	<div class="container" style="width:100%;height :auto;">
 		<div class="container" style="margin:1px;text-align:center;color:darkseagreen;">
-			1-1HHHH
+			@ViewBag.list.team_serial @ViewBag.list.team.team_name
 		</div>
-		<div class="container" style="background-color:#ffffff;margin:1px;height :auto;">
-			<br /><div style="float:left;">组长：</div><div style="float:left;margin-left:15%">111111111111</div><div style="float:left;margin-left:15%">张三</div><hr /><br />
-			<div style="float:left;">组员：</div><div style="float:left;margin-left:15%">111111111111</div><div style="float:left;margin-left:15%">张三</div><hr /><br />
-			<div style="float:left;">组员：</div><div style="float:left;margin-left:15%">22222222222</div><div style="float:left;margin-left:15%">网二啊</div><hr />
-		</div>
+        <div class="container" style="background-color:#ffffff;margin:1px;height :auto;">
+            <br /><div style="float:left;">组长：</div><div style="float:left;margin-left:15%">@ViewBag.list.account[0]</div><div style="float:left;margin-left:15%">@ViewBag.list.name[0]</div><hr /><br />
+
+            @for (int i = 1; i < ViewBag.list.account.Count; i++)
+            {
+                <div style="float:left;">组员：</div><div style="float:left;margin-left:15%">@ViewBag.list.account[i]</div><div style="float:left;margin-left:15%">@ViewBag.list.name[i]</div><hr /><br />
+            }
+            </div>
 	</div>
 	@{
-		bool isLeader = false;
-		bool isCreateEnd = false;
-		if (!isLeader) {
-			if (!isCreateEnd) {
+        if (! ViewBag.is_leader)
+        {
+            if (ViewBag.Time)
+            {
 				<button onclick="quitGroup()" class="btn btn-default" style="background-color:red;margin-top:20px;float:right">
 					退组
 				</button>
-			}
-		}
-		else {
-			//这里也有和createTeam相同的搜索功能=========================
-			if (!isCreateEnd) {
+            }
+        }
+        else
+        {
+            //这里也有和createTeam相同的搜索功能=========================
+            if (ViewBag.Time)
+            {
 			<div class="container" style="width:100%">
 				<div class="container" style="background-color:#ffffff;margin:1px;width:100%">
 					<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:2em">添加成员:</p><br />
@@ -84,9 +89,9 @@
 	function delMember(account) {
 		if (confirm("确认删除该成员吗？")) {
 			$.ajax({
-				'url': "",
+                'url': "/StudentMobile/remove",
 				'type': "post",
-				'data': { account, account },
+				'data': { id, @ViewBag.team_id },
 				success: function () {
 					alert("删除成功");
 					window.location.reload();

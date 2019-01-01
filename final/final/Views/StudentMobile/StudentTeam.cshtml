@@ -1,105 +1,102 @@
 ﻿
 @{
-	ViewBag.Title = "StudentMyTeam";
-	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml"}
+    ViewBag.Title = "StudentMyTeam";
+    Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+}
+
 
 @{
-	int teamNum = 0;
-	while (teamNum++ < 2) {
-		<ul id="groupName" class="container" style="line-height:40px;list-style-type:none;width:100%;">
-			<li onclick="f('groupName')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#ffffff;">
-				<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em">组号</span>
-				<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:4em">组名</span>
-				<span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
-			</li>
-			@{ int temp = 2 + teamNum;
-				<li style="width:100%;list-style-type:none;display:none;background-color:#f0f0f0;text-align:center;border-style:ridge;">
-					<div style="width:100%;height:37px">
-						<div class="container" style="background-color:#ffffff;margin:1px;height:36px">
-							<table style="width:100%">
-								<tr>
-									<td style="width:20%;" align="left"><p style="color:#224fac">组长:</p></td>
-									<td style="width:50%;" align="center"><p>24320162202888</p></td>
-									<td style="width:30%;" align="center"><p>赵四</p></td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					@{int memberCount = 0;//循环下列html语句===================================
-						<div style="width:100%;height:37px">
-							<div class="container" style="background-color:#ffffff;margin:1px;height:36px">
-								<table style="width:100%">
-									<tr>
-										<td style="width:20%;" align="left" ;><p style="color:#224fac;display:block">组员:</p></td>
-										<td style="width:50%;" align="center"><p>24320162202888</p></td>
-										<td style="width:30%;" align="center"><p>赵四</p></td>
-									</tr>
-								</table>
-							</div>
-						</div>
-					}
-				</li>
-			}
-		</ul>
-	}
+    for (int i = 0; i < ViewBag.ct.Count; i++)
+    {
+        <ul id="@ViewBag.ct[i].team.id" class="container" style="line-height:40px;list-style-type:none;width:100%;">
+            <li onclick="f('@ViewBag.ct[i].team.id')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#ffffff;">
+                <span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em">组号 @ViewBag.ct[i].team_serial</span>
+                <span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:4em">组名 @ViewBag.ct[i].team.team_name</span>
+                <span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
+            </li>
+            @{
+                <li style="width:100%;list-style-type:none;display:none;background-color:#f0f0f0;text-align:center;border-style:ridge;">
+                    <div style="width:100%;height:37px">
+                        <div class="container" style="background-color:#ffffff;margin:1px;height:36px">
+                            <table style="width:100%">
+                                <tr>
+                                    <td style="width:20%;" align="left"><p style="color:#224fac">组长:</p></td>
+                                    <td style="width:50%;" align="center"><p>@ViewBag.ct[i].account[0]</p></td>
+                                    <td style="width:30%;" align="center"><p>@ViewBag.ct[i].name[0]</p></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    @for (int j = 1; j < @ViewBag.ct[i].name.Count; j++)
+                    {
+                        <div style="width:100%;height:37px">
+                            <div class="container" style="background-color:#ffffff;margin:1px;height:36px">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="width:20%;" align="left" ;><p style="color:#224fac;display:block">组员:</p></td>
+                                        <td style="width:50%;" align="center"><p>@ViewBag.ct[i].account[j]</p></td>
+                                        <td style="width:30%;" align="center"><p>@ViewBag.ct[i].name[j]</p></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </li>
+            }
+        </ul>
+    }
 }
 <ul id="noTeam" class="container" style="line-height:40px;list-style-type:none;width:100%;">
-	<li onclick="f('noTeam')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#ffffff;">
-		<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em">未组队学生</span>
-		<span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
-	</li>
-	<li style="width:100%;list-style-type:none;display:none;background-color:#f0f0f0;text-align:center;border-style:ridge;">
-		<div style="width:100%;height:37px">
-			<div class="container" style="background-color:#ffffff;margin:1px;height:36px">
-				<table style="width:100%">
-					<tr>
-						<td style="width:50%;" align="center"><p>24320162202888</p></td>
-						<td style="width:30%;" align="center"><p>赵四</p></td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div style="width:100%;height:37px">
-			<div class="container" style="background-color:#ffffff;margin:1px;height:36px">
-				<table style="width:100%">
-					<tr>
-						<td style="width:50%;" align="center"><p>24320162202888</p></td>
-						<td style="width:30%;" align="center"><p>赵四</p></td>
-					</tr>
-				</table>
-			</div>
-		</div>
-	</li>
+    <li onclick="f('noTeam')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#ffffff;">
+        <span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em">未组队学生</span>
+        <span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
+    </li>
+    <li style="width:100%;list-style-type:none;display:none;background-color:#f0f0f0;text-align:center;border-style:ridge;">
+        @for (int i = 0; i < ViewBag.stulist.cnt; i++)
+        {
+
+            <div style="width:100%;height:37px">
+                <div class="container" style="background-color:#ffffff;margin:1px;height:36px">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:50%;" align="center"><p>@ViewBag.stulist.account[i]</p></td>
+                            <td style="width:30%;" align="center"><p>@ViewBag.stulist.name[i]</p></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        }
+    </li>
 </ul>
 @{
-	bool isCreateEnd = false;//组队是否截止
-	bool isGrouped = false;//是否已经有组队
-	if (!isGrouped) {
-		if (!isCreateEnd) {//没组队没截止
-			<button type="button" class="btn btn-primary btn-lg btn-block" onclick="window.location.href='/StudentMobile/CreateTeam'">
-				<span class="glyphicon glyphicon-plus" style="float:left"></span>
-				创建组队
-			</button>
-		}
-	}
-	else {
-		<button type="button" class="btn btn-primary btn-lg btn-block" onclick="window.location.href='/StudentMobile/StudentMyTeam'">
-			<span class="glyphicon glyphicon-plus" style="float:left"></span>
-			我的小组
-		</button>
-	}
+    if (ViewBag.hasteam)
+    {
+        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="window.location.href='/StudentMobile/StudentMyTeam/@ViewBag.course_id'">
+            <span class="glyphicon glyphicon-plus" style="float:left"></span>
+            我的小组
+        </button>
+    }
+    else
+    {
+        if (ViewBag.Time)
+        {
+            <button type="button" class="btn btn-primary btn-lg btn-block" onclick="window.location.href='/StudentMobile/CreateTeam/@ViewBag.course_id'">
+                <span class="glyphicon glyphicon-plus" style="float:left"></span>
+                创建组队
+            </button>
+        }
+    }
 }
 <script>
-	function f(groupName) {
-		var liArr = document.querySelectorAll("ul[id='" + groupName + "'] li")
-		for (var i = 1; i < liArr.length; i++) {
-			if (liArr[i].style.display == "block") {
-				liArr[i].style.display = "none";
-			}
-			else
-				liArr[i].style.display = "block";
-		}
-	}
-
+    function f(groupName) {
+        var liArr = document.querySelectorAll("ul[id='" + groupName + "'] li")
+        for (var i = 1; i < liArr.length; i++) {
+            if (liArr[i].style.display == "block") {
+                liArr[i].style.display = "none";
+            }
+            else
+                liArr[i].style.display = "block";
+        }
+    }
 </script>
 

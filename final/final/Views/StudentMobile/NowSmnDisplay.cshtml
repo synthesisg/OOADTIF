@@ -11,9 +11,11 @@
 }
 <script>
         var ws;
-        $().ready(function () {
-            $('#conn').click(function () {
-                ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=' + $("#user").val());
+    $().ready(function ()
+    {
+        $('#conn').click(function ()
+        {
+                ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=' + @ViewBag.sid);
                 $('#msg').append('<p>正在连接</p>');
 
                 ws.onopen = function () {
@@ -34,7 +36,8 @@
                 ws.close();
             });
 
-            $('#send').click(function () {
+        $('#send').click(function ()
+        {
                 if (ws.readyState == WebSocket.OPEN) {
                     ws.send($("#to").val() + "|" + $('#content').val());
                 }
@@ -47,18 +50,17 @@
 </script>
 
 <div class="row" style="background-color:#ffffff;width:100%">
-	<h3 style="text-align:center">Seminar_Name</h3>
-	<p id="groupDis" style="display:inline;color:orangered;margin-left:3em">当前展示小组：2-1</p>
-	<p id="questionDis"style="float:right;display:inline;color:green">已有j位同学提问</p>
+    <h3 style="text-align:center">@ViewBag.seminar_name</h3>
+    <p id="groupDis" style="display:inline;color:orangered;margin-left:3em">当前展示小组：@ViewBag.NowAttend</p>
+    <p id="questionDis" style="float:right;display:inline;color:green">提问队列中有 @ViewBag.NowQue 位同学</p>
 </div>
 <!--需要 上面得数据要数组！ 小组可以是报名该次讨论课小组全部的信息  -->
 
-@for (var i = 0; i < 3@*ViewBag.group.Length*@ /**/
-                                                          ; i++)
+@for (var i = 0; i < ViewBag.model.team_serial.Length;i++)
             {
                 <div class="row" style="width:100%;margin-top:2px;background-color:#ffffff">
                         <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em;margin-right:3em">第 @i 组:</p>
-                        <p style="height:40px;line-height:40px;display:inline;">@Html.Raw(ViewBag.group1)</p>
+                        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.team_serial[i]</p>
 
                 </div>
             }

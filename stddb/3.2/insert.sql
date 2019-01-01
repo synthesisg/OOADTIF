@@ -1555,7 +1555,8 @@ insert  into team_strategy(course_id,strategy_serial,strategy_name,strategy_id) 
 (16,1,'TeamAndStrategy',1),
 (16,2,'ConflictCourseStrategy',1),
 (16,3,'ConflictCourseStrategy',2);
-
+(16,3,'CourseMemberLimitStrategy',1);
+(16,3,'CourseMemberLimitStrategy',2);
 
 insert  into team_student(team_id,student_id) values 
 (2,172),

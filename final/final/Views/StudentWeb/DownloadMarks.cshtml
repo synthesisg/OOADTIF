@@ -66,9 +66,25 @@
 					cell = row.insertCell(0);
 					cell.innerHTML = obj.ss[ob].presentation_score;
 					cell = row.insertCell(0);
-					cell.innerHTML = obj.serial[i];
+                    cell.innerHTML = obj.seminar_name[i];
 					i++;
-				}
+                }
+                var j = 1;
+                for (var ob in obj.rs) {
+                    var row = tbody.insertRow(i);
+                    cell = row.insertCell(0);
+                    cell.innerHTML = obj.rs[ob].total_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = obj.rs[ob].report_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = obj.rs[ob].question_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = obj.rs[ob].presentation_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = "第 " + j.toString()+ " 轮总分";
+                    i++;
+                    j++;
+                }
             },
 			'error': function () {
 				alert("发送失败！");

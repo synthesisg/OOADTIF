@@ -36,7 +36,41 @@ namespace final.Controllers
 
             webSocketHandler.TextMessageReceived += ((sendor, msg) =>
             {
-                BroadcastMessage(user, user + "Says: " + msg);
+                string[] str = msg.Split('|');
+                string ret = "";
+                int ksid=Int32.Parse(str[1]);
+                attendance cnt = Now(ksid);
+                switch(str[0])
+                {
+                    case "1":   //Question
+                        int sid = Int32.Parse(str[2]);
+                        if(question(ksid, sid))
+                        {
+                            ret = "1|" + ksid.ToString();
+                        }
+                        break;
+                    case "2":   //Extract
+                        question ex = Extract(ksid);
+                        if (ex != null)
+                        {
+                            ret = "2|" + ksid.ToString() + '|' + new qt().t2ts(ex.team_id) + db.student.Find(ex.student_id).student_name + '|' + ex.id;
+                        }
+                        break;
+                    case "3":   //Next
+                        attendance a = NextAttendace(ksid);
+                        if (a == null)
+                        {
+                            ret = "4";  //End
+                            break;
+                        }
+                        else
+                        {
+                            ret = "3|" + ksid.ToString() + '|' + new qt().t2ts(a.team_id) + '|' + a.id.ToString();
+                            break;
+                        }
+                }
+                if(ret!="")
+                BroadcastMessage(user, ret);
             });
 
             webSocketHandler.Closed += (sendor, arg) =>

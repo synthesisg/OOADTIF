@@ -105,7 +105,24 @@
 					cell = row.insertCell(0);
 					cell.innerHTML = jobj.team_serial[i];
 					i++;
-				}
+                }
+                var j = 0;
+                for (var obj in jobj.list) {
+                    var row = tbody.insertRow(i);
+                    cell = row.insertCell(0);
+                    cell.innerHTML = jobj.list[obj].total_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = jobj.list[obj].report_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = jobj.list[obj].question_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = jobj.list[obj].presentation_score;
+                    cell = row.insertCell(0);
+                    cell.innerHTML = "本轮总成绩";
+                    cell = row.insertCell(0);
+                    cell.innerHTML = jobj.rteam_serial[j++];
+                    i++;
+                }
 			},
 			error: function () {
 				alert(" link error");

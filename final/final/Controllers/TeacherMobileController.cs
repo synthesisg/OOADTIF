@@ -125,6 +125,7 @@ namespace final.Controllers
             int tid = Int32.Parse(Session["user_id"].ToString());
             course_seminar cs = new course_seminar(id);
             ViewBag.cs = cs;
+            ViewBag.TitleText = cs.course.course_name;
             return View();
         }
         public ActionResult ChsSpecKlass(int id)//seminar_id
@@ -136,7 +137,7 @@ namespace final.Controllers
             ViewBag.s = s;
             ViewBag.ks = kslist;
             ViewBag.serial = serial;
-            ViewBag.seminar_title = db.seminar.Find(id).seminar_name;
+            ViewBag.TitleText = db.seminar.Find(id).seminar_name;
             return View();
         }
         public ActionResult SetSeminarSerial(int id)//round_id

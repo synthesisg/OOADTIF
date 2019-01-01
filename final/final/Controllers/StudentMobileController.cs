@@ -78,7 +78,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("StudentLogin");
+                    return RedirectToAction("Login");
             }
             else Session["user_id"] = test_id;
 
@@ -104,7 +104,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("StudentLogin");
+                    return RedirectToAction("Login");
             }
             else Session["user_id"] = test_id;
 
@@ -149,7 +149,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("StudentLogin");
+                    return RedirectToAction("Login");
             }
             else Session["user_id"] = test_id;
             
@@ -157,21 +157,23 @@ namespace final.Controllers
             BEnrollSmn_model model = new BEnrollSmn_model(id, Int32.Parse(Session["user_id"].ToString()));
             ViewBag.model = model;
 
+            ViewBag.TitleText = model.seminar_name;
             return View();
         }
-        public ActionResult courseinfor(int id)//course_id
+        public ActionResult courseinfo(int id)//course_id
         {
             course c = db.course.Find(id);
             ViewBag.c = c;
-
+            ViewBag.TitleText = c.course_name;
             //本门课人数上下限mls   返回一个member_limit_strategy或null 唯一 id 与course_id 相同(大概)
             ViewBag.mls=db.member_limit_strategy.Find(id);
 
             /* 所有本门课的策略 ts (T/F)
              * 返回
+             * strccs 代表冲突课程“A|B|C-D|E”或null 每 - 一个集合
+             * 
              * ac true代表全部 false代表符合其一
-             * strccs 代表冲突课程“A|B|C”或null
-             * cmlslist List<course_member_limit_strategy>模型 代表选修课人数上下限
+             * cmlslist List<course_member_limit_strategy>模型 代表选修课人数上下限 包括一个AND或者OR（上文ac）
              * cmlsname List<string>模型  对应课程名
              */
             var tslist = (from ts in db.team_strategy where ts.course_id == id select ts).ToList();
@@ -183,29 +185,33 @@ namespace final.Controllers
                 var tsfirst = (from ts in db.team_strategy where ts.course_id == id && ts.strategy_serial == 1 select ts).ToList()[0];
                 bool ac = (tsfirst.strategy_name == "TeamAndStrategy" ? true : false);
                 ViewBag.ac = ac;
-                string strccs = "";
+                List<string> strccs = new List<string>();
                 List<course_member_limit_strategy> cmlslist = new List<course_member_limit_strategy>();
                 List<string> cmlsname = new List<string>();
                 foreach (var ts in tslist)
                 {
-                    int tid = ts.strategy_serial;
+                    int tid = ts.strategy_id;
                     switch (ts.strategy_name)
                     {
                         case "ConflictCourseStrategy":
                             var ccslist = (from ccs in db.conflict_course_strategy where ccs.id == tid select ccs.course_id).ToList();
+                            string tmp = "";
                             foreach (var cid in ccslist)
                             {
-                                if (cid != id) strccs += db.course.Find(cid).course_name + '|';
+                                if (cid != id) tmp += ' '+ db.course.Find(cid).course_name+'('+db.teacher.Find(db.course.Find(cid).teacher_id).teacher_name+')' + " |";
                             }
-                            ViewBag.strccs = strccs.Remove(strccs.Length - 1, 1);
+                            strccs.Add(tmp.Remove(tmp.Length - 1, 1));
                             break;
-                        case "CourseMemberLimitStrategy":         //不唯一 针对选修xx课程的组队
+                        case "CourseMemberLimitStrategy":         //不定个数 针对选修xx课程的组队
                             course_member_limit_strategy cmls = db.course_member_limit_strategy.Find(tid);
                             cmlslist.Add(cmls);
                             cmlsname.Add(db.course.Find(cmls.course_id).course_name);
                             break;
                     }
                 }
+                ViewBag.cmlslist = cmlslist;
+                ViewBag.cmlsname = cmlsname;
+                ViewBag.strccs = strccs;
             }
             else
             {
@@ -218,15 +224,51 @@ namespace final.Controllers
         {
             klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id, 0);
             ViewBag.model = model;
-            //要  ViewBag.TitleText = 课程名 + 讨论课名
+            ViewBag.TitleText = model.seminar_name;
             return View();
         }
         public ActionResult NowSmnDisplay(int id)//ksid 过程环节
         {
-            //要  ViewBag.TitleText = 课程名 + 讨论课名
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int student_id = Int32.Parse(Session["user_id"].ToString());
+            seminar seminar = db.seminar.Find(db.klass_seminar.Find(id).seminar_id);
+            ViewBag.TitleText = seminar.seminar_name;
+            ViewBag.seminar_name = seminar.seminar_name;
+            var alist = (from a in db.attendance where a.is_present == 1 && a.klass_seminar_id == id select a).ToList();
+            if (alist.Count() > 0)
+            {
+                ViewBag.NowAttend = new qt().t2ts(alist[0].team_id);
+                ViewBag.NowQue = (from q in db.question where q.is_selected != 1 && q.attendance_id == alist[0].id select q).Count();
+            }
+            else
+            {
+                ViewBag.NowAttend = "无";
+                ViewBag.NowQue = 0;
+            }
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
+            ViewBag.model = model;
+            ViewBag.sid = student_id;
+            ViewBag.ksid = id;
             return View();
         }
-        public ActionResult CheckMark() {
+        public ActionResult CheckMark(int id)//course_id
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            scoreboard_course sc = new scoreboard_course(id, sid);
+            ViewBag.sc = sc;
             return View();
         }
         public bool SendPW2Email(string data)
@@ -286,7 +328,7 @@ namespace final.Controllers
 
         public void score(int id)           //course_id
         {
-            int sid = Int32.Parse(Request["user_id"]);
+            int sid = Int32.Parse(Session["user_id"].ToString());
 
             var kslist = (from ks in db.klass_student where ks.student_id == sid && ks.course_id == id select ks).ToList();
 
@@ -322,58 +364,38 @@ namespace final.Controllers
                 ViewBag.hasteam = false;
             }
         }
-        public void team(int id)        //course_id
+        public ActionResult StudentMyTeam(int id)        //course_id
         {
-            int sid = Int32.Parse(Request["user_id"]);
-
-            var klist = (from k in db.klass where k.course_id == id select k.id).ToList();
-            var teamlistdis = from kt in db.klass_team where klist.Contains(kt.klass_id) select kt.team_id;
-
-            int ateam_id = new qt().c2t(id, sid);
-            List<teamlist> tl = new List<teamlist>();
-            if (ateam_id > 0)
+            if (is_judge)
             {
-                ViewBag.hasteam = true;
-                int myteamid = ateam_id;
-
-                teamlist tmp = new teamlist();
-                tmp.team = db.team.Find(myteamid);
-                var stlist = from ts in db.team_student where ts.team_id == myteamid select ts.student_id;
-                foreach (var st in stlist)
-                {
-                    tmp.name.Add(db.student.Find(st).student_name);
-                    tmp.account.Add(db.student.Find(st).account);
-                }
-                tl.Add(tmp);
-
-                foreach (var teamid in teamlistdis)
-                    if (teamid != myteamid)
-                    {
-                        teamlist tmpp = new teamlist();
-                        tmpp.team = db.team.Find(teamid);
-                        var stlistt = from ts in db.team_student where ts.team_id == teamid select ts.student_id;
-                        foreach (var st in stlistt)
-                        {
-                            tmpp.name.Add(db.student.Find(st).student_name);
-                            tmpp.account.Add(db.student.Find(st).account);
-                        }
-                        tl.Add(tmpp);
-                    }
-                ViewBag.ct = tl;
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
             }
+            else Session["user_id"] = test_id;
+
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            int team_id = new qt().c2t(id, sid);
+            if (team_id > 0)
+                ViewBag.list = new teamlist(team_id);
             else
-            {
-                ViewBag.hasteam = false;
-                course_team ct = new course_team(id);
-                ViewBag.ct = ct.list;
-            }
+                return Content("You have no team.");
+
+            ViewBag.course_id = id;
+            ViewBag.team_id = team_id;
+            course c = db.course.Find(id);
+            if (c.team_start_time <= DateTime.Now && DateTime.Now <= c.team_end_time) ViewBag.Time = true;
+                else ViewBag.Time = false;
+            if (db.team.Find(team_id).leader_id == sid) ViewBag.is_leader = true;
+                else ViewBag.is_leader = false;
+            ViewBag.stulist = studentlist(id);
+            return View();
         }
         public ActionResult CreateTeam(int id)  //course_id
         {
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("StudentLogin");
+                    return RedirectToAction("Login");
             }
             else Session["user_id"] = test_id;
 
@@ -391,28 +413,98 @@ namespace final.Controllers
             ViewBag.course_id = id;
             return View();
         }
-        public ActionResult StudentIndividual (){
+        public ActionResult StudentIndividual()
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            student s = db.student.Find(Int32.Parse(Session["user_id"].ToString()));
+            ViewBag.name = s.student_name;
+            ViewBag.account = s.account;
             return View();
         }
-        public ActionResult StudentMyCourse() {
+        public ActionResult StudentMyCourse()
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            var clist = (from ks in db.klass_student where ks.student_id == sid select ks.course_id);
+            ViewBag.course = (from c in db.course where clist.Contains(c.id) select c).ToList();
             return View();
         }
-        public ActionResult CourseInfo() {
+        public ActionResult StudentTeam(int id)//course_id
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int sid = Int32.Parse(Session["user_id"].ToString());
+            
+            var teamlist = (from t in db.team where t.course_id == id select t.id).ToList();
+            int ateam_id = new qt().c2t(id, sid);
+            List<teamlist> tl = new List<teamlist>();
+            if (ateam_id > 0)
+            {
+                ViewBag.hasteam = true;
+                ViewBag.ct = new course_team(id,sid).list;
+            }
+            else
+            {
+                ViewBag.hasteam = false;
+                ViewBag.ct = new course_team(id).list;
+            }
+
+            ViewBag.stulist = studentlist(id);
+            ViewBag.course_id = id;
+            course c = db.course.Find(id);
+            if (c.team_start_time <= DateTime.Now && DateTime.Now <= c.team_end_time) ViewBag.Time = true;
+            else ViewBag.Time = false;
             return View();
         }
-        public ActionResult StudentTeam() {
+        public ActionResult AccountAndSet()
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+
+            student s = db.student.Find(Int32.Parse(Session["user_id"].ToString()));
+            ViewBag.s = s;
             return View();
         }
-        public ActionResult StudentMyTeam() {
+        public ActionResult ChangePassword()
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
             return View();
         }
-        public ActionResult AccountAndSet() {
-            return View();
-        }
-        public ActionResult ChangePassword() {
-            return View();
-        }
-        public ActionResult ChangeEmail() {
+        public ActionResult ChangeEmail()
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
             return View();
         }
         //course下未组队学生
@@ -498,27 +590,23 @@ namespace final.Controllers
             //============================================================================================================================【入队合法校验】
             db.SaveChanges();
         }
-        public void remove()
+        public void remove(int id)//team_id
         {
-            int klass_id = 1;
+            int klass_id = db.team.Find(id).klass_id;
 
-            int sid = Int32.Parse(Request["user_id"]);
+            int sid = Int32.Parse(Session["user_id"].ToString());
 
-
-            int team_id = new qt().k2t(klass_id, sid);
-            if (team_id==0) return;                                                                                     //本班队伍id
-
-            if (db.team.Find(team_id).leader_id == sid)//解散
+            if (db.team.Find(id).leader_id == sid)//解散
             {
-                var tslist = from ts in db.team_student where ts.team_id == team_id select ts;
+                var tslist = from ts in db.team_student where ts.team_id == id select ts;
                 foreach (var ats in tslist) db.team_student.Remove(ats);
-                var ktlist = from kt in db.klass_team where kt.klass_id == klass_id && kt.team_id == team_id select kt;
+                var ktlist = from kt in db.klass_team where kt.klass_id == klass_id && kt.team_id == id select kt;
                 foreach (var akt in ktlist) db.klass_team.Remove(akt);
-                db.team.Remove(db.team.Find(team_id));
+                db.team.Remove(db.team.Find(id));
             }
             else//单人退出
             {
-                var tslist = from ts in db.team_student where ts.team_id == team_id&&ts.student_id==sid select ts;
+                var tslist = from ts in db.team_student where ts.team_id == id&&ts.student_id==sid select ts;
                 foreach (var ats in tslist) db.team_student.Remove(ats);
                 //============================================================================================================================【退队合法校验】
             }
@@ -543,21 +631,25 @@ namespace final.Controllers
             }
         }
 
-        public bool chgpwd(string data)
+        public string chgpwd(string oldpw,string newpw)
         {
-            if (Session["is_student"] == null || (bool)Session["is_student"] == false) return false;
+            if (Session["is_student"] == null || (bool)Session["is_student"] == false) return "1";
             student s = db.student.Find(Int32.Parse(Session["user_id"].ToString()));
-            s.password = data;
-            db.SaveChanges();
-            return true;
+            if (s.password == oldpw)
+            {
+                s.password = newpw;
+                db.SaveChanges();
+                return "success";
+            }
+            else return "1";
         }
-        public bool chgemail(string data)
+        public ActionResult chgemail()
         {
-            if (Session["is_student"] == null || (bool)Session["is_student"] == false) return false;
+            if (Session["is_student"] == null || (bool)Session["is_student"] == false) return Content("Identity verification error.");
             student s = db.student.Find(Int32.Parse(Session["user_id"].ToString()));
-            s.email = data;
+            s.email = Request["email"];
             db.SaveChanges();
-            return true;
+            return RedirectToAction("AccountAndSet");
         }
 
 

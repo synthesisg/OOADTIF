@@ -1,55 +1,78 @@
 ﻿
 @{
-	ViewBag.Title = "CheckMark";
-	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+    ViewBag.Title = "CheckMark";
+    Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
 }
 
 <style>
-	div {
-		margin: 0;
-		padding: 0;
-	}
+    div {
+        margin: 0;
+        padding: 0;
+    }
 </style>
 <!--=======================-->
 <div class="row" style="background-color:#ffffff;width:100%">
-	<div class="col-xs-2 col-sm-2" style="text-align:center">
+    <div class="col-xs-2 col-sm-2" style="text-align:center">
 
-	</div>
-	<div class="col-xs-2 col-sm-2" style="text-align:center">
-		<p style="display:inline">展示</p>
-	</div>
-	<div class="col-xs-2 col-sm-2" style="text-align:center">
-		<p style="display:inline">提问</p>
-	</div>
-	<div class="col-xs-2 col-sm-2" style="text-align:center">
-		<p style="display:inline">书面报告</p>
-	</div>
-	<div class="col-xs-2 col-sm-2" style="text-align:center">
-		<p style="display:inline">总分</p>
-	</div>
-	<div class="col-xs-2 col-sm-2" style="text-align:center">
-	</div>
+    </div>
+    <div class="col-xs-2 col-sm-2" style="text-align:center">
+        <p style="display:inline">展示</p>
+    </div>
+    <div class="col-xs-2 col-sm-2" style="text-align:center">
+        <p style="display:inline">提问</p>
+    </div>
+    <div class="col-xs-2 col-sm-2" style="text-align:center">
+        <p style="display:inline">书面报告</p>
+    </div>
+    <div class="col-xs-2 col-sm-2" style="text-align:center">
+        <p style="display:inline">总分</p>
+    </div>
+    <div class="col-xs-2 col-sm-2" style="text-align:center">
+    </div>
 </div>
-@{
-	<div class="row" style="background-color:#ffffff;width:100%">
-		<form method="post" name="">
-			<div class="col-xs-2 col-sm-2">
-				<p style="text-align:center">seminar_name</p>
-			</div>
-			<div class="col-xs-2 col-sm-2" style="text-align:center">
-				<p style="display:inline">display_score</p>
-			</div>
-			<div class="col-xs-2 col-sm-2" style="text-align:center">
-				<p style="display:inline">question_score</p>
-			</div>
-			<div class="col-xs-2 col-sm-2" style="text-align:center">
-				<p style="display:inline">report_score</p>
-			</div>
-			<div class="col-xs-2 col-sm-2" style="text-align:center">
-				<p style="display:inline">totoal_score</p>
-			</div>
-			<div class="col-xs-2 col-sm-2" style="text-align:center">
-			</div>
-		</form>
-	</div>
+@for (int i = 0; i < ViewBag.sc.serial.Count; i++)
+{
+    <div class="row" style="background-color:#ffffff;width:100%">
+        <div class="col-xs-2 col-sm-2">
+            <p style="text-align:center">@ViewBag.sc.seminar_name[i]</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.ss[i].presentation_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.ss[i].question_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.ss[i].report_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.ss[i].total_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+        </div>
+    </div>
+}
+@for (int i = 0; i < ViewBag.sc.rs.Count; i++)
+{
+    <div class="row" style="background-color:#ffffff;width:100%">
+        <div class="col-xs-2 col-sm-2">
+            @{ i++;}
+            <p style="text-align:center">第 @i 轮 总分</p>
+            @{ i--;}
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.rs[i].presentation_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.rs[i].question_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.rs[i].report_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+            <p style="display:inline">@ViewBag.sc.rs[i].total_score</p>
+        </div>
+        <div class="col-xs-2 col-sm-2" style="text-align:center">
+        </div>
+    </div>
 }

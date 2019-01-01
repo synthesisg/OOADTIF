@@ -261,6 +261,7 @@ namespace final.Models
 
 
         public List<round_score> list = new List<round_score>();
+        public List<string> rteam_serial = new List<string>();
         public List<seminar_score> ss = new List<seminar_score>();
         public List<string> team_serial = new List<string>();
         public List<byte> seminar_serial = new List<byte>();
@@ -279,6 +280,8 @@ namespace final.Models
                 seminar_serial.Add(new qt().ks2se(item.klass_seminar_id));
                 team_serial.Add(new qt().t2ts(item.team_id));
             }
+            foreach (var item in list)
+                rteam_serial.Add(new qt().t2ts(item.team_id));
         }
 
         MSSQLContext db = new MSSQLContext();
@@ -288,8 +291,10 @@ namespace final.Models
     public class scoreboard_course            
     {
         public List<seminar_score> ss = new List<seminar_score>();
-        public List<int> serial=new List<int>();
-        public bool is_valid=true;
+        public List<round_score> rs = new List<round_score>();
+        public List<int> serial = new List<int>();
+        public List<string> seminar_name = new List<string>();
+        public bool is_valid = true;
         public scoreboard_course(int course_id, int student_id)//For Student
         {
             int team_id = new qt().c2t(course_id, student_id);
@@ -302,7 +307,14 @@ namespace final.Models
 
             var kslist = (from ks in db.klass_seminar where ks.klass_id == klass_id select ks.id).ToList();
             ss = (from ss in db.seminar_score where kslist.Contains(ss.klass_seminar_id) && ss.team_id == team_id select ss).ToList();
-            for (int i = 0; i < ss.Count(); i++) serial.Add(db.seminar.Find(db.klass_seminar.Find(ss[i].klass_seminar_id).seminar_id).seminar_serial);
+            for (int i = 0; i < ss.Count(); i++)
+            {
+                serial.Add(db.seminar.Find(db.klass_seminar.Find(ss[i].klass_seminar_id).seminar_id).seminar_serial);
+                seminar_name.Add(db.seminar.Find(db.klass_seminar.Find(ss[i].klass_seminar_id).seminar_id).seminar_name);
+            }
+
+            var rlist = (from r in db.round where r.course_id == course_id select r.id).ToList();
+            rs= (from rs in db.round_score where rlist.Contains(rs.round_id) && rs.team_id == team_id select rs).ToList();
         }
 
         MSSQLContext db = new MSSQLContext();
@@ -462,8 +474,28 @@ namespace final.Models
     {
         public int course_id;
         public team team;
+        public string team_serial;
         public List<string> name = new List<string>();
         public List<string> account = new List<string>();
+
+        public teamlist(int team_id)
+        {
+            team = db.team.Find(team_id);
+            team_serial = new qt().t2ts(team_id);
+            //Leader
+            name.Add(db.student.Find(team.leader_id).student_name);
+            account.Add(db.student.Find(team.leader_id).account);
+            //Member
+            var stlist = from ts in db.team_student where ts.team_id == team_id select ts.student_id;
+            foreach (var st in stlist)
+            if(st!=team.leader_id && db.student.Find(st)!=null)
+            {
+                name.Add(db.student.Find(st).student_name);
+                account.Add(db.student.Find(st).account);
+            }
+        }
+
+        MSSQLContext db = new MSSQLContext();
     }
     public class seminar_klass
     {
@@ -482,27 +514,28 @@ namespace final.Models
         public course course;
         public List<teamlist> list = new List<teamlist>();
 
-        public course_team(int course_id) { create(course_id); }
-        public void create(int course_id)
+        public course_team(int course_id)
         {
             course = db.course.Find(course_id);
 
             var klist = (from k in db.klass where k.course_id == course_id select k.id).ToList();
             var teamlist = from kt in db.klass_team where klist.Contains(kt.klass_id) select kt.team_id;
             foreach (var teamid in teamlist)
+                list.Add(new teamlist(teamid));
+        }
+        public course_team(int course_id,int student_id)
+        {
+            int ateam_id = new qt().c2t(course_id, student_id);
+            if (ateam_id > 0)
             {
-                teamlist tmp = new teamlist();
-                tmp.team = db.team.Find(teamid);
-                var stlist = from ts in db.team_student where ts.team_id == teamid select ts.student_id;
-                foreach (var st in stlist)
-                {
-                    tmp.name.Add(db.student.Find(st).student_name);
-                    tmp.account.Add(db.student.Find(st).account);
-                }
-                list.Add(tmp);
+                list.Add(new teamlist(ateam_id));
+
+                var teamlist = (from t in db.team where t.course_id == course_id select t.id).ToList();
+                foreach (var teamid in teamlist)
+                    if (teamid != ateam_id)
+                        list.Add(new teamlist(teamid));
             }
         }
-
         MSSQLContext db = new MSSQLContext();
     }
 

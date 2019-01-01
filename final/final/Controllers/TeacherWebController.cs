@@ -256,14 +256,13 @@ namespace final.Controllers
 
             DataTable dt = new DataTable();
             dt.Columns.Add(new DataColumn("小组编号", typeof(string)));
-            dt.Columns.Add(new DataColumn("参与讨论课", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("参与讨论课", typeof(string)));
             dt.Columns.Add(new DataColumn("Presentation", typeof(decimal)));
             dt.Columns.Add(new DataColumn("Report", typeof(decimal)));
             dt.Columns.Add(new DataColumn("Question", typeof(decimal)));
             dt.Columns.Add(new DataColumn("Total", typeof(decimal)));
-
-            int cnt = sb.list.Count();
-            for (int i = 0; i < cnt; i++) 
+            
+            for (int i = 0; i < sb.ss.Count(); i++) 
             {
                 DataRow dr = dt.NewRow();
                 dr = dt.NewRow();
@@ -273,6 +272,18 @@ namespace final.Controllers
                 dr[3] = (sb.ss[i].report_score == null ? 0 : sb.ss[i].report_score);
                 dr[4] = (sb.ss[i].question_score == null ? 0 : sb.ss[i].question_score);
                 dr[5] = (sb.ss[i].total_score == null ? 0 : sb.ss[i].total_score);
+                dt.Rows.Add(dr);
+            }
+            for (int i = 0; i < sb.list.Count(); i++)
+            {
+                DataRow dr = dt.NewRow();
+                dr = dt.NewRow();
+                dr[0] = sb.rteam_serial[i];
+                dr[1] = "本轮总成绩";
+                dr[2] = (sb.list[i].presentation_score == null ? 0 : sb.list[i].presentation_score);
+                dr[3] = (sb.list[i].report_score == null ? 0 : sb.list[i].report_score);
+                dr[4] = (sb.list[i].question_score == null ? 0 : sb.list[i].question_score);
+                dr[5] = (sb.list[i].total_score == null ? 0 : sb.list[i].total_score);
                 dt.Rows.Add(dr);
             }
             return Redirect("/File/Download?path=" + DataToExcel(dt));

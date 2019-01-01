@@ -131,24 +131,42 @@ namespace final.Controllers
             List<int> rid = new List<int>();
             foreach (var r in rque) rid.Add(r.id);
             var rscore = from rs in db.round_score where (rid.Contains(rs.round_id) && rs.team_id == team_id) select rs;
+
+            scoreboard_course model = new scoreboard_course(id, sid);
+
             DataTable dt = new DataTable();
-            dt.Columns.Add(new DataColumn("Round", typeof(string)));
+            dt.Columns.Add(new DataColumn("Name", typeof(string)));
             dt.Columns.Add(new DataColumn("Presentaion", typeof(decimal)));
             dt.Columns.Add(new DataColumn("Report", typeof(decimal)));
             dt.Columns.Add(new DataColumn("Question", typeof(decimal)));
             dt.Columns.Add(new DataColumn("Total", typeof(decimal)));
 
-            int cnt = 1;
-            foreach (var rs in rscore)
+
+            for (int i = 0; i < model.seminar_name.Count(); i++)
             {
+                var rs = model.ss[i];
                 DataRow dr = dt.NewRow();
                 dr = dt.NewRow();
-                dr[0] = cnt++;
-                dr[1] = (rs.presentation_score==null?0: rs.presentation_score);
+                dr[0] = model.seminar_name[i];
+                dr[1] = (rs.presentation_score == null ? 0 : rs.presentation_score);
                 dr[2] = (rs.report_score == null ? 0 : rs.report_score);
-                dr[3] =  (rs.question_score == null ? 0 : rs.question_score);
+                dr[3] = (rs.question_score == null ? 0 : rs.question_score);
                 dr[4] = (rs.total_score == null ? 0 : rs.total_score);
                 dt.Rows.Add(dr);
+            }
+            int j = 1;
+            for (int i = 0; i < model.rs.Count(); i++)
+            {
+                var rs = model.rs[i];
+                DataRow dr = dt.NewRow();
+                dr = dt.NewRow();
+                dr[0] = "第 " + j +" 轮总分";
+                dr[1] = (rs.presentation_score == null ? 0 : rs.presentation_score);
+                dr[2] = (rs.report_score == null ? 0 : rs.report_score);
+                dr[3] = (rs.question_score == null ? 0 : rs.question_score);
+                dr[4] = (rs.total_score == null ? 0 : rs.total_score);
+                dt.Rows.Add(dr);
+                j++;
             }
             return Redirect("/File/Download?path=" + DataToExcel(dt));
         }
