@@ -399,29 +399,29 @@ namespace final.Controllers
             }
             return View();
         }
-        public void createcourse()
-        {
-            int teacher_id = 1;
-            course NewCourse = new course
-            {
-                teacher_id = teacher_id,
-                course_name = Request["course_name"],
-                introduction = Request["introduction"],
-                presentation_percentage = byte.Parse(Request["presentation_percentage"]),
-                question_percentage = byte.Parse(Request["question_percentage"]),
-                report_percentage = byte.Parse(Request["report_percentage"]),
-                team_start_time = Convert.ToDateTime(Request["team_start_time"]),
-                team_end_time = Convert.ToDateTime(Request["team_end_time"])
-            };
-            db.course.Add(NewCourse);
-            //人数 冲突 未实现
-            //两种策略:
-            //member_limit_strategy 队伍人数设置
-            //course_member_limit_strategy 队伍中选该课程人数
-            //team_and_strategy team_or_strategy  与或 对应策略
-            //team_strategy 每门课必须一个
+        //public void createcourse()
+        //{
+        //    int teacher_id = 1;
+        //    course NewCourse = new course
+        //    {
+        //        teacher_id = teacher_id,
+        //        course_name = Request["course_name"],
+        //        introduction = Request["introduction"],
+        //        presentation_percentage = byte.Parse(Request["presentation_percentage"]),
+        //        question_percentage = byte.Parse(Request["question_percentage"]),
+        //        report_percentage = byte.Parse(Request["report_percentage"]),
+        //        team_start_time = Convert.ToDateTime(Request["team_start_time"]),
+        //        team_end_time = Convert.ToDateTime(Request["team_end_time"])
+        //    };
+        //    db.course.Add(NewCourse);
+        //    //人数 冲突 未实现
+        //    //两种策略:
+        //    //member_limit_strategy 队伍人数设置
+        //    //course_member_limit_strategy 队伍中选该课程人数
+        //    //team_and_strategy team_or_strategy  与或 对应策略
+        //    //team_strategy 每门课必须一个
 
-        }
+        //}
         public ActionResult KlassSeminar(int id)//ksid
         {
             BEnrollSmn_model model = new BEnrollSmn_model(id, 0);
@@ -453,22 +453,37 @@ namespace final.Controllers
         public ActionResult CheckStuGroup() {
             return View();
         }
-        public ActionResult courseInfo() {
+        public ActionResult CourseInfo() {
             return View();
         }
-        void daiban()
-        {
-            teacher t = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
-            int teacher_id = t.id;
-
-            //team_valid_application
-            var tvalist = from tva in db.team_valid_application where tva.teacher_id == teacher_id select tva;
-            //share_team_application
-            var stalist = from sta in db.share_team_application where sta.sub_course_teacher_id == teacher_id select sta;
-            //share_seminar_application
-            var ssalist = from ssa in db.share_seminar_application where ssa.sub_course_teacher_id == teacher_id select ssa;
-
+        public ActionResult KlassInfo() {
+            return View();
         }
+        public ActionResult ShareKlassSet() {
+            return View();
+        }
+        public ActionResult CreateShare() {
+            return View();
+        }
+        public ActionResult Daiban() {
+            return View();
+        }
+        public ActionResult CreateCourse() {
+            return View();
+        }
+        //void daiban()
+        //{
+        //    teacher t = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
+        //    int teacher_id = t.id;
+
+        //    //team_valid_application
+        //    var tvalist = from tva in db.team_valid_application where tva.teacher_id == teacher_id select tva;
+        //    //share_team_application
+        //    var stalist = from sta in db.share_team_application where sta.sub_course_teacher_id == teacher_id select sta;
+        //    //share_seminar_application
+        //    var ssalist = from ssa in db.share_seminar_application where ssa.sub_course_teacher_id == teacher_id select ssa;
+
+        //}
 
         //讨论课过程结束后仅能生成提问分数？
         void updatetoseminarscore(int id)  //klass_seminar_id   klass_seminar->seminar_score

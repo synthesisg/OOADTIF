@@ -11,26 +11,26 @@
 </style>
 <!--与学生MyCourse相似 多3个跳转-->
 <div class="container" style="margin-top:20px;width:100%;margin:0;padding:0;">
-	@{ //给个TeacherCourseInfoList 修改下方courseName
+	@{ //给个TeacherCourseInfoList 修改下方courseName ====href看看要不要加参数
 		//for (int i = 0; i < ViewBag.course.Count; i++) {
 	<ul id="CourseName" style="line-height:40px;list-style-type:none;width:100%;">
 		<li onclick="f('CourseName')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;">
 			CourseName
 			<span class="glyphicon glyphicon-align-justify" style="float:right;line-height:40px;margin-right:1em;"></span>
 		</li>
-		<li onclick="window.location.href=''" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+		<li onclick="window.location.href='/TeacherMobile/CourseInfo'" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
 			课程信息
 			<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
 		</li>
-		<li onclick="window.location.href='/TeacherMobile/CourseInfo'" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+		<li onclick="window.location.href='/TeacherMobile/KlassInfo'" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
 			班级信息
 			<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
 		</li>
-		<li onclick="window.location.href=''" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+		<li onclick="window.location.href='/TeacherMobile/ChsSpecSeminar'" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
 			讨论课设置
 			<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
 		</li>
-		<li onclick="window.location.href=''" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+		<li onclick="window.location.href='/TeacherMobile/ShareKlassSet'" style="width:100%;list-style-type:none;height:40px;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
 			共享设置
 			<span class="glyphicon glyphicon-chevron-right" style="float:right;line-height:40px;margin-right:1em;"></span>
 		</li>

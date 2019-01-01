@@ -1,0 +1,163 @@
+﻿
+@{
+	ViewBag.Title = "CreateCourse";
+	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+}
+
+<style>
+	div .row {
+		margin-top: 5px;
+		width: 100%;
+		background-color: #ffffff;
+	}
+</style>
+
+<!--课程名-->
+<form>
+	<div class="row">
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<div class="input-group">
+				<span class="input-group-addon">课程名</span>
+				<input name="courseName" type="text" class="form-control">
+			</div>
+		</div>
+	</div>
+	<!--课程要求-->
+	<div class="row">
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<p>课程要求：</p>
+		</div>
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<textarea name="courseRequest" class="form-control"></textarea>
+		</div>
+	</div>
+	<!--成绩规则-->
+	<div class="row">
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<p>成绩计算规则</p>
+		</div>
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<p>(百分制，请填入0-100之间的数)</p>
+		</div>
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<div class="input-group">
+				<span class="input-group-addon">展示</span>
+				<input name="displayScore" type="text" class="form-control">
+			</div>
+		</div>
+		<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
+		<div class="col-xs-10 col-sm-10" style="margin-top:5px">
+			<div class="input-group">
+				<span class="input-group-addon">提问</span>
+				<input name="questionScore" type="text" class="form-control">
+			</div>
+		</div>
+		<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
+		<div class="col-xs-10 col-sm-10" style="margin-top:5px">
+			<div class="input-group">
+				<span class="input-group-addon">报告</span>
+				<input name="reportScore" type="text" class="form-control">
+			</div>
+		</div>
+	</div>
+	<!--组员限制-->
+	<div class="row">
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<p>组员基本要求</p>
+		</div>
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<div class="input-group">
+				<span class="input-group-addon">小组人数上限</span>
+				<input name="maxline" type="text" class="form-control">
+			</div>
+		</div>
+		<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
+		<div class="col-xs-10 col-sm-10" style="margin-top:5px">
+			<div class="input-group">
+				<span class="input-group-addon">小组人数下限</span>
+				<input name="minline" type="text" class="form-control">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<p>组内选修课程人数</p>
+		</div>
+
+		<div id="xuanxiu">
+			<div id="copy">
+				<div class="col-xs-2 col-sm-2"></div>
+				<div class="col-xs-10 col-sm-10">
+					<select id="courselist" class="form-control">
+						@{ //need Course List
+							<option value="courseId">
+								courseName
+							</option>
+						}
+					</select>
+				</div>
+				<div class="col-xs-2 col-sm-2"></div>
+				<div class="col-xs-10 col-sm-10">
+					<div class="input-group">
+						<span class="input-group-addon">人数上限</span>
+						<input name="courseIdmaxline" type="text" class="form-control">
+					</div>
+				</div>
+				<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
+				<div class="col-xs-10 col-sm-10" style="margin-top:5px">
+					<div class="input-group">
+						<span class="input-group-addon">人数下限</span>
+						<input name="courseIdminline" type="text" class="form-control">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+			<div class="row">
+				<div class="col-xs-2 col-sm-2"></div>
+				<div class="col-xs-10 col-sm-10">
+					<p>冲突课程</p>
+				</div>
+				<div class="col-xs-2 col-sm-2"></div>
+				<div class="col-xs-10 col-sm-10">
+					<select id="courselist" class="form-control">
+						@{ //need Course List
+							<option value="courseId">courseName</option>
+							<option value="courseId2">courseName2</option>
+						}
+					</select>
+				</div>
+				<div class="col-xs-2 col-sm-2"></div>
+				<div class="col-xs-10 col-sm-10">
+					<select id="courselist" name="courselist" class="form-control">
+						@{ //need Course List
+							<option value="courseId">
+								courseName
+							</option>
+						}
+					</select>
+				</div>
+			</div>
+	<div class="row">
+		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-10 col-sm-10">
+			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3em">报告提交开始时间:</p>
+			<input type="datetime-local" id="start_time" name="start_time" style="line-height:15px;font-size:10px;border-style:none;" />
+			<br />
+			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3em">报告提交截止时间:</p>
+			<input type="datetime-local" id="end_time" name="end_time" style="line-height:15px;font-size:10px;border-style:none;" />
+			<button type="submit" class="btn btn-primary btn-block">
+				创建
+			</button>
+		</div>
+	</div>
+</form>

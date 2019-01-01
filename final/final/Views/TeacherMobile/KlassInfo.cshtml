@@ -1,0 +1,29 @@
+﻿
+@{
+	ViewBag.Title = "KlassInfo";
+	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+}
+<style>
+	div .row {
+		margin-top:10px;
+		padding:0;
+		width:100%;
+		background-color:#ffffff;
+	}
+	p {
+		margin-left:2em;
+	}
+</style>
+<!-- ClassList ======== -->
+@{//下面是一个班级的范例
+<div class="row">
+	<h4 style="font:bold">ClassName</h4>
+	<p>讨论课时间：seminar_Time</p>
+	<p>讨论课地点：seminar_Place</p>
+</div>
+}
+<button class="btn btn-primary btn-block" style="background-color:forestgreen" onclick="window.location.href='/TeacherMobile/CreateClass'">
+	<span class="glyphicon glyphicon-plus" style="float:left"></span>
+	新建班级
+</button>
+

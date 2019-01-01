@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
-<form method="post" enctype="multipart/form-data" role="form" onsubmit="CheckExistFile()">
+<form method="post" enctype="multipart/form-data" role="form" onsubmit="if (!CheckExistFile()) return false;">
 	<div class="container" style="width:100%">
 		<div class="container" style="background-color:#ffffff;margin:1px;width:100%;">
 			<div class="input-group" style="margin:10px">

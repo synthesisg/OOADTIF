@@ -1,0 +1,142 @@
+﻿
+@{
+	ViewBag.Title = "Daiban";
+	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout3.cshtml";
+}
+<!--三个list-->
+<!--审核list-->
+<style>
+	div .container {
+	margin-top:2px;
+	}
+	ul {
+		line-height: 40px;
+		list-style-type: none;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		background-color:#ffffff;
+	}
+
+	li {
+		width: 100%;
+		color: #000000;
+		border-style: none;
+		border-radius: 5px;
+		text-align: center;
+	}
+</style>
+@{
+	<ul id="applyId">
+		<li onclick="f('applyId')" style="background-color:#1fa5e5"><p style="line-height:40px;">group_id 的审核请求</p></li>
+		<li style="display:none;">reason</li>
+		<li onclick="replyApply(1,'applyId')" style="display:inline;display:none;">同意</li>
+		<li onclick="replyApply(0,'applyId')" style="display:inline;display:none;">拒绝</li>
+	</ul>
+}
+<!--共享分组list-->
+@{
+
+	<ul id="shareId">
+		<li onclick="f('shareId')"style="background-color:#1fa5e5"><p style="line-height:40px;">teacher_Name 的共享分组请求</p></li>
+		<li style="display:none;">reason</li>
+		<li onclick="replyGroup(1,'shareId')"style="display:inline;display:none;">同意</li>
+		<li onclick="replyGroup(0,'shareId')"style="display:inline;display:none;">拒绝</li>
+	</ul>
+
+}
+<!--共享讨论课list-->
+@{
+
+	<ul id="shareId2">
+		<li onclick="f('shareId2')"style="background-color:#1fa5e5"><p style="line-height:40px;">teacher_Name 的共享讨论课请求</p></li>
+		<li style="display:none;">reason</li>
+		<li onclick="replySeminar(1,'shareId2')"style="display:inline;display:none;"> 同意 </li>
+		<li onclick="replySeminar(0,'shareId2')" style="display:inline;display:none;">拒绝</li>
+	</ul>
+
+}
+<script>
+	function f(id) {
+		var liArr = document.querySelectorAll("ul[id='" + id + "'] li")
+		for (var i = 1; i < liArr.length; i++) {
+			if (liArr[i].style.display == "block") {
+				liArr[i].style.display = "none";
+			}
+			else
+				liArr[i].style.display = "block";
+		}
+	}
+	function replyApply(mes, id) {
+		var flag = false;
+		if (mes == "1") {
+			flag = confirm("同意该请求吗？");
+		}
+		else {
+			flag = confirm("拒绝该请求吗？");
+		}
+		if (flag) {
+			$.ajax({
+				'url': "",
+				'type': "post",
+				'data': { mes: mes, id: id },
+				success: function () {
+					alert("操作成功");
+					window.location.reload();
+				},
+				error: function () {
+					alert("操作失败");
+					window.location.reload();
+				}
+			})
+		}
+	}
+	function replyGroup(mes,id) {
+		var flag = false;
+		if (mes == "1") {
+			flag = confirm("同意该请求吗？");
+		}
+		else {
+			flag = confirm("拒绝该请求吗？");
+		}
+		if (flag) {
+			$.ajax({
+				'url': "",
+				'type': "post",
+				'data': { mes: mes, id: id },
+				success: function () {
+					alert("操作成功");
+					window.location.reload();
+				},
+				error: function () {
+					alert("操作失败");
+					window.location.reload();
+				}
+			})
+		}
+	}
+	function replySeminar(mes,id) {
+		var flag = false;
+		if (mes == "1") {
+			flag = confirm("同意该请求吗？");
+		}
+		else {
+			flag = confirm("拒绝该请求吗？");
+		}
+		if (flag) {
+			$.ajax({
+				'url': "",
+				'type': "post",
+				'data': { mes: mes, id: id },
+				success: function () {
+					alert("操作成功");
+					window.location.reload();
+				},
+				error: function () {
+					alert("操作失败");
+					window.location.reload();
+				}
+			})
+		}
+	}
+</script>

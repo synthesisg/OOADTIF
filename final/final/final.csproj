@@ -291,6 +291,11 @@
     <Content Include="Views\TeacherMobile\CheckStuScore.cshtml" />
     <Content Include="Views\TeacherMobile\CheckStuGroup.cshtml" />
     <Content Include="Views\TeacherMobile\CourseInfo.cshtml" />
+    <Content Include="Views\TeacherMobile\KlassInfo.cshtml" />
+    <Content Include="Views\TeacherMobile\ShareKlassSet.cshtml" />
+    <Content Include="Views\TeacherMobile\CreateShare.cshtml" />
+    <Content Include="Views\TeacherMobile\Daiban.cshtml" />
+    <Content Include="Views\TeacherMobile\CreateCourse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
