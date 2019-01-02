@@ -1,104 +1,238 @@
 ﻿
 @{
-	ViewBag.Title = "InSeminar";
-	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+    ViewBag.Title = "InSeminar";
+    Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
 <style>
-	div {
-		margin-top: 2px;
-		padding: 0;
-	}
+    div {
+        margin-top: 2px;
+        padding: 0;
+    }
 </style>
 <div class="row" style="background-color:#ffffff;width:100%">
-	<p style="text-align:center"> @ViewBag.seminar_name</p>
-	<p id="groupDis" style="display:inline;color:orangered;margin-left:3em">当前展示小组：2-1</p>
-	<p id="questionDis" style="float:right;display:inline;color:green">已有j位同学提问</p>
+    <h3 style="text-align:center"> @ViewBag.seminar_name</h3>
+    <p id="groupDis" style="display:inline;color:orangered;margin-left:3em">当前展示小组：@ViewBag.NowAttend</p>
+    <p id="questionDis" style="float:right;display:inline;color:green">提问队列中有 @ViewBag.NowQue 位同学</p>
 </div>
 <div class="row" style="background-color:#ffffff;width:100%;margin-top:10px">
-	<div class="col-sm-4 col-xs-4"><p style="text-align:center">选择小组</p></div>
-	<div class="col-sm-8 col-xs-8">
-		<select id="group_id" name="group_id" class="form-control" onChange="getData(this.options[this.selectedIndex].value)">
-			<option value="1-5">1-5</option>
-			<option value="1-3">1-3</option>
-			<option value="1-2">1-2</option>
-			<option value="1-6" disabled selected="selected">1-6</option>
-		</select>
-	</div>
+    <div class="col-sm-4 col-xs-4"><p style="text-align:center">选择小组</p></div>
+    <div class="col-sm-8 col-xs-8">
+        <select id="team_id" name="team_id" class="form-control" onChange="getscore_pre(this.options[this.selectedIndex].value)">
+            @for (var i = 0; i < ViewBag.model.team_serial.Length; i++)
+            {
+                if (ViewBag.model.team_serial[i] != null && ViewBag.model.team_serial[i] != "")
+                {
+                    <option value="@ViewBag.model.team_id[i]">@ViewBag.model.team_serial[i]</option>
+                }
+            }
+        </select>
+    </div>
 </div>
 <div class="row" style="background-color:#ffffff;width:100%;">
-	<div class="col-sm-4 col-xs-1"></div>
-	<div class="input-group">
-		<span class="input-group-addon">展示分数</span>
-		<input type="text" class="form-control">
-	</div>
+    <div class="col-sm-4 col-xs-1"></div>
+    <div class="input-group">
+        <span class="input-group-addon">展示分数</span>
+        <input type="text" id="pre_score" class="form-control">
+    </div>
+</div>
+<div style="margin-top:40px">
+    <button type="button" class="btn btn-primary btn-lg btn-block">保存展示分数</button>
 </div>
 
 <div class="row" style="background-color:#ffffff;width:100%;margin-top:10px">
-	<div class="col-sm-4 col-xs-4"><p style="text-align:center">选择小组</p></div>
-	<div class="col-sm-8 col-xs-8">
-		<select id="ques_id" name="ques_id" class="form-control"></select>
-	</div>
+    <div class="col-sm-4 col-xs-4"><p style="text-align:center">选择小组</p></div>
+    <div class="col-sm-8 col-xs-8">
+        <select id="ques_id" name="ques_id" class="form-control" onChange="getscore_que(this.options[this.selectedIndex].value)"></select>
+    </div>
 </div>
 
 <div class="row" style="background-color:#ffffff;width:100%">
-	<div class="col-sm-4 col-xs-1"></div>
-	<div class="input-group">
-		<span class="input-group-addon">提问分数</span>
-		<input type="text" class="form-control">
-	</div>
+    <div class="col-sm-4 col-xs-1"></div>
+    <div class="input-group">
+        <span class="input-group-addon">提问分数</span>
+        <input id="que_score" type="text" class="form-control">
+    </div>
 </div>
 
 <div style="margin-top:40px">
-	<button type="button" class="btn btn-primary btn-lg btn-block">保存分数</button>
+    <button type="button" class="btn btn-primary btn-lg btn-block">保存提问分数</button>
 </div>
 <div>
-	<button type="button" class="btn btn-primary btn-lg btn-block" onclick="selectQuestion()">抽取提问</button>
+    <button type="button" class="btn btn-primary btn-lg btn-block" id="Extract">抽取提问</button>
 </div>
 <div>
-	<button type="button" class="btn btn-primary btn-lg btn-block" onclick="nextGroup()">下组展示</button>
+    <button type="button" class="btn btn-primary btn-lg btn-block" id="Next">下组展示</button>
 </div>
+<div style="display: none;">
+    <input id="user" type="text" />
+    <input id="conn" type="button" value="连接" />
+    <input id="close" type="button" value="关闭" /><br />
+    <span id="tips"></span>
+    <input id="content" type="text" />
+    <input id="send" type="button" value="发送" /><br />
+    <input id="to" type="text" />目的用户
 
+</div>
+<div id="msg">
+</div>
 <script>
-	function nextGroup() {
-		var p = document.getElementById("questionDis");
-		p.innerHTML = "已有0位同学提问";
-		//清空队列
-		document.getElementById("ques_id").options.length = 0;
-		if(true)//如果没结束
-			alert("请 group 1-3 开始展示 ");
-		else//如果讨论课结束了=============================
-		{
-			window.location.href = "/TeacherMobile/SetReportDDL/" + ksid;
-		}
+    window.onload = function ()
+    {
+        document.getElementById("conn").click();
 	}
-	function getData(n) {
-		$.ajax({
-			'url': "",
-			'type': "post",
-			'data': { id: n },
-			success: function () {
-				//修改input框分数的value
-			}
-		})
-	}
-	function modNowDisGroup(mes) {
-		var obj = document.getElementById("groupDis");
-		obj.value = "当前展示小组：" + mes;
-	}
-	function addNowQuestion(mes) {
-		//修改提问人数并刷新select
-		var obj = document.getElementById("questionDis");
-		obj.value = "当前提问人数为:" + mes;
+    var ws;
+    $().ready(function ()
+    {
+        $('#conn').click(function ()
+        {
+            ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=' + @ViewBag.tid);
+            $('#msg').append('<p>正在连接</p>');
 
-	}
-	function selectQuestion() {
-		//选择一位同学
-		//添加到select==================================
-		var select = document.getElementById("ques_id");
-		//name->text group_id->value
-		var varItem = new Option(name, group_id);
-		select.options.add(varItem);
-		//提问
-		alert("请 2-1 xxx同学提问");
-	}
+            ws.onopen = function ()
+            {
+                    $('#msg').append('<p>已经连接</p>');
+            }
+            ws.onmessage = function (evt)
+            {
+                $('#msg').append('<p>' + evt.data + '</p>');
+                var str = evt.data.split('|');
+                if (str[1] == "@ViewBag.ksid") {
+                    switch (str[0])
+                    {
+                        case "1":
+                            modNowQuestion(str[2]);
+                            break;
+                        case "2":
+                            ExtractOne(str[2], str[3], str[4]);
+                            break;
+                        case "3":
+                            nextGroup(str[2]);
+                            break;
+                        case "4":
+                            fin();
+                            break;
+
+                    }
+                }
+            }
+            ws.onerror = function (evt)
+            {
+                    $('#msg').append('<p>' + JSON.stringify(evt) + '</p>');
+            }
+            ws.onclose = function ()
+            {
+                    $('#msg').append('<p>已经关闭</p>');
+            }
+            });
+
+            $('#close').click(function () {
+                ws.close();
+            });
+
+        $('#send').click(function ()
+        {
+                if (ws.readyState == WebSocket.OPEN) {
+                    ws.send($("#to").val() + "|" + $('#content').val());
+                }
+                else {
+                    $('#tips').text('连接已经关闭');
+                }
+            });
+        $('#Extract').click(function () {
+            if (ws.readyState == WebSocket.OPEN)
+            {
+                ws.send("2|@ViewBag.ksid");
+            }
+            else {$('#tips').text('连接已经关闭');}
+        }
+            $('#Next').click(function () {
+            if (ws.readyState == WebSocket.OPEN)
+            {
+                ws.send("3|@ViewBag.ksid");
+            }
+            else {$('#tips').text('连接已经关闭');}
+        }
+        );
+        });
+</script>
+<script>
+    function modNowQuestion(mes)//1
+    {
+        var obj = document.getElementById("questionDis");
+        obj.value = "提问队列中有 " + mes + " 位同学";
+    }
+    function ExtractOne(name, value, mes)//2
+    {
+        //修改提问人数并刷新select
+        var obj = document.getElementById("questionDis");
+        obj.value = "提问队列中有 " + mes + " 位同学";
+
+        //add select
+        var sel = document.getElementById("ques_id");
+        sel.options.add(new Option(name, value));
+
+        alert("请 " + mes + " 提问 ");
+    }
+    function nextGroup(mes)//3
+    {
+        var p = document.getElementById("questionDis");
+        p.innerHTML = "提问队列中有 0 位同学";
+        document.getElementById("ques_id").options.length = 0;
+        alert("请 " + mes + " 小组开始展示 ");
+        document.getElementById("groupDis").value = "当前展示小组：" + mes;
+    }
+    function fin()//4
+    {
+        window.location.href = "/TeacherMobile/SetReportDDL/" + ksid;
+    }
+
+    function getscore_pre(n)
+    {
+        $.ajax({
+            'url': "/TeacherMobile/getscore_presentation",
+            'type': "post",
+            'data': { id: n ,ksid: @ViewBag.ksid},
+            success: function (mes)
+            {
+                document.getElementById("pre_score").value = mes;
+            }
+        })
+
+    function getscore_que(n)
+    {
+        $.ajax({
+            'url': "/TeacherMobile/getscore_question",
+            'type': "post",
+            'data': { id: n },
+            success: function (mes)
+            {
+                document.getElementById("que_score").value = mes;
+            }
+        })
+    }
+    //ques_id   team_id
+    function score_presentation()
+    {
+        $.ajax({
+            'url': "TeacherMobile/score_presentation",
+            'type': "post",
+            'data': { id: document.getElementById("team_id").value, score: document.getElementById("pre_score").value,ksid:@ViewBag.ksid },
+            success: function ()
+            {
+                alert("提交成功");
+            }
+        })
+    }
+    function score_question()
+    {
+        $.ajax({
+            'url': "TeacherMobile/score_question",
+            'type': "post",
+            'data': { id: document.getElementById("ques_id").value, score: document.getElementById("que_score").value},
+            success: function ()
+            {
+                alert("提交成功");
+            }
+        })
+    }
 </script>

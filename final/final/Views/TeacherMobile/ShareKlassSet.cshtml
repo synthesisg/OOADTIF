@@ -4,83 +4,132 @@
     Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
 <style>
-	div .row {
-		margin-top: 10px;
-		padding: 0;
-		width: 100%;
-		background-color: #ffffff;
-	}
+    div .row {
+        margin-top: 10px;
+        padding: 0;
+        width: 100%;
+        background-color: #ffffff;
+    }
 
-	p {
-		margin-left: 2em;
-	}
-	ul {
-		line-height: 40px;
-		list-style-type: none;
-		width: 100%;
-		margin: 0;
-		padding: 0;
-	}
+    p {
+        margin-left: 2em;
+    }
 
-	li {
-		width: 100%;
-		color: #000000;
-		border-style:inset;
-		border-color:#f0f0f0;
-		border-radius: 5px;
-		text-align: center;
-	}
+    ul {
+        line-height: 40px;
+        list-style-type: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        width: 100%;
+        color: #000000;
+        border-style: inset;
+        border-color: #f0f0f0;
+        border-radius: 5px;
+        text-align: center;
+    }
 </style>
-<!-- ======以下是两个范例====== -->
+@for (int i = 0; i < ViewBag.ssalist1.Count; i++)
+{
+    <div class="row">
+        <ul id="shareId">
+            <li onclick="f('ssa1_@ViewBag.ssalist1[i].id')" style="background-color:#1fa5e5;">@ViewBag.strssa1[i]</li>
+            <li><p>共享类型： 共享讨论课（作为主课程） </p></li>
+            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.ssalist1[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+        </ul>
+    </div>
+}
+@for (int i = 0; i < ViewBag.ssalist2.Count; i++)
+{
+    <div class="row">
+        <ul id="shareId">
+            <li onclick="f('ssa2_@ViewBag.ssalist2[i].id')" style="background-color:#1fa5e5;">@ViewBag.strssa2[i]</li>
+            <li><p>共享类型： 共享讨论课（作为从课程） </p></li>
+            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.ssalist2[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+        </ul>
+    </div>
+}
+@for (int i = 0; i < ViewBag.stalist1.Count; i++)
+{
+    <div class="row">
+        <ul id="shareId">
+            <li onclick="f('sta1_@ViewBag.stalist1[i].id')" style="background-color:#1fa5e5;">@ViewBag.strsta1[i]</li>
+            <li><p>共享类型： 共享组队信息（作为主课程） </p></li>
+            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.stalist1[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+        </ul>
+    </div>
+}
+@for (int i = 0; i < ViewBag.stalist2.Count; i++)
+{
+    <div class="row">
+        <ul id="shareId">
+            <li onclick="f('sta2_@ViewBag.stalist2[i].id')" style="background-color:#1fa5e5;">@ViewBag.strsta2[i]</li>
+            <li><p>共享类型： 共享组队信息（作为从课程） </p></li>
+            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.stalist2[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+        </ul>
+    </div>
+}
+@if (ViewBag.stalist1.Count + ViewBag.stalist2.Count + ViewBag.ssalist1.Count + ViewBag.ssalist2.Count == 0)
+{
+    <div class="row">
+        <ul id="shareId">
+            <li><p>本门课暂无已经实行的共享机制</p></li>
+        </ul>
+    </div>
+}
 <div class="row">
-	<ul id="shareId">
-		<li onclick="f('shareId')" style="background-color:#1fa5e5;">(CourseName) TeacherName</li>
-		<li><p>共享类型： shareType </p></li>
-		<li><p>共享情况： shareStatus </p></li>
-		<li><button class="btn btn-default" onclick="cancelShare('shareId')" style="float:right;background-color:orangered">取消共享</button></li>
-	</ul>
-</div>
-<div class="row">
-	<ul id="shareId">
-		<li onclick="f('shareId')" style="background-color:#1fa5e5;">(CourseName) TeacherName</li>
-		<li><p>共享类型： shareType </p></li>
-		<li><p>共享情况： shareStatus </p></li>
-		<li><button class="btn btn-default" onclick="cancelShare('shareId')" style="float:right;background-color:orangered">取消共享</button></li>
-	</ul>
-</div>
-<div class="row">
-	<button onclick="window.location.href=''" class="btn btn-default btn-block" style="background-color:forestgreen">
-		<span class="glyphicon glyphicon-plus" style="float:left"></span>
-		新增共享
-	</button>
+    <button onclick="window.location.href='/TeacherMobile/CreateShare/@ViewBag.course_id'" class="btn btn-default btn-block" style="background-color:forestgreen">
+        <span class="glyphicon glyphicon-plus" style="float:left"></span>
+        新增共享
+    </button>
 </div>
 
 <script>
-	function cancelShare(shareId) {
-		if (confirm("确认取消共享吗?")) {
-			$.ajax({
-				'url': "",
-				'type': "post",
-				'data': { shareId: shareId },
-				success: function () {
-					alert("取消共享成功");
-					window.location.reload();
-				},
-				error: function () {
-					alert("操作失败");
-					window.location.reload();
-				}
-			})
-		}
-	}
-	function f(shareId) {
-		var liArr = document.querySelectorAll("ul[id='" + shareId + "'] li")
-		for (var i = 1; i < liArr.length; i++) {
-			if (liArr[i].style.display == "block") {
-				liArr[i].style.display = "none";
-			}
-			else
-				liArr[i].style.display = "block";
-		}
-	}
+    function cancelSharessa(shareId) {
+        if (confirm("确认取消共享吗?")) {
+            $.ajax({
+                'url': "/TeacherMobile/cancelSharessa",
+                'type': "post",
+                'data': { id: shareId },
+                success: function () {
+                    alert("取消共享成功");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("操作失败");
+                    window.location.reload();
+                }
+            })
+        }
+    }
+    function cancelSharesta(shareId) {
+        if (confirm("确认取消共享吗?")) {
+            $.ajax({
+                'url': "/TeacherMobile/cancelSharesta",
+                'type': "post",
+                'data': { id: shareId },
+                success: function () {
+                    alert("取消共享成功");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("操作失败");
+                    window.location.reload();
+                }
+            })
+        }
+    }
+    function f(shareId) {
+        var liArr = document.querySelectorAll("ul[id='" + shareId + "'] li")
+        for (var i = 1; i < liArr.length; i++) {
+            if (liArr[i].style.display == "block") {
+                liArr[i].style.display = "none";
+            }
+            else
+                liArr[i].style.display = "block";
+        }
+    }
 </script>

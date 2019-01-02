@@ -18,9 +18,9 @@
 
 <div class="container">
 	<p style="display:inline;margin-right:2em">共享类型:</p>
-	<select id="typeSelect" class="form-control" style="display:inline;width:12em">
-		<option value="组队共享" selected="selected">组队共享</option>
-		<option value="讨论课共享">讨论课共享</option>
+	<select id="typeSelect" name="type" class="form-control" style="display:inline;width:12em">
+		<option value="team" selected="selected">组队共享</option>
+		<option value="seminar">讨论课共享</option>
 	</select>
 </div>
 
@@ -28,7 +28,7 @@
 <div class="container">
 	<p style="display:inline;margin-right:2em" >共享对象:</p>
 <!-- teacherList-->
-	<select id="teacherSelect" class="form-control" style="display:inline;width:12em">
+	<select id="teacherSelect" name="sub_course_id" class="form-control" style="display:inline;width:12em">
 		@{
 			<option value="TeacherId" selected="selected">TeacherName</option>
 			<option value="TeacherId2">TeacherName2</option>

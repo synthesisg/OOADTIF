@@ -6,15 +6,15 @@
 
 <div class="container" style="background-color:white;height:30px;text-align:center">
 	<div style="float:left">姓名：</div>
-	<div style="float:left;margin:0 auto">TeacherName</div>
+	<div style="float:left;margin:0 auto">@ViewBag.t.teacher_name</div>
 </div>
 <div class="container" style="height:30px;">
 	<div style="float:left">工号：</div>
-	<div style="float:left;text-align:center">Teacheraccount</div>
+	<div style="float:left;text-align:center">@ViewBag.t.account</div>
 </div>
 <div class="container" style="background-color:white;height:50px;">
 	<div style="float:left">联系方式（邮箱）：</div>
-	<div style="float:left;text-align:center;margin-right:2em;">Teacher.email</div>
+	<div style="float:left;text-align:center;margin-right:2em;">@ViewBag.t.email</div>
 	<a onclick="window.location.href='/TeacherMobile/ChangeEmail'">修改</a>
 </div>
 <div class="container" style="height:30px;">

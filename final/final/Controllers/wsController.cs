@@ -46,21 +46,23 @@ namespace final.Controllers
                         int sid = Int32.Parse(str[2]);
                         if(question(ksid, sid))
                         {
-                            ret = "1|" + ksid.ToString();
+                            int atid = Now(ksid).id;
+                            ret = "1|" + ksid.ToString()+'+'+(from q in db.question where q.attendance_id==atid && q.is_selected!=1 select q).Count();
                         }
                         break;
                     case "2":   //Extract
                         question ex = Extract(ksid);
                         if (ex != null)
                         {
-                            ret = "2|" + ksid.ToString() + '|' + new qt().t2ts(ex.team_id) + db.student.Find(ex.student_id).student_name + '|' + ex.id;
+                            int atid = Now(ksid).id;
+                            ret = "2|" + ksid.ToString() + '|' + new qt().t2ts(ex.team_id) + db.student.Find(ex.student_id).student_name + '|' + ex.id + '+' + (from q in db.question where q.attendance_id == atid && q.is_selected != 1 select q).Count();
                         }
                         break;
                     case "3":   //Next
                         attendance a = NextAttendace(ksid);
                         if (a == null)
                         {
-                            ret = "4";  //End
+                            ret = "4" + ksid.ToString();  //End
                             break;
                         }
                         else

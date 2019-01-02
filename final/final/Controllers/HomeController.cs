@@ -117,7 +117,7 @@ namespace final.Controllers
                             {
                                 Session["user_id"] = ui2list[0].id;
                                 Session["is_teacher"] = true;
-                                return Redirect("/TeacherMobile/ChsLesson");
+                                return Redirect("/TeacherMobile/TeacherMyCourse");
                             }
                         }
                         else

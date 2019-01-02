@@ -15,11 +15,12 @@
 	}
 </style>
 <!-- ClassList ======== -->
-@{//下面是一个班级的范例
+@for(int i=0;i<ViewBag.klist.Count;i++)
+{//下面是一个班级的范例
 <div class="row">
-	<h4 style="font:bold">ClassName</h4>
-	<p>讨论课时间：seminar_Time</p>
-	<p>讨论课地点：seminar_Place</p>
+	<h4 style="font:bold">@ViewBag.klist[i].grade - ( @ViewBag.klist[i].klass_serial )</h4>
+	<p>讨论课时间：@ViewBag.klist[i].klass_time</p>
+    <p>讨论课地点：@ViewBag.klist[i].klass_location</p>
 </div>
 }
 <button class="btn btn-primary btn-block" style="background-color:forestgreen" onclick="window.location.href='/TeacherMobile/CreateClass'">

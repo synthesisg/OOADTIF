@@ -216,8 +216,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Admin\Login.cshtml" />
     <Content Include="Views\Admin\StudentCreate.cshtml" />
@@ -265,7 +263,6 @@
     <Content Include="Views\TeacherMobile\CreateSeminar.cshtml" />
     <Content Include="Views\StudentMobile\CreateTeam.cshtml" />
     <Content Include="Views\TeacherMobile\StudentScore2.cshtml" />
-    <Content Include="Views\Home\Chat.cshtml" />
     <Content Include="Views\TeacherMobile\ChsSpecKlass.cshtml" />
     <Content Include="Views\TeacherMobile\KlassSeminar.cshtml" />
     <Content Include="Views\TeacherMobile\QueryEnrollSmn.cshtml" />
@@ -296,6 +293,8 @@
     <Content Include="Views\TeacherMobile\CreateShare.cshtml" />
     <Content Include="Views\TeacherMobile\Daiban.cshtml" />
     <Content Include="Views\TeacherMobile\CreateCourse.cshtml" />
+    <Content Include="Views\Home\MobileLogin.cshtml" />
+    <Content Include="Views\Home\WebLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

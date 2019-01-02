@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using final.Models;
+using System.Data;
 
 //mail
 using System.Net;
@@ -40,7 +41,7 @@ namespace final.Controllers
                         {
                             Session["user_id"] = ui[0].id;
                             Session["is_teacher"] = true;
-                            return RedirectToAction("ChsLesson");
+                            return RedirectToAction("TeacherMyCourse");
                         }
                     }
                     else Session["is_teacher"] = false;
@@ -92,13 +93,6 @@ namespace final.Controllers
         //仅course 后续跳转至chsseminar
         public ActionResult Seminar()
         {
-            if (is_judge)
-            {
-                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
-            }
-            else Session["user_id"] = test_id;
-
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
@@ -307,13 +301,39 @@ namespace final.Controllers
                     db.SaveChanges();
 
                     return RedirectToAction("/Seminar");
-                    break;
             }
             return View();
         }
         public ActionResult InSeminar(int id)//ksid
         {
-            ViewBag.seminar_name = db.seminar.Find(db.klass_seminar.Find(id).seminar_id).seminar_name;
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+
+            int tid = Int32.Parse(Session["user_id"].ToString());
+
+            seminar seminar = db.seminar.Find(db.klass_seminar.Find(id).seminar_id);
+            ViewBag.TitleText = seminar.seminar_name;
+            ViewBag.seminar_name = seminar.seminar_name;
+            var alist = (from a in db.attendance where a.is_present == 1 && a.klass_seminar_id == id select a).ToList();
+            if (alist.Count() > 0)
+            {
+                ViewBag.NowAttend = new qt().t2ts(alist[0].team_id);
+                ViewBag.NowQue = (from q in db.question where q.is_selected != 1 && q.attendance_id == alist[0].id select q).Count();
+            }
+            else
+            {
+                ViewBag.NowAttend = "无";
+                ViewBag.NowQue = 0;
+            }
+            klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
+            ViewBag.model = model;
+            ViewBag.tid = tid;
+            ViewBag.ksid = id;
             return View();
         }
         public ActionResult CreateSeminar(int id)//course_id
@@ -432,58 +452,301 @@ namespace final.Controllers
         {
             return View();
         }
-        public ActionResult TeacherIndividual() {
-            return View();
-        }
-        public ActionResult AccountAndSet() {
-            return View();
-        }
-        public ActionResult ChangePassword() {
-            return View();
-        }
-        public ActionResult ChangeEmail() {
-            return View();
-        }
-        public ActionResult TeacherMyCourse() {
-            return View();
-        }
-        public ActionResult CheckStuScore() {
-            return View();
-        }
-        public ActionResult CheckStuGroup() {
-            return View();
-        }
-        public ActionResult CourseInfo() {
-            return View();
-        }
-        public ActionResult KlassInfo() {
-            return View();
-        }
-        public ActionResult ShareKlassSet() {
-            return View();
-        }
-        public ActionResult CreateShare() {
-            return View();
-        }
-        public ActionResult Daiban() {
-            return View();
-        }
-        public ActionResult CreateCourse() {
-            return View();
-        }
-        //void daiban()
-        //{
-        //    teacher t = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
-        //    int teacher_id = t.id;
+        public ActionResult TeacherIndividual()
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
 
-        //    //team_valid_application
-        //    var tvalist = from tva in db.team_valid_application where tva.teacher_id == teacher_id select tva;
-        //    //share_team_application
-        //    var stalist = from sta in db.share_team_application where sta.sub_course_teacher_id == teacher_id select sta;
-        //    //share_seminar_application
-        //    var ssalist = from ssa in db.share_seminar_application where ssa.sub_course_teacher_id == teacher_id select ssa;
+            teacher s = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
+            ViewBag.name = s.teacher_name;
+            ViewBag.account = s.account;
+            return View();
+        }
+        public ActionResult AccountAndSet()
+        {
+            if (is_judge)
+            {
+                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
 
-        //}
+            ViewBag.t = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
+            return View();
+        }
+        public ActionResult ChangePassword()
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+            return View();
+        }
+        public ActionResult ChangeEmail()
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+            return View();
+        }
+        public ActionResult TeacherMyCourse()
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int tid = Int32.Parse(Session["user_id"].ToString());
+            ViewBag.course = (from c in db.course where c.teacher_id==tid select c).ToList();
+            return View();
+        }
+        List<List<round_team_score>> totalround = new List<List<round_team_score>>();
+        public ActionResult CheckStuScore(int id)//course_id
+        {
+            var ridlist = (from r in db.round where r.course_id == id orderby r.round_serial ascending select r.id);
+            foreach(var rid in ridlist)
+            {
+                //find teamid
+                var teamidlist = (from rs in db.round_score where rs.round_id == rid select rs.team_id).Distinct().ToList();
+                List<round_team_score> around = new List<round_team_score>();
+                foreach(var tid in teamidlist)
+                {
+                    around.Add(new round_team_score(rid, tid));
+                }
+                totalround.Add(around);
+            }
+            ViewBag.totalround = totalround;
+            ViewBag.course_id = id;
+            ViewBag.TitleText = db.course.Find(id).course_name;
+            return View();
+        }
+        public ActionResult CheckStuGroup(int id)//course_id
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int tid = Int32.Parse(Session["user_id"].ToString());
+            ViewBag.ct = new course_team(id).list;
+
+            ViewBag.stulist = new StudentMobileController().studentlist(id);
+            ViewBag.course_id = id;
+            course c = db.course.Find(id);
+            if (c.team_start_time <= DateTime.Now && DateTime.Now <= c.team_end_time) ViewBag.Time = true;
+            else ViewBag.Time = false;
+            return View();
+        }
+        public ActionResult CourseInfo(int id)
+        {
+            course c = db.course.Find(id);
+            ViewBag.c = c;
+            ViewBag.TitleText = c.course_name;
+            //本门课人数上下限mls   返回一个member_limit_strategy或null 唯一 id 与course_id 相同(大概)
+            ViewBag.mls = db.member_limit_strategy.Find(id);
+
+            /* 所有本门课的策略 ts (T/F)
+             * 返回
+             * strccs 代表冲突课程“A|B|C-D|E”或null 每 - 一个集合
+             * 
+             * ac true代表全部 false代表符合其一
+             * cmlslist List<course_member_limit_strategy>模型 代表选修课人数上下限 包括一个AND或者OR（上文ac）
+             * cmlsname List<string>模型  对应课程名
+             */
+            var tslist = (from ts in db.team_strategy where ts.course_id == id select ts).ToList();
+            if (tslist.Count() > 0)
+            {
+                ViewBag.ts = true;
+
+                //先确定and还是or
+                var tsfirst = (from ts in db.team_strategy where ts.course_id == id && ts.strategy_serial == 1 select ts).ToList()[0];
+                bool ac = (tsfirst.strategy_name == "TeamAndStrategy" ? true : false);
+                ViewBag.ac = ac;
+                List<string> strccs = new List<string>();
+                List<course_member_limit_strategy> cmlslist = new List<course_member_limit_strategy>();
+                List<string> cmlsname = new List<string>();
+                foreach (var ts in tslist)
+                {
+                    int tid = ts.strategy_id;
+                    switch (ts.strategy_name)
+                    {
+                        case "ConflictCourseStrategy":
+                            var ccslist = (from ccs in db.conflict_course_strategy where ccs.id == tid select ccs.course_id).ToList();
+                            string tmp = "";
+                            foreach (var cid in ccslist)
+                            {
+                                if (cid != id) tmp += ' ' + db.course.Find(cid).course_name + '(' + db.teacher.Find(db.course.Find(cid).teacher_id).teacher_name + ')' + " |";
+                            }
+                            strccs.Add(tmp.Remove(tmp.Length - 1, 1));
+                            break;
+                        case "CourseMemberLimitStrategy":         //不定个数 针对选修xx课程的组队
+                            course_member_limit_strategy cmls = db.course_member_limit_strategy.Find(tid);
+                            cmlslist.Add(cmls);
+                            cmlsname.Add(db.course.Find(cmls.course_id).course_name);
+                            break;
+                    }
+                }
+                ViewBag.cmlslist = cmlslist;
+                ViewBag.cmlsname = cmlsname;
+                ViewBag.strccs = strccs;
+            }
+            else
+            {
+                ViewBag.ts = false;
+            }
+            return View();
+        }
+        public ActionResult KlassInfo(int id)//course_id
+        {
+            ViewBag.klist = (from k in db.klass where k.course_id == id select k).ToList();
+            return View();
+        }
+        public ActionResult ShareKlassSet(int id)//course_id
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            int tid = Int32.Parse(Session["user_id"].ToString());
+            
+            var ssalist1 = (from ssa in db.share_seminar_application where ssa.main_course_id==id && ssa.status == 1 select ssa).ToList();
+            List<string> strssa1 = new List<string>();
+            foreach (var ssa in ssalist1) strssa1.Add(db.course.Find(ssa.sub_course_id).course_name + '(' + db.teacher.Find(db.course.Find(ssa.sub_course_id).teacher_id).teacher_name + ')');
+            var ssalist2 = (from ssa in db.share_seminar_application where ssa.sub_course_id==id && ssa.status == 1 select ssa).ToList();
+            List<string> strssa2 = new List<string>();
+            foreach (var ssa in ssalist2) strssa2.Add(db.course.Find(ssa.main_course_id).course_name + '(' + db.teacher.Find(db.course.Find(ssa.main_course_id).teacher_id).teacher_name + ')');
+
+            var stalist1 = (from sta in db.share_team_application where sta.main_course_id==id && sta.status == 1 select sta).ToList();
+            List<string> strsta1 = new List<string>();
+            foreach (var sta in stalist1) strsta1.Add(db.course.Find(sta.sub_course_id).course_name + '(' + db.teacher.Find(db.course.Find(sta.sub_course_id).teacher_id).teacher_name + ')');
+            var stalist2 = (from sta in db.share_team_application where sta.sub_course_id==id && sta.status == 1 select sta).ToList();
+            List<string> strsta2 = new List<string>();
+            foreach (var sta in stalist2) strsta2.Add(db.course.Find(sta.main_course_id).course_name + '(' + db.teacher.Find(db.course.Find(sta.main_course_id).teacher_id).teacher_name + ')');
+
+            ViewBag.ssalist1 = ssalist1;
+            ViewBag.strssa1 = strssa1;
+            ViewBag.ssalist2 = ssalist2;
+            ViewBag.strssa2 = strssa2;
+
+            ViewBag.stalist1 = stalist1;
+            ViewBag.strsta1 = strsta1;
+            ViewBag.stalist2 = stalist2;
+            ViewBag.strsta2 = strsta2;
+            ViewBag.course_id = id;
+            return View();
+        }
+        public ActionResult CreateShare(int id)//sa main_course_id
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    ViewBag.model = new shared_course(id);
+                    ViewBag.course_id = id;
+                    return View();
+                case "POST":        //create
+                    string type = Request["type"].ToString();
+                    int subid = Int32.Parse(Request["sub_course_id"].ToString());
+                    switch(type)
+                    {
+                        case "team":
+                            share_team_application Newsta = new share_team_application
+                            {
+                                main_course_id = id,
+                                sub_course_id = subid,
+                                sub_course_teacher_id = db.course.Find(subid).teacher_id,
+                                status = 0
+                            };
+                            db.share_team_application.Add(Newsta);
+                            db.SaveChanges();
+                            break;
+                        case "seminar":
+                            share_seminar_application Newssa = new share_seminar_application
+                            {
+                                main_course_id = id,
+                                sub_course_id = subid,
+                                sub_course_teacher_id = db.course.Find(subid).teacher_id,
+                                status = 0
+                            };
+                            db.share_seminar_application.Add(Newssa);
+                            db.SaveChanges();
+                            break;
+                    }
+                    return RedirectToAction("ShareKlassSet/" + id.ToString());
+            }
+                    return View();
+        }
+        public ActionResult daiban()
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
+
+            teacher tea = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
+            int teacher_id = tea.id;
+
+            //team_valid_application
+            List<string> strtva = new List<string>();
+            var tvalist = (from tva in db.team_valid_application where tva.teacher_id == teacher_id &&tva.status!=1 select tva).ToList();
+            foreach (var tva in tvalist)
+            {
+                team t = db.team.Find(tva.team_id);
+                strtva.Add("来自 " + db.course.Find(t.course_id).course_name + new qt().t2ts(t.id) + "小组的组队合法化申请");
+            }
+
+            //share_team_application
+            List<string> strsta = new List<string>();
+            var stalist = (from sta in db.share_team_application where sta.sub_course_teacher_id == teacher_id && sta.status != 1 select sta).ToList();
+            foreach (var sta in stalist)
+            {
+                strsta.Add("来自 " + db.course.Find(sta.main_course_id).course_name + '(' + db.teacher.Find(db.course.Find(sta.main_course_id).teacher_id).teacher_name + ") 的共享组队申请");
+            }
+
+            //share_seminar_application
+            List<string> strssa = new List<string>();
+            var ssalist = (from ssa in db.share_seminar_application where ssa.sub_course_teacher_id == teacher_id && ssa.status != 1 select ssa).ToList();
+            foreach (var ssa in ssalist)
+            {
+                strsta.Add("来自 " + db.course.Find(ssa.main_course_id).course_name + '(' + db.teacher.Find(db.course.Find(ssa.main_course_id).teacher_id).teacher_name + ") 的共享讨论课申请");
+            }
+
+            ViewBag.tvalist = tvalist;
+            ViewBag.strtva = strtva;
+            ViewBag.stalist = stalist;
+            ViewBag.strsta = strsta;
+            ViewBag.ssalist = ssalist;
+            ViewBag.ssrsta = strssa;
+            return View();
+        }
+        public ActionResult CreateCourse()
+        {
+            return View();
+        }
 
         //讨论课过程结束后调用
         void updatetoseminarscore(int id)  //klass_seminar_id   klass_seminar->seminar_score
@@ -559,6 +822,97 @@ namespace final.Controllers
             new UpdateScore().UpdateRoundScore(r.id);
         }
 
+        public ActionResult crtmarkxls(int id)  //course_id
+        {
+            List<List<round_team_score>> totalround = new List<List<round_team_score>>();
+            var ridlist = (from r in db.round where r.course_id == id orderby r.round_serial ascending select r.id);
+
+            foreach (var rid in ridlist)
+            {
+                //find teamid
+                var teamidlist = (from rs in db.round_score where rs.round_id == rid select rs.team_id).Distinct().ToList();
+                List<round_team_score> around = new List<round_team_score>();
+                foreach (var tid in teamidlist)
+                {
+                    around.Add(new round_team_score(rid, tid));
+                }
+                totalround.Add(around);
+            }
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("小组编号", typeof(string)));
+            dt.Columns.Add(new DataColumn("参与讨论课", typeof(string)));
+            dt.Columns.Add(new DataColumn("Presentation", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Report", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Question", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Total", typeof(decimal)));
+
+            for (int i = 0; i < totalround.Count(); i++)
+                for(int j=0;j<totalround[i].Count();j++)
+            {
+                    if (totalround[i][j].rs != null)
+                    {
+                        DataRow dr = dt.NewRow();
+                        dr = dt.NewRow();
+                        dr[0] = totalround[i][j].team_serial;
+                        dr[1] = "第 " + (i + 1).ToString() + " 轮总分";
+                        dr[2] = (totalround[i][j].rs.presentation_score == null ? 0 : totalround[i][j].rs.presentation_score);
+                        dr[3] = (totalround[i][j].rs.report_score == null ? 0 : totalround[i][j].rs.report_score);
+                        dr[4] = (totalround[i][j].rs.question_score == null ? 0 : totalround[i][j].rs.question_score);
+                        dr[5] = (totalround[i][j].rs.total_score == null ? 0 : totalround[i][j].rs.total_score);
+                        dt.Rows.Add(dr);
+                    }
+                    for(int k=0;k<totalround[i][j].list.Count();k++)
+                    {
+                        DataRow dr = dt.NewRow();
+                        dr = dt.NewRow();
+                        dr[0] = totalround[i][j].team_serial;
+                        dr[1] = totalround[i][j].list[k].seminar_name;
+                        dr[2] = (totalround[i][j].list[k].presentation_score == null ? 0 : totalround[i][j].list[k].presentation_score);
+                        dr[3] = (totalround[i][j].list[k].report_score == null ? 0 : totalround[i][j].list[k].report_score);
+                        dr[4] = (totalround[i][j].list[k].question_score == null ? 0 : totalround[i][j].list[k].question_score);
+                        dr[5] = (totalround[i][j].list[k].total_score == null ? 0 : totalround[i][j].list[k].total_score);
+                        dt.Rows.Add(dr);
+                    }
+            }
+            return Redirect("/File/Download?path=" + new FileController().DataToExcel(dt));
+        }
+
+        public decimal? getscore_question(int id)
+        {
+            return db.question.Find(id).score;
+        }
+        public decimal? getscore_presentation(int id,int ksid)
+        {
+            var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == ksid && ss.team_id == id select ss.presentation_score).ToList();
+            return (sslist.Count() > 0 ? sslist[0] : null);
+        }
+        public bool score_presentation(int id, decimal score, int ksid)
+        {
+            var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == ksid && ss.team_id == id select ss).ToList();
+            if (sslist.Count() > 0) sslist[0].presentation_score = score;
+            else
+            {
+                seminar_score Newss = new seminar_score
+                {
+                    klass_seminar_id = ksid,
+                    presentation_score = score,
+                    team_id = id
+                };
+                db.seminar_score.Add(Newss);
+            }
+            db.SaveChanges();
+            return true;
+        }
+        public bool score_question(int id, decimal score)
+        {
+            db.question.Find(id).score = score;
+            db.SaveChanges();
+            return true;
+        }
+
+
+
         public bool DelSeminar(int seminarId)
         {
             return new Del().DelSeminar(seminarId);
@@ -571,22 +925,35 @@ namespace final.Controllers
         {
             return new Del().DelCourse(id);
         }
-
-        public bool chgpwd(string data)
+        public string cancelSharesta(int id)
         {
-            if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false) return false;
-            teacher s = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
-            s.password = data;
-            db.SaveChanges();
-            return true;
+            new team_share("cancel", id);
+            return "success";
         }
-        public bool chgemail(string data)
+        public string cancelSharessa(int id)
         {
-            if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false) return false;
-            teacher s = db.teacher.Find(Int32.Parse(Session["user_id"].ToString()));
-            s.email = data;
+            new seminar_share("cancel", id);
+            return "success";
+        }
+        public string chgpwd(string oldpw, string newpw)
+        {
+            if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false) return "1";
+            student s = db.student.Find(Int32.Parse(Session["user_id"].ToString()));
+            if (s.password == oldpw)
+            {
+                s.password = newpw;
+                db.SaveChanges();
+                return "success";
+            }
+            else return "1";
+        }
+        public ActionResult chgemail()
+        {
+            if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false) return Content("Identity verification error.");
+            student s = db.student.Find(Int32.Parse(Session["user_id"].ToString()));
+            s.email = Request["email"];
             db.SaveChanges();
-            return true;
+            return RedirectToAction("AccountAndSet");
         }
 
         bool is_judge = false;

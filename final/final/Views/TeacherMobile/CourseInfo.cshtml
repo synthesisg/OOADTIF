@@ -67,21 +67,21 @@
 		else { <p>无</p>}
 	</div>
 </div>
-<button class="btn btn-default btn-block" style="background-color:red;margin-top:30px;" onclick="delCourse('courseId')">
+<button class="btn btn-default btn-block" style="background-color:red;margin-top:30px;" onclick="delCourse()">
 	删除课程
 </button>
 
 <script>
-	function delCourse(courseID) {
+	function delCourse() {
 		if (confirm("确认删除吗")) {
 			$.ajax({
-				'url': "",
+                'url': "/TeacherMobile/DelCourse",
 				'type': "post",
-				'data': { courseID: courseID },
+				'data': { courseID: @ViewBag.c.id },
 				success: function () {
 					alert("删除成功");
 					window.location.href = "/TeacherMobile/TeacherMyCourse";
-				}
+				},
 				error: function () {
 					alert("删除失败！");
 				}

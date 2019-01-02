@@ -199,6 +199,21 @@ namespace final.Models
         public int klass_id;
         public string name;
     }
+    public class shared_course
+    {
+        List<int> id=new List<int>();
+        List<string> str=new List<string>();
+        public shared_course(int course_id)
+        {
+            var clist = (from c in db.course where c.id != course_id select c).ToList();
+            foreach(var c in clist)
+            {
+                id.Add(c.id);
+                str.Add(c.course_name + '(' + db.teacher.Find(c.teacher_id).teacher_name + ')');
+            }
+        }
+        MSSQLContext db = new MSSQLContext();
+    }
     public class astulist
     {
         public List<int> student_id=new List<int>();
@@ -320,11 +335,55 @@ namespace final.Models
         MSSQLContext db = new MSSQLContext();
     }
 
+    public class round_team_score
+    {
+        public decimal total_score;
+        public string team_serial;
+        public round_score rs;
+        public List<line> list = new List<line>();
+
+        public class line
+        {
+            public string seminar_name;
+            public decimal? presentation_score;
+            public decimal? question_score;
+            public decimal? report_score;
+            public decimal? total_score;
+        }
+        public round_team_score(int round_id,int team_id)
+        {
+            team_serial = new qt().t2ts(team_id);
+            int klass_id = db.team.Find(team_id).klass_id;
+            var sidlist = (from s in db.seminar where s.round_id == round_id select s.id);
+            var ksidlist = (from ks in db.klass_seminar where sidlist.Contains(ks.seminar_id) && ks.klass_id == klass_id select ks.id).ToList();
+            foreach(var ksid in ksidlist)
+            {
+                var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == ksid && ss.team_id == team_id select ss).ToList();
+                if(sslist.Count()>0)
+                {
+                    line newline = new line();
+                    newline.seminar_name = db.seminar.Find(db.klass_seminar.Find(ksid).seminar_id).seminar_name;
+                    newline.presentation_score = sslist[0].presentation_score;
+                    newline.question_score = sslist[0].question_score;
+                    newline.report_score = sslist[0].report_score;
+                    newline.total_score = sslist[0].total_score;
+                    list.Add(newline);
+                }
+            }
+
+            var rslist=(from es in db.round_score where es.round_id == round_id && es.team_id == team_id select es).ToList();
+            if (rslist.Count() > 0) rs = rslist[0];
+        }
+
+        MSSQLContext db = new MSSQLContext();
+    }
+
     //[all]返回一个klass_seminar下已报名的队伍名
     public class klass_seminar_enroll_state_model
     {
         public int ksid;
         public int status;
+        public int[] team_id;
         public string[] team_order; //team_name
         public string[] leader_name;
         public string[] team_serial;//klass+serial
@@ -345,7 +404,7 @@ namespace final.Models
             team_serial = new string[se.max_team];
             ppt_name = new string[se.max_team];
             ppt_url = new string[se.max_team];
-
+            team_id = new int[se.max_team];
             for (int i = 0; i < team_order.Length; i++) team_order[i] = "";
             foreach (var a in alist)
             {
@@ -355,6 +414,7 @@ namespace final.Models
                 team_serial[a.team_order - 1] = t.klass_serial.ToString() + '-' + t.team_serial;
                 ppt_name[a.team_order - 1] = a.ppt_name;
                 ppt_url[a.team_order - 1] = a.ppt_url;
+                team_id[a.team_order - 1] = a.team_id;
             }
 
             if (student_id > 0) 
