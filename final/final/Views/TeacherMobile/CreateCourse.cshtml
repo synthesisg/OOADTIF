@@ -4,160 +4,393 @@
 	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
 
-<style>
-	div .row {
-		margin-top: 5px;
-		width: 100%;
-		background-color: #ffffff;
-	}
-</style>
+<script type="text/javascript">
+    var num1 = 1;
+    var num2 = 1;
+    var numinner1 = 1;
+    var numinner2 = 1;
+    var numinner3 = 1;
+    window.onload = function () {
+        var title = document.getElementById("settitle");
+        title.textContent = "新建课程";
+        document.getElementById("dropdownMenu1").style.display = "none";
+    }
 
-<!--课程名-->
-<form>
-	<div class="row">
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<div class="input-group">
-				<span class="input-group-addon">课程名</span>
-				<input name="courseName" type="text" class="form-control">
-			</div>
-		</div>
-	</div>
-	<!--课程要求-->
-	<div class="row">
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<p>课程要求：</p>
-		</div>
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<textarea name="courseRequest" class="form-control"></textarea>
-		</div>
-	</div>
-	<!--成绩规则-->
-	<div class="row">
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<p>成绩计算规则</p>
-		</div>
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<p>(百分制，请填入0-100之间的数)</p>
-		</div>
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<div class="input-group">
-				<span class="input-group-addon">展示</span>
-				<input name="displayScore" type="text" class="form-control">
-			</div>
-		</div>
-		<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
-		<div class="col-xs-10 col-sm-10" style="margin-top:5px">
-			<div class="input-group">
-				<span class="input-group-addon">提问</span>
-				<input name="questionScore" type="text" class="form-control">
-			</div>
-		</div>
-		<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
-		<div class="col-xs-10 col-sm-10" style="margin-top:5px">
-			<div class="input-group">
-				<span class="input-group-addon">报告</span>
-				<input name="reportScore" type="text" class="form-control">
-			</div>
-		</div>
-	</div>
-	<!--组员限制-->
-	<div class="row">
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<p>组员基本要求</p>
-		</div>
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<div class="input-group">
-				<span class="input-group-addon">小组人数上限</span>
-				<input name="maxline" type="text" class="form-control">
-			</div>
-		</div>
-		<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
-		<div class="col-xs-10 col-sm-10" style="margin-top:5px">
-			<div class="input-group">
-				<span class="input-group-addon">小组人数下限</span>
-				<input name="minline" type="text" class="form-control">
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<p>组内选修课程人数</p>
-		</div>
+    function check(form) {
+        if (document.getElementById("name").value == null || document.getElementById("name").value =="") {
+            alert("课程名不能为空");
+            return false;
+        }
+        var p1 = document.getElementById("preScore");
+        var p2 = document.getElementById("repScore");
+        var p3 = document.getElementById("queScore");
+        if ((parseInt(p1.value) + parseInt(p2.value) + parseInt(p3.value)) != 100) {
+            alert("请检查成绩比例");
+            return false;
+        }
+        if (parseInt(document.getElementById("minn").value) > parseInt(document.getElementById("maxn").value)) {
+            alert("请检查上下限人数的值");
+            return false;
+        }
+        if (Date.parse(document.getElementById("startTime")) > Date.parse(document.getElementById("endTime"))) {
+            alert("请检查组队时间");
+            return false;
+        }
+        return true;
+    }
 
-		<div id="xuanxiu">
-			<div id="copy">
-				<div class="col-xs-2 col-sm-2"></div>
-				<div class="col-xs-10 col-sm-10">
-					<select id="courselist" class="form-control">
-						@{ //need Course List
-							<option value="courseId">
-								courseName
-							</option>
-						}
-					</select>
-				</div>
-				<div class="col-xs-2 col-sm-2"></div>
-				<div class="col-xs-10 col-sm-10">
-					<div class="input-group">
-						<span class="input-group-addon">人数上限</span>
-						<input name="courseIdmaxline" type="text" class="form-control">
-					</div>
-				</div>
-				<div class="col-xs-2 col-sm-2" style="margin-top:5px"></div>
-				<div class="col-xs-10 col-sm-10" style="margin-top:5px">
-					<div class="input-group">
-						<span class="input-group-addon">人数下限</span>
-						<input name="courseIdminline" type="text" class="form-control">
-					</div>
-				</div>
-			</div>
+    function addt() {
+        var parent = document.getElementById("optinalCourse");
+        var x = 'addOptionalCourse' + num1;
+        var d = document.getElementById(x);
+        d.style.display = "block";
+        num1++;
+        parent.appendChild(d);
+    }
+
+    function addt2() {
+        var parent = document.getElementById("showconflictCourse");
+        var x = 'addConflictCourse' + num2;
+        var d = document.getElementById(x);
+        d.style.display = "block";
+        num2++;
+        parent.appendChild(d);
+    }
+
+    function addinner(x) {
+        var t;
+        var p;
+        if (x == '1') {
+            t = 'inner1' + numinner1;
+            p ='addinner1'
+            numinner1++;
+        }
+        else if (x == '2') {
+            t = 'inner2' + numinner2;
+            p = 'addinner2'
+            numinner2++;
+        }
+        else if (x == '3') {
+            t = 'inner3' + numinner3;
+            p = 'addinner3'
+            numinner3++;
+        }
+        var d = document.getElementById(t);
+        var parent = document.getElementById(p);
+        parent.appendChild(d);
+        d.style.display = "block";
+    }
+</script>
+
+
+
+<form method="post" style="text-align: center;padding: 30% 0 20% 0; height:95%;" class="btn-group-justified" onsubmit="return check(this);">
+
+	<div class="informationlist" style="border-top-color:lightgray; margin-bottom:10px;">
+		<input id="name" asp-for="@Model.Course.Name" class="input input_username" placeholder="课程名" type="text" />
+	</div>
+
+	<div class="informationlist" style="border-top-color:lightgray; margin-bottom:10px;">
+		<p style="color:#45B39D; font-size:large">课程要求</p>
+		<textarea asp-for="@Model.Course.Introduction" type="text" style="width:100%"></textarea>
+	</div>
+	<div class="informationlist" style="border-top-color:lightgray;margin-bottom:10px;">
+		<p style="color:#45B39D; font-size:large">成绩计算规则</p>
+		<div class="input-group" style="margin-top:20px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">展示</span>
+			<input type="number" asp-for="@Model.Course.PresentationWeight" class="form-control" id="preScore" />
+			<span class="input-group-addon">%</span>
+		</div>
+		<div class="input-group" style="margin-top:20px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">报告</span>
+			<input type="number" asp-for="@Model.Course.ReportWeight" class="form-control" id="repScore" />
+			<span class="input-group-addon">%</span>
+		</div>
+		<div class="input-group" style="margin-top:20px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">提问</span>
+			<input type="number" asp-for="@Model.Course.QuestionWeight" class="form-control" id="queScore" />
+			<span class="input-group-addon">%</span>
 		</div>
 	</div>
-			<div class="row">
-				<div class="col-xs-2 col-sm-2"></div>
-				<div class="col-xs-10 col-sm-10">
-					<p>冲突课程</p>
-				</div>
-				<div class="col-xs-2 col-sm-2"></div>
-				<div class="col-xs-10 col-sm-10">
-					<select id="courselist" class="form-control">
-						@{ //need Course List
-							<option value="courseId">courseName</option>
-							<option value="courseId2">courseName2</option>
-						}
-					</select>
-				</div>
-				<div class="col-xs-2 col-sm-2"></div>
-				<div class="col-xs-10 col-sm-10">
-					<select id="courselist" name="courselist" class="form-control">
-						@{ //need Course List
-							<option value="courseId">
-								courseName
-							</option>
-						}
-					</select>
-				</div>
-			</div>
-	<div class="row">
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-10 col-sm-10">
-			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3em">报告提交开始时间:</p>
-			<input type="datetime-local" id="start_time" name="start_time" style="line-height:15px;font-size:10px;border-style:none;" />
-			<br />
-			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3em">报告提交截止时间:</p>
-			<input type="datetime-local" id="end_time" name="end_time" style="line-height:15px;font-size:10px;border-style:none;" />
-			<button type="submit" class="btn btn-primary btn-block">
-				创建
-			</button>
+	<div class="informationlist" style="border-top-color:lightgray;margin-bottom:10px;">
+		<p style="color:#45B39D; font-size:large">小组人数</p>
+		<div class="input-group" style="margin-top:20px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">下限</span>
+			<input id="minn" asp-for="@Model.Course.GroupRule.TeamMemberLimit.MinTeamMember" type="number" class="form-control">
 		</div>
+		<div class="input-group" style="margin-top:20px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">上限</span>
+			<input id="maxn" asp-for="@Model.Course.GroupRule.TeamMemberLimit.MaxTeamMember" type="number" class="form-control">
+		</div>
+	</div>
+	<div class="informationlist" style="border-top-color:lightgray;margin-bottom:10px;">
+		<p style="color:#45B39D; font-size:large">组队时间</p>
+		<div class="input-group" style="margin-top:20px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">开始时间</span>
+			<input id="startTime" asp-for="@Model.Course.GroupingBeginTime" type="date" class="form-control">
+		</div>
+		<div class="input-group" style="margin-top:20px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">结束时间</span>
+			<input id="endTime" asp-for="@Model.Course.GroupingEndTime" type="date" class="form-control">
+		</div>
+	</div>
+	<div class="informationlist" style="border-top-color:lightgray;margin-bottom:10px;">
+		<p style="color:#45B39D; font-size:large">选修人数</p>
+		<div id="optinalCourse" style="font-size:medium; color:#45B39D">
+		</div>
+		<input type="button" class="btn btn-default button_default" style="margin:20px;" value="新增" onclick="addt()" />
+		<select asp-for="@Model.Course.GroupRule.CMLIsAnd" class="form-control">
+			<option value="@true">均满足</option>
+			<option value="@false">满足其一</option>
+		</select>
+	</div>
+	<div class="informationlist" style="border-top-color:lightgray;margin-bottom:10px; overflow-y:scroll;">
+		<p style="color:#45B39D; font-size:large">冲突课程</p>
+		<div id="showconflictCourse" style="font-size:medium; color:#45B39D">
+		</div>
+		<input type="button" class="btn btn-default button_default" value="新增" style="margin:20px;" onclick="addt2()" />
+	</div>
+	<div style="margin-top:40px; padding:10px;font-size: large;">
+		<input type="submit" value="确定" class="button_login" />
 	</div>
 </form>
+<div class="foot">
+	<p>选修不同冲突课程的学生不可同组，注意同课程名不同教师名为不同课程</p>
+</div>
+
+<div hidden id="addOptionalCourse1" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">选修课程</span>
+		<select asp-for="@Model.Course.GroupRule.CourseMemberLimits[0].Course.Name" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name</option>
+			}
+		</select>
+	</div>
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">下限</span>
+		<input id="minn1" asp-for="@Model.Course.GroupRule.CourseMemberLimits[0].MinMemberNumber" type="number" class="form-control">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">上限</span>
+		<input id="maxn1" asp-for="@Model.Course.GroupRule.CourseMemberLimits[0].MaxMemberNumber" type="number" class="form-control">
+	</div>
+</div>
+<div hidden id="addOptionalCourse2" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">选修课程</span>
+		<select asp-for="@Model.Course.GroupRule.CourseMemberLimits[1].Course.Name." class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name</option>
+			}
+		</select>
+	</div>
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">下限</span>
+		<input id="minn2" asp-for="@Model.Course.GroupRule.CourseMemberLimits[1].MinMemberNumber" type="number" class="form-control">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">上限</span>
+		<input id="maxn2" asp-for="@Model.Course.GroupRule.CourseMemberLimits[1].MaxMemberNumber" type="number" class="form-control">
+	</div>
+</div>
+<div hidden id="addOptionalCourse3" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">选修课程</span>
+		<select asp-for="@Model.Course.GroupRule.CourseMemberLimits[2].Course.Name." class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name</option>
+			}
+		</select>
+	</div>
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">下限</span>
+		<input id="minn3" asp-for="@Model.Course.GroupRule.CourseMemberLimits[2].MinMemberNumber" type="number" class="form-control">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">上限</span>
+		<input id="maxn3" asp-for="@Model.Course.GroupRule.CourseMemberLimits[2].MaxMemberNumber" type="number" class="form-control">
+	</div>
+</div>
+<div hidden id="addOptionalCourse4" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">选修课程</span>
+		<select asp-for="@Model.Course.GroupRule.CourseMemberLimits[3].Course.Name." class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name</option>
+			}
+		</select>
+	</div>
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">下限</span>
+		<input id="minn3" asp-for="@Model.Course.GroupRule.CourseMemberLimits[3].MinMemberNumber" type="number" class="form-control">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">上限</span>
+		<input id="maxn3" asp-for="@Model.Course.GroupRule.CourseMemberLimits[3].MaxMemberNumber" type="number" class="form-control">
+	</div>
+</div>
+<div hidden id="addOptionalCourse5" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">选修课程</span>
+		<select asp-for="@Model.Course.GroupRule.CourseMemberLimits[4].Course.Name." class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name</option>
+			}
+		</select>
+	</div>
+	<div class="input-group" style="margin:10px;">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">下限</span>
+		<input id="minn3" asp-for="@Model.Course.GroupRule.CourseMemberLimits[4].MinMemberNumber" type="number" class="form-control">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">上限</span>
+		<input id="maxn3" asp-for="@Model.Course.GroupRule.CourseMemberLimits[4].MaxMemberNumber" type="number" class="form-control">
+	</div>
+</div>
+
+<div hidden id="addConflictCourse1" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div id="addinner1">
+		<div class="input-group" style="margin:10px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+			<select asp-for="@Model.Course.GroupRule.ConflictCourseList[0].Courses[0].Id" class="form-control">
+				@foreach (var course in Model.OtherCourses) {
+					<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+				}
+			</select>
+		</div>
+		<div class="input-group" style="margin:10px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+			<select asp-for="@Model.Course.GroupRule.ConflictCourseList[0].Courses[1].Id" class="form-control">
+				@foreach (var course in Model.OtherCourses) {
+					<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+				}
+			</select>
+		</div>
+	</div>
+	<input type="button" class="btn btn-default button_default" style="margin:20px;" value="新增" onclick="addinner('1')" />
+</div>
+
+<div hidden id="addConflictCourse2" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div id="addinner2">
+		<div class="input-group" style="margin:10px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+			<select asp-for="@Model.Course.GroupRule.ConflictCourseList[1].Courses[0].Id" class="form-control">
+				@foreach (var course in Model.OtherCourses) {
+					<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+				}
+			</select>
+		</div>
+		<div class="input-group" style="margin:10px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+			<select asp-for="@Model.Course.GroupRule.ConflictCourseList[1].Courses[1].Id" class="form-control">
+				@foreach (var course in Model.OtherCourses) {
+					<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+				}
+			</select>
+		</div>
+	</div>
+	<input type="button" class="btn btn-default button_default" style="margin:20px;" value="新增" onclick="addinner('2')" />
+</div>
+
+<div hidden id="addConflictCourse1" style="border-bottom:solid; border-bottom-color:lightgray; border-bottom-width:1px;">
+	<div id="addinner3">
+		<div class="input-group" style="margin:10px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+			<select asp-for="@Model.Course.GroupRule.ConflictCourseList[2].Courses[0].Id" class="form-control">
+				@foreach (var course in Model.OtherCourses) {
+					<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+				}
+			</select>
+		</div>
+		<div class="input-group" style="margin:10px;">
+			<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+			<select asp-for="@Model.Course.GroupRule.ConflictCourseList[2].Courses[1].Id" class="form-control">
+				@foreach (var course in Model.OtherCourses) {
+					<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+				}
+			</select>
+		</div>
+	</div>
+	<input type="button" class="btn btn-default button_default" style="margin:20px;" value="新增" onclick="addinner('3')" />
+</div>
+<div hidden id="inner11" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[0].Courses[2].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner12" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[0].Courses[3].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner13" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[0].Courses[4].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner21" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[1].Courses[2].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner22" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[1].Courses[3].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner23" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[1].Courses[4].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner31" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[2].Courses[2].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner32" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[2].Courses[3].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
+<div hidden id="inner33" style="margin:10px;">
+	<div class="input-group">
+		<span style="font-size:large;color:#45B39D;" class="input-group-addon">冲突课程</span>
+		<select asp-for="@Model.Course.GroupRule.ConflictCourseList[2].Courses[4].Id" class="form-control">
+			@foreach (var course in Model.OtherCourses) {
+				<option value="@course.Id">@course.Name (@course.Teacher.Name)</option>
+			}
+		</select>
+	</div>
+</div>
