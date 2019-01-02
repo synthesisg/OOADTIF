@@ -648,10 +648,11 @@ namespace final.Models
     public class team_share
     {
         share_team_application sta;
-        public team_share(int id, int op = 1)
+        int mc, subc;
+        public team_share(int id, int op = 1)//sta_id
         {
             sta = db.share_team_application.Find(id);
-            if(op==0)//reject
+            if (op == 0)   //reject
             {
                 db.share_team_application.Remove(sta);
                 db.SaveChanges();
@@ -659,32 +660,187 @@ namespace final.Models
             }
             //agree
             sta.status = 1;
-            int mc = sta.main_course_id, subc = sta.sub_course_id;
+            mc = sta.main_course_id;
+            subc = sta.sub_course_id;
             db.course.Find(sta.sub_course_id).team_main_course_id = sta.main_course_id;
+
+            DelOldTeam();
 
             //copy team
             var tlist = (from t in db.team where t.course_id == mc select t).ToList();
-            foreach(team t in tlist)
+            byte new_team_serial = 0;
+            foreach (team t in tlist)
             {
                 List<int> sidlist = (from ts in db.team_student where ts.team_id == t.id select ts.student_id).ToList();
 
-                List<int> actsidlist = (from ks in db.klass_student where ks.course_id == subc && sidlist.Contains(ks.student_id) select ks.student_id).ToList();
+                List<klass_student> actkslist = (from ks in db.klass_student where ks.course_id == subc && sidlist.Contains(ks.student_id) select ks).ToList();
+                if (actkslist.Count() == 0) continue;
+                new_team_serial++;
+
+                //判断班级
+                Dictionary<int, int> klass_cnt = new Dictionary<int, int>();
+                int nkid = 0, ncnt = 0;
+                foreach (var actks in actkslist)
+                {
+                    var kid = actks.klass_id;
+                    if (klass_cnt.ContainsKey(kid)) klass_cnt[kid]++;
+                    else klass_cnt[kid] = 1;
+                    if (klass_cnt[kid] > ncnt)
+                    {
+                        ncnt = klass_cnt[kid];
+                        nkid = kid;
+                    }
+                }
+                int nkcnt = (from kt in db.klass_team where kt.klass_id == nkid select kt).Count() + 1;
+
+                //新建Team和Team_Student
                 team NewTeam = new team
                 {
                     course_id = subc,
                     team_name = t.team_name,
-                    klass_id = 0,
-                    klass_serial = 0,
-                    leader_id = 0,
+                    klass_id = nkid,
+                    klass_serial = (byte)nkcnt,
+                    leader_id = actkslist[0].student_id,    //随便抓一个当组长
                     status = 0,
-                    team_serial = 0,
+                    team_serial = new_team_serial,
                 };
                 db.team.Add(NewTeam);
                 db.SaveChanges();
+                new team_valid_judge(NewTeam.id);           //合法性
 
                 db.klass_team.Add(new klass_team { klass_id = NewTeam.klass_id, team_id = NewTeam.id });
-                foreach(var sid in actsidlist)
-                    db.team_student.Add(new team_student { student_id = sid, team_id = NewTeam.id });
+                foreach (var sid in actkslist)
+                    db.team_student.Add(new team_student { student_id = sid.student_id, team_id = NewTeam.id });
+                db.SaveChanges();
+            }
+        }
+        public team_share(string cancel, int id)
+        {
+            if (cancel != "cancel") return;
+            sta = db.share_team_application.Find(id);
+            if (sta.status != 1) return;
+            //agree
+            sta.status = 1;
+            mc = sta.main_course_id;
+            subc = sta.sub_course_id;
+            db.course.Find(sta.sub_course_id).team_main_course_id = null;
+            db.share_team_application.Remove(sta);
+            db.SaveChanges();
+
+            DelOldTeam();
+        }
+
+        private void DelOldTeam()
+        {
+            var oldtlist = (from t in db.team where t.course_id == subc select t).ToList();
+            List<int> tid = new List<int>();
+            foreach (var t in oldtlist)
+            {
+                var oldktlist = (from kt in db.klass_team where kt.team_id == t.id && kt.klass_id == t.klass_id select kt).ToList();
+                db.klass_team.Remove(oldktlist[0]);
+                var oldrslist = (from rs in db.round_score where rs.team_id == t.id select rs).ToList();
+                foreach (var rs in oldrslist) db.round_score.Remove(rs);
+                var oldsslist = (from ss in db.seminar_score where ss.team_id == t.id select ss).ToList();
+                foreach (var ss in oldsslist) db.seminar_score.Remove(ss);
+                var oldatlist = (from a in db.attendance where a.team_id == t.id select a).ToList();
+                foreach (var a in oldatlist) db.attendance.Remove(a);
+                db.team.Remove(t);
+            }
+            db.SaveChanges();
+        }
+
+        MSSQLContext db = new MSSQLContext();
+    }
+    public class seminar_share
+    {
+        share_seminar_application ssa;
+        public seminar_share(int id, int op = 1)
+        {
+            ssa = db.share_seminar_application.Find(id);
+            if (op == 0)   //reject
+            {
+                db.share_seminar_application.Remove(ssa);
+                db.SaveChanges();
+                return;
+            }
+            //agree
+            ssa.status = 1;
+            int mc = ssa.main_course_id, subc = ssa.sub_course_id;
+            db.course.Find(ssa.sub_course_id).seminar_main_course_id = ssa.main_course_id;
+            db.SaveChanges();
+        }
+        public seminar_share(string cancel, int id)
+        {
+            if (cancel != "cancel") return;
+            ssa = db.share_seminar_application.Find(id);
+            if (ssa.status != 1) return;
+            int mc = ssa.main_course_id, subc = ssa.sub_course_id;
+            db.course.Find(ssa.sub_course_id).seminar_main_course_id = null;
+            db.share_seminar_application.Remove(ssa);
+            db.SaveChanges();
+        }
+
+        MSSQLContext db = new MSSQLContext();
+    }
+    public class team_valid_judge
+    {
+        team t;
+        course c;
+        public team_valid_judge(int id)
+        {
+            t = db.team.Find(id);
+            c = db.course.Find(t.course_id);
+
+            var tslist = (from ts in db.team_strategy where ts.course_id == id select ts).ToList();
+            if (tslist.Count() > 0)//存在组队策略
+            {
+
+                //先确定and还是or
+                var tsfirst = (from ts in db.team_strategy where ts.course_id == id && ts.strategy_serial == 1 select ts).ToList()[0];
+                var sidlist = (from ts in db.team_student where ts.team_id == t.id select ts.student_id).ToList();
+                bool ac = (tsfirst.strategy_name == "TeamAndStrategy" ? true : false);
+
+                int cmlscnt = 0, cmlstotal = 0;
+                foreach (var ts in tslist)
+                {
+                    int tid = ts.strategy_id;
+                    switch (ts.strategy_name)
+                    {
+                        case "ConflictCourseStrategy":      //冲突课程校验 必须合法
+                            var ccslist = (from ccs in db.conflict_course_strategy where ccs.id == tid select ccs.course_id).ToList();
+                            Dictionary<int, int> cssjudge = new Dictionary<int, int>();
+                            int csscnt = 0;
+                            foreach (var cid in ccslist)
+                            {
+                                int cidcnt = (from ks in db.klass_student where ks.course_id == cid && sidlist.Contains(ks.student_id) select ks).Count();
+                                if (cidcnt > 0) csscnt++;
+                            }
+                            if (csscnt > 1)                 //直接打回
+                            {
+                                t.status = 0;
+                                db.SaveChanges();
+                                return;
+                            }
+                            break;
+                        case "CourseMemberLimitStrategy":         //不定个数 针对选修xx课程的组队
+                            cmlstotal++;
+                            course_member_limit_strategy cmls = db.course_member_limit_strategy.Find(tid);
+                            int cmlscid = cmls.course_id;
+                            int cmlscidcnt = (from ks in db.klass_student where ks.course_id == cmlscid && sidlist.Contains(ks.student_id) select ks).Count();
+                            if (cmls.min_member <= cmlscidcnt && cmlscidcnt <= cmls.max_member) cmlscnt++;
+                            break;
+                    }
+                }
+                if ((ac == true && cmlscnt == cmlstotal) || (ac == false && cmlscnt > 0) || (cmlstotal == 0))
+                {
+                    t.status = 1;
+                }
+                else t.status = 0;
+                db.SaveChanges();
+            }
+            else//不存在组队策略 直接判valid
+            {
+                t.status = 1;
                 db.SaveChanges();
             }
         }

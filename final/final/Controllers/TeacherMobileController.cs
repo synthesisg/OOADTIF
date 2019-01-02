@@ -485,11 +485,15 @@ namespace final.Controllers
 
         //}
 
-        //讨论课过程结束后仅能生成提问分数？
+        //讨论课过程结束后调用
         void updatetoseminarscore(int id)  //klass_seminar_id   klass_seminar->seminar_score
         {
             klass_seminar ks = db.klass_seminar.Find(id);
             round r = db.round.Find(db.seminar.Find(ks.seminar_id).round_id);
+
+            ks.report_ddl = Convert.ToDateTime(Request["ddl"]);
+            db.SaveChanges();
+
             bool method = false;
             if (r.question_score_method == 1) method = true;    //true为取max
             var alist = from a in db.attendance where a.klass_seminar_id == id select a.id;
@@ -530,6 +534,29 @@ namespace final.Controllers
                 }
             }
             db.SaveChanges();
+            new UpdateScore().UpdateKlassSeminarScore(id);
+
+            //判断这个klass的round结束否
+
+            //本轮所有seminar_id
+            var seidlist = (from s in db.seminar where s.round_id == r.id select s.id).ToList();
+            int ksidcnt = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id && ks.status != 2 select aks).Count();
+            if (ksidcnt > 0) return;
+
+            //本轮本班所有ksid
+            var oksidlist = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id select aks.id).ToList();
+            var tidlist = (from ss in db.seminar_score where oksidlist.Contains(ss.klass_seminar_id) select ss.team_id).Distinct().ToList();
+            foreach (var tid in tidlist)
+            {
+                round_score NewRS = new round_score
+                {
+                    round_id = r.id,
+                    team_id = tid
+                };
+                db.round_score.Add(NewRS);
+            }
+            db.SaveChanges();
+            new UpdateScore().UpdateRoundScore(r.id);
         }
 
         public bool DelSeminar(int seminarId)

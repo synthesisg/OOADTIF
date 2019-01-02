@@ -20,25 +20,124 @@ namespace final.Controllers
             c.admin.Add(cdx);
             c.SaveChanges();
             //*/
-            return View();
+            if (Request.Browser.Platform.ToString() == "WinNT") return RedirectToAction("WebLogin");
+            else return RedirectToAction("MobileLogin");
         }
 
-        public ActionResult Chat()
+        public ActionResult WebLogin()
         {
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    return View();
+                case "POST":        //login
+                    string user = Request["userName"];
+                    string pwd = Request["userPassword"];
+                    ViewBag.mes = "";
+
+                    var uilist = (from ui in db.student where (ui.account == user && ui.password == pwd) select ui).ToList();
+                    if (uilist.Count() > 0) //success
+                    {
+                        if (uilist[0].is_active == 0)
+                        {
+                            Response.Write("<script type='text/javascript'>alert('Not Active!');</script>");
+                        }
+                        else
+                        {
+                            Session["user_id"] = uilist[0].id;
+                            Session["is_student"] = true;
+                            return Redirect("/StudentWeb/ChsLesson");
+                        }
+                    }
+                    else
+                    {
+                        Session["is_student"] = false;
+
+                        var ui2list = (from ui in db.teacher where (ui.account == user && ui.password == pwd) select ui).ToList();
+                        if (ui2list.Count() > 0) //success
+                        {
+                            if (ui2list[0].is_active == 0)
+                            {
+                                Response.Write("<script type='text/javascript'>alert('Not Active!');</script>");
+                            }
+                            else
+                            {
+                                Session["user_id"] = ui2list[0].id;
+                                Session["is_teacher"] = true;
+                                return Redirect("/TeacherWeb/TeacherImport");
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.mes = "账号或密码错误";
+                            Session["is_teacher"] = false;
+                        }
+                    }
+                    break;
+            }
             return View();
         }
-        public ActionResult About()
+        public ActionResult MobileLogin()
         {
-            ViewBag.Message = "Your application description page.";
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    return View();
+                case "POST":        //login
+                    string user = Request["userName"];
+                    string pwd = Request["userPassword"];
+                    ViewBag.mes = "";
 
+                    var uilist = (from ui in db.student where (ui.account == user && ui.password == pwd) select ui).ToList();
+                    if (uilist.Count() > 0) //success
+                    {
+                        if (uilist[0].is_active == 0)
+                        {
+                            Response.Write("<script type='text/javascript'>alert('Not Active!');</script>");
+                        }
+                        else
+                        {
+                            Session["user_id"] = uilist[0].id;
+                            Session["is_student"] = true;
+                            return Redirect("/StudentMobile/Seminar");
+                        }
+                    }
+                    else
+                    {
+                        Session["is_student"] = false;
+
+                        var ui2list = (from ui in db.teacher where (ui.account == user && ui.password == pwd) select ui).ToList();
+                        if (ui2list.Count() > 0) //success
+                        {
+                            if (ui2list[0].is_active == 0)
+                            {
+                                Response.Write("<script type='text/javascript'>alert('Not Active!');</script>");
+                            }
+                            else
+                            {
+                                Session["user_id"] = ui2list[0].id;
+                                Session["is_teacher"] = true;
+                                return Redirect("/TeacherMobile/ChsLesson");
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.mes = "账号或密码错误";
+                            Session["is_teacher"] = false;
+                        }
+                    }
+                    break;
+            }
             return View();
         }
-
-        public ActionResult Contact()
+        public ActionResult Logout()
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            Session["is_admin"] = false;
+            Session["is_teacher"] = false;
+            Session["is_student"] = false;
+            return RedirectToAction("Index");
         }
+
+        MSSQLContext db = new MSSQLContext();
     }
 }
