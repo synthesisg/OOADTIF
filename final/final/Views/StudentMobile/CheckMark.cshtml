@@ -10,7 +10,8 @@
         padding: 0;
     }
 </style>
-<!--=======================-->
+@if (ViewBag.sc.is_valid)
+{
 <div class="row" style="background-color:#ffffff;width:100%">
     <div class="col-xs-2 col-sm-2" style="text-align:center">
 
@@ -30,6 +31,11 @@
     <div class="col-xs-2 col-sm-2" style="text-align:center">
     </div>
 </div>
+}
+else
+{
+    <p>您尚未加入队伍，无法使用成绩查询功能</p>
+}
 @for (int i = 0; i < ViewBag.sc.serial.Count; i++)
 {
     <div class="row" style="background-color:#ffffff;width:100%">

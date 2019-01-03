@@ -94,7 +94,9 @@ namespace final.Controllers
                     {
                         if (uilist[0].is_active == 0)
                         {
-                            Response.Write("<script type='text/javascript'>alert('Not Active!');</script>");
+                            Session["tmp_id"] = uilist[0].id;
+                            Session["tmp_iden"] = "s";
+                            return RedirectToAction("Activate");
                         }
                         else
                         {
@@ -112,7 +114,9 @@ namespace final.Controllers
                         {
                             if (ui2list[0].is_active == 0)
                             {
-                                Response.Write("<script type='text/javascript'>alert('Not Active!');</script>");
+                                Session["tmp_id"] = ui2list[0].id;
+                                Session["tmp_iden"] = "t";
+                                return RedirectToAction("Activate");
                             }
                             else
                             {
@@ -131,6 +135,44 @@ namespace final.Controllers
             }
             return View();
         }
+
+        public ActionResult Activate()
+        {
+            if (Session["tmp_id"] == null)
+                return Redirect("/Home/MobileLogin");
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    if (Session["tmp_iden"].ToString() == "t") ViewBag.iden = false;
+                    else ViewBag.iden = true;
+                    return View();
+                case "POST":        //login
+                    int id = Int32.Parse(Session["tmp_id"].ToString());
+                    switch (Session["tmp_iden"].ToString())
+                    {
+                        case "t":
+                            teacher ui = db.teacher.Find(id);
+                            ui.password = Request["newPassword"];
+                            ui.is_active = 1;
+                            db.SaveChanges();
+                            Session["user_id"] = Session["tmp_id"];
+                            Session["is_teacher"] = true;
+                            return Redirect("/TeacherMobile/TeacherMyCourse");
+                        case "s":
+                            student ui2 = db.student.Find(id);
+                            ui2.password = Request["newPassword"];
+                            ui2.email = Request["email"];
+                            ui2.is_active = 1;
+                            db.SaveChanges();
+                            Session["user_id"] = Session["tmp_id"];
+                            Session["is_student"] = true;
+                            return Redirect("/StudentMobile/Seminar");
+                    }
+                    break;
+            }
+            return View();
+        }
+
         public ActionResult Logout()
         {
             Session["is_admin"] = false;

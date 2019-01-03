@@ -73,7 +73,7 @@ namespace final.Controllers
                 decimal coid = co.id;
                 var ac1list = from c1 in db.klass where c1.course_id == coid select c1;
                 foreach (var a in ac1list.ToList()) c1list[cnt] += a.klass_serial.ToString() + '|' + a.id.ToString() + '|';
-                c1list[cnt] = c1list[cnt].Remove(c1list[cnt].Length - 1, 1);
+                if(ac1list.Count()>0) c1list[cnt] = c1list[cnt].Remove(c1list[cnt].Length - 1, 1);
                 cnt++;
             }
             ViewBag.colist = colist;
@@ -97,6 +97,7 @@ namespace final.Controllers
             klass c1 = db.klass.Find(class_id);
 
             HttpPostedFileBase f = Request.Files[0];
+            if (f == null)  return Content("No detected file.");
             string str = f.FileName;
             str = str.Substring(str.Length - 3);
             int type = 0;
@@ -184,7 +185,6 @@ namespace final.Controllers
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(new scoreboard(round_id));
         }
-
 
         private void LoadList(string path, int class_id)   //"Data Source=" + Server.MapPath("~/Files/NET.xls") + ";"
         {

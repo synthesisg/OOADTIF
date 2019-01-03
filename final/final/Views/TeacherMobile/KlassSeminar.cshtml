@@ -78,7 +78,7 @@
     {
 		if (confirm("确认开始吗")) {
 			$.ajax({
-				'url': "TeacherMobile/start",
+				'url': "/TeacherMobile/start",
 				'type': "post",
 				'data': { ksid: @ViewBag.model.ksid },
                 success: function () {

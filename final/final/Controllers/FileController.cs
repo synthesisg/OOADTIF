@@ -59,7 +59,9 @@ namespace final.Controllers
             }
             db.SaveChanges();
 
-            return Redirect("/StudentWeb/SpecificSeminar/" + db.klass_seminar.Find(ksid).seminar_id.ToString());
+            if (Request.Browser.Platform.ToString() == "WinNT")
+                return Redirect("/StudentWeb/SpecificSeminar/" + db.klass_seminar.Find(ksid).seminar_id.ToString());
+            else return Redirect("StudentMobile/KlassSEminar/" + ksid.ToString());
         }
         //Download Seminar ppt&report
         public FileResult Download_stu(int ksid,int order,string path)

@@ -296,6 +296,7 @@
     <Content Include="Views\Home\MobileLogin.cshtml" />
     <Content Include="Views\Home\WebLogin.cshtml" />
     <Content Include="Views\Home\FindPassword.cshtml" />
+    <Content Include="Views\Home\Activate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

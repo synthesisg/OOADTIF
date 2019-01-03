@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
-<form method="post" enctype="multipart/form-data" role="form" onsubmit="if (!CheckExistFile()) return false;">
+<form method="post" enctype="multipart/form-data" role="form">
 	<div class="container" style="width:100%">
 		<div class="container" style="background-color:#ffffff;margin:1px;width:100%;">
 			<div class="input-group" style="margin:10px">
@@ -33,13 +33,3 @@
 		<input type="submit" class="btn btn-primary btn-lg" value="保存" style="background-color:#1fa5e5;width:185px;">
 	</div>
 </form>
-<script>
-	function CheckExistFile() {
-		var file = document.querySelector("input[type=file]").files.length;
-		if (!file) {
-			alert("请选择上传文件!");
-			return false;
-		}
-		return true;
-	}
-</script>

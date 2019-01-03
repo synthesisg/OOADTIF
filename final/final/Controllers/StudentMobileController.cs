@@ -55,7 +55,7 @@ namespace final.Controllers
         public ActionResult Activate()
         {
             if (Session["tmp_id"] == null)
-                return RedirectToAction("Login");
+                return Redirect("/Home/MobileLogin");
             switch (Request.HttpMethod)
             {
                 case "GET":         //load
@@ -77,7 +77,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -103,7 +103,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -148,7 +148,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
             
@@ -231,7 +231,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -261,7 +261,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -269,24 +269,6 @@ namespace final.Controllers
             scoreboard_course sc = new scoreboard_course(id, sid);
             ViewBag.sc = sc;
             return View();
-        }
-        public bool SendPW2Email(string data)
-        {
-            var uilist = (from ui in db.student where ui.account.Equals(data) select ui).ToList();
-            if (uilist.Count() == 0) return false;
-            string email = uilist.ToList()[0].email;
-            if (email == null || email == "") return false;
-
-            SmtpClient client = new SmtpClient("smtp.163.com", 25);
-            MailMessage msg = new MailMessage("13600858179@163.com", email, "找回瓜皮账户", "感谢使用瓜皮课堂\n您的账号" + uilist[0].account + "的password为" + uilist[0].password);
-            client.UseDefaultCredentials = false;
-            System.Net.NetworkCredential basicAuthenticationInfo =
-                new System.Net.NetworkCredential("13600858179@163.com", "20100710A");
-            client.Credentials = basicAuthenticationInfo;
-            client.EnableSsl = true;
-            client.Send(msg);
-
-            return true;
         }
         public string Enroll(byte order,int ksid)
         {
@@ -368,7 +350,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -381,6 +363,7 @@ namespace final.Controllers
 
             ViewBag.course_id = id;
             ViewBag.team_id = team_id;
+            ViewBag.sid = sid;
             course c = db.course.Find(id);
             if (c.team_start_time <= DateTime.Now && DateTime.Now <= c.team_end_time) ViewBag.Time = true;
                 else ViewBag.Time = false;
@@ -394,7 +377,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -410,6 +393,7 @@ namespace final.Controllers
             ViewBag.klass_id = klass_id;
             ViewBag.stulist = studentlist(id);
             ViewBag.course_id = id;
+            ViewBag.sid = Int32.Parse(Session["user_id"].ToString());
             return View();
         }
         public ActionResult StudentIndividual()
@@ -417,7 +401,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -431,7 +415,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -445,7 +429,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -477,7 +461,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -491,7 +475,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
             return View();
@@ -501,7 +485,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
             return View();
@@ -529,7 +513,7 @@ namespace final.Controllers
             //合法检验
             if (db.course.Find(course_id).team_main_course_id != null) return Content("子课程无队伍更改功能");
             List<int> stulist=studentlist(course_id).student_id;
-            if (stulist.Contains(sid)) return Content("您已有队伍，sid=" + sid);
+            if (stulist.Contains(sid) == false) return Content("您已有队伍，sid=" + sid);
 
             string[] sidstrlist = Request["sidlist"].Split(',');
             List<int> sidlist = new List<int>();
@@ -543,7 +527,8 @@ namespace final.Controllers
                 leader_id = sid,
                 team_name = team_name,
                 team_serial = (byte)serial,
-                status = 0
+                status = 0,
+                klass_serial = db.klass.Find(klass_id).klass_serial
             };
             db.team.Add(NewTeam);
             db.SaveChanges();   //Create team_id
@@ -589,12 +574,13 @@ namespace final.Controllers
             db.SaveChanges();
             new team_valid_judge(team_id);
         }
-        public void remove(int id)//team_id
+        public ActionResult remove(int id)//team_id
         {
             int klass_id = db.team.Find(id).klass_id;
 
             int sid = Int32.Parse(Session["user_id"].ToString());
 
+            int cid = db.team.Find(id).course_id;
             if (db.team.Find(id).leader_id == sid)//解散
             {
                 var tslist = from ts in db.team_student where ts.team_id == id select ts;
@@ -610,6 +596,7 @@ namespace final.Controllers
                 new team_valid_judge(id);
             }
             db.SaveChanges();
+            return Redirect("/StudentMobile/StudentTeam/" + cid.ToString());
         }
         
         public void submit_team_valid()
@@ -652,7 +639,7 @@ namespace final.Controllers
         }
 
 
-        bool is_judge = false;
+        bool is_judge = true;
         int test_id = 166; //2809
         MSSQLContext db = new MSSQLContext();
     }

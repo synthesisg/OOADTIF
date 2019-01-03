@@ -6,9 +6,9 @@ using System.Web.Mvc;
 using final.Models;
 using System.Data;
 
-//mail
-using System.Net;
-using System.Net.Mail;
+//xls
+using System.Data.OleDb;
+
 namespace final.Controllers
 {
     public class TeacherMobileController : Controller
@@ -56,7 +56,7 @@ namespace final.Controllers
         public ActionResult Activate()
         {
             if (Session["tmp_id"] == null)
-                return RedirectToAction("Login");
+                return Redirect("/Home/MobileLogin");
             switch (Request.HttpMethod)
             {
                 case "GET":         //load
@@ -72,31 +72,13 @@ namespace final.Controllers
             }
             return View();
         }
-        public bool SendPW2Email(string data)
-        {
-            var uilist = (from ui in db.teacher where ui.account.Equals(data) select ui).ToList();
-            if (uilist.Count() == 0) return false;
-            string email = uilist.ToList()[0].email;
-            if (email == null || email == "") return false;
-
-            SmtpClient client = new SmtpClient("smtp.163.com", 25);
-            MailMessage msg = new MailMessage("13600858179@163.com", email, "找回瓜皮账户", "感谢使用瓜皮课堂\n您的账号" + uilist[0].account + "的password为" + uilist[0].password);
-            client.UseDefaultCredentials = false;
-            System.Net.NetworkCredential basicAuthenticationInfo =
-                new System.Net.NetworkCredential("13600858179@163.com", "20100710A");
-            client.Credentials = basicAuthenticationInfo;
-            client.EnableSsl = true;
-            client.Send(msg);
-
-            return true;
-        }
         //仅course 后续跳转至chsseminar
         public ActionResult Seminar()
         {
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -112,7 +94,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -321,7 +303,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -407,7 +389,20 @@ namespace final.Controllers
                             }
                         }
                     db.SaveChanges();
-                    return RedirectToAction("/Seminar");
+
+                    //CreateKlassSeminar
+                    foreach (var i in kidlist)
+                    {
+                        klass_seminar Newks = new klass_seminar
+                        {
+                            klass_id = i,
+                            seminar_id = NewSeminar.id,
+                            status = 0
+                        };
+                        db.klass_seminar.Add(Newks);
+                    }
+                    db.SaveChanges();
+                        return Redirect("/TeacherMobile/ChsSpecSeminar/"+id.ToString());
             }
             return View();
         }
@@ -427,16 +422,108 @@ namespace final.Controllers
                         klass_time = Request["klassTime"].ToString()
                     };
                     db.klass.Add(NewKlass);
-                    return View();
+                    db.SaveChanges();
+                    //File
+                    if (Request.Files.Count == 0) break;
+                    klass c1 = db.klass.Find(NewKlass.id);
+
+                    HttpPostedFileBase f = Request.Files[0];
+                    if (f == null) break;
+                    string str = f.FileName;
+                    if (str.Length < 2) break;
+                    str = str.Substring(str.Length - 3);
+                    int type = 0;
+                    if (str == "xls") type = 1;
+                    if (str == "lsx") type = 2;
+                    if (type > 0)
+                    {
+
+                        string fname = NewKlass.id.ToString() + ".xls";
+                        if (type == 2) fname += 'x';
+
+                        if (System.IO.File.Exists(Server.MapPath("~/Files/class/" + fname)))
+                        {
+                            System.IO.File.Delete(Server.MapPath("~/Files/class/" + fname));
+                        }
+
+                        f.SaveAs(Server.MapPath("~/Files/class/" + fname));
+                        LoadList("~/Files/class/" + fname, NewKlass.id);
+                        return Redirect("/TeacherMobile/Klassinfo/"+id.ToString());
+                    }
+                    else
+                        return Content("Not a Excel.");
             }
-            return View();
+            return RedirectToAction("/TeacherMobile/Klassinfo/" + id.ToString());
+        }
+        private void LoadList(string path, int class_id)   //"Data Source=" + Server.MapPath("~/Files/NET.xls") + ";"
+        {
+            string strConn = "";
+            if (path.Last() == 'x')
+                strConn = "Provider=Microsoft.ACE.OLEDB.12.0;" + "Data Source=" + Server.MapPath(path) + ";" + "Extended Properties='Excel 12.0;HDR=NO;IMEX=1';";
+            else
+                strConn = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + Server.MapPath(path) + ";" + "Extended Properties='Excel 8.0;HDR=NO;IMEX=1';";
+            string strExcel = "select * from   [sheet1$]";
+            DataSet ds = new DataSet();
+            OleDbConnection conn = new OleDbConnection(strConn);
+            conn.Open();
+            OleDbDataAdapter adapter = new OleDbDataAdapter(strExcel, strConn);
+            adapter.Fill(ds, "sheet1");
+            conn.Close();
+
+
+            //学号    姓名  所属系 专业
+            DataTable data = ds.Tables["sheet1"];
+
+            int course_id = db.klass.Find(class_id).course_id;
+            //以前的记录
+            var sclist = from sc in db.klass_student where sc.klass_id == class_id select sc;
+            List<decimal> scid = new List<decimal>();
+            foreach (var sc in sclist) scid.Add(db.student.Find(sc.student_id).id);
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                string acad_id = data.Rows[i][0].ToString().Trim();
+                if (acad_id == null || acad_id == "" || acad_id == "学号") continue;    //忽略首行与空行(合并行)
+
+                //创建账户
+                var uitest = from ui in db.student where ui.account.Contains(acad_id) select ui;
+                if (uitest.Count() == 0)
+                {
+                    var addus = new student
+                    {
+                        account = acad_id,
+                        password = "123456",
+                        student_name = data.Rows[i][1].ToString().Trim(),
+                        is_active = 0
+                    };
+                    db.student.Add(addus);
+                    db.SaveChanges();
+                }
+
+                var uilist = from ui in db.student where ui.account.Contains(acad_id) select ui;
+                int uid = 0;
+                foreach (var ui in uilist) uid = ui.id;
+                if (scid.Contains(uid)) scid.Remove(uid);   //仍在表内，踢出list
+                else                                        //不在表内，加入选课表
+                {
+                    var addsc = new klass_student { student_id = uid, klass_id = class_id, course_id = course_id };
+                    db.klass_student.Add(addsc);
+                }
+            }
+
+            //删除不在新表内的
+            var dellist = from sc in db.klass_student where (scid.Contains(sc.student_id) && sc.klass_id == class_id) select sc;
+            foreach (var del in dellist) db.klass_student.Remove(del);
+
+            //保存
+            db.SaveChanges();
         }
         public ActionResult CreateCourse()
         {
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -557,8 +644,8 @@ namespace final.Controllers
         {
             if (is_judge)
             {
-                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -571,8 +658,8 @@ namespace final.Controllers
         {
             if (is_judge)
             {
-                if (Session["is_student"] == null || (bool)Session["is_student"] == false)
-                    return RedirectToAction("Login");
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -584,7 +671,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
             return View();
@@ -594,7 +681,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
             return View();
@@ -604,7 +691,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -637,7 +724,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -712,7 +799,9 @@ namespace final.Controllers
         }
         public ActionResult KlassInfo(int id)//course_id
         {
+            ViewBag.TitleText = db.course.Find(id).course_name;
             ViewBag.klist = (from k in db.klass where k.course_id == id select k).ToList();
+            ViewBag.course_id = id;
             return View();
         }
         public ActionResult ShareKlassSet(int id)//course_id
@@ -720,7 +809,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -757,7 +846,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -804,7 +893,7 @@ namespace final.Controllers
             if (is_judge)
             {
                 if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
-                    return RedirectToAction("Login");
+                    return Redirect("/Home/MobileLogin");
             }
             else Session["user_id"] = test_id;
 
@@ -845,6 +934,17 @@ namespace final.Controllers
             return View();
         }
 
+        public bool start(int ksid)
+        {
+            klass_seminar ks = db.klass_seminar.Find(ksid);
+            if (ks.status==0)
+            {
+                ks.status = 1;
+                db.SaveChanges();
+                return true;
+            }
+            return false;
+        }
         //讨论课过程结束后调用
         public ActionResult SetReportDDL(int id)  //klass_seminar_id   klass_seminar->seminar_score
         {
@@ -1030,9 +1130,11 @@ namespace final.Controllers
         {
             return new Del().DelSeminar(seminarId);
         }
-        public bool DelKlass(int id)
+        public ActionResult DelKlass(int id)
         {
-            return new Del().DelKlass(id);
+            int course_id = db.klass.Find(id).course_id;
+            new Del().DelKlass(id);
+            return Redirect("/TeacherMobile/Klassinfo/" + course_id.ToString());
         }
         public bool DelCourse(int id)
         {
@@ -1069,7 +1171,7 @@ namespace final.Controllers
             return RedirectToAction("AccountAndSet");
         }
 
-        bool is_judge = false;
+        bool is_judge = true;
         int test_id = 3;//qm
         MSSQLContext db = new MSSQLContext();
     }

@@ -12,7 +12,7 @@ namespace final.Controllers
         // GET: Admin
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Login");
         }
         public ActionResult Login()
         {
