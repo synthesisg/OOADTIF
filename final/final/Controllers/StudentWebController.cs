@@ -243,7 +243,7 @@ namespace final.Controllers
             db.SaveChanges();
             return false;
         }
-        bool is_judge = false;
+        bool is_judge = true;
         int test_id = 166;
         MSSQLContext db = new MSSQLContext();
     }

@@ -308,7 +308,7 @@ namespace final.Controllers
         {
             public string name { get; set; }
         }
-        bool is_judge = false;
+        bool is_judge = true;
         int test_id = 3;
         MSSQLContext db = new MSSQLContext();
     }
