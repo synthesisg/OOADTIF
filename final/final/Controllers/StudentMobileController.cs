@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using final.Models;
 
 //mail
-using System.Net;
 using System.Net.Mail;
 namespace final.Controllers
 {

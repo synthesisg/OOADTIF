@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "NowSmnDisplay";
+    Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+
+    ViewBag.group1 = "1-1";
+    ViewBag.group2 = "1-9";
+    ViewBag.group3 = "1-4";
+
+    //websoc展示同学提问与何组正在进行展示
+}
+<script>
+    window.onload = function ()
+    {
+        document.getElementById("conn").click();
+	}
+    var ws;
+    $().ready(function ()
+    {
+        $('#conn').click(function ()
+        {
+            ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=' + @ViewBag.sid);
+            $('#msg').append('<p>正在连接</p>');
+
+            ws.onopen = function ()
+            {
+                    $('#msg').append('<p>已经连接</p>');
+            }
+            ws.onmessage = function (evt)
+            {
+                $('#msg').append('<p>' + evt.data + '</p>');
+                var str = evt.data.split('|');
+                if (str[1] == "@ViewBag.ksid") {
+                    switch (str[0])
+                    {
+                        case "1":
+                            modNowQuestion(str[2]);
+                            break;
+                        case "2":
+                            questionTip(str[2],str[4]);
+                            break;
+                        case "3":
+                            modNowDisGroup(str[2]);
+                            break;
+                        case "4":
+                            window.location.href = "/StudentMobile/Seminar";
+                            break;
+
+                    }
+                }
+            }
+            ws.onerror = function (evt)
+            {
+                    $('#msg').append('<p>' + JSON.stringify(evt) + '</p>');
+            }
+            ws.onclose = function ()
+            {
+                    $('#msg').append('<p>已经关闭</p>');
+            }
+            });
+
+            $('#close').click(function () {
+                ws.close();
+            });
+
+        $('#send').click(function ()
+        {
+                if (ws.readyState == WebSocket.OPEN) {
+                    ws.send($("#to").val() + "|" + $('#content').val());
+                }
+                else {
+                    $('#tips').text('连接已经关闭');
+                }
+            });
+        $('#QA').click(function () {
+            if (ws.readyState == WebSocket.OPEN)
+            {
+                ws.send("1|@ViewBag.ksid|@ViewBag.sid");
+            }
+            else {
+                $('#tips').text('连接已经关闭');
+            }
+        });
+        });
+</script>
+
+<div class="row" style="background-color:#ffffff;width:100%">
+    <h3 style="text-align:center">@ViewBag.seminar_name</h3>
+    <p id="groupDis" style="display:inline;color:orangered;margin-left:3em">当前展示小组：@ViewBag.NowAttend</p>
+    <p id="questionDis" style="float:right;display:inline;color:green">提问队列中有 @ViewBag.NowQue 位同学</p>
+</div>
+
+@for (var i = 0; i < ViewBag.model.team_serial.Length;i++)
+            {
+                <div class="row" style="width:100%;margin-top:2px;background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em;margin-right:3em">@{i++;}第 @i 组: @{i--;}</p>
+                        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.team_serial[i]</p>
+
+                </div>
+            }
+
+<div class="row" style="width:100%;text-align:center">
+		<button type="button" class="btn btn-primary" style="margin-top:20px;" id="QA">Q&A</button>
+</div>
+
+                <div style="display: none;">
+                    <input id="user" type="text" />
+                    <input id="conn" type="button" value="连接" />
+                    <input id="close" type="button" value="关闭" /><br />
+                    <span id="tips"></span>
+                    <input id="content" type="text" />
+                    <input id="send" type="button" value="发送" /><br />
+                    <input id="to" type="text" />目的用户
+                    
+                </div>
+                <div id="msg">
+                </div>
+<script>
+    //修改 第i组展示中
+    function modNowQuestion(mes)    //1
+    {
+        document.getElementById("questionDis").value = "已有" + mes + "位同学提问";
+    }
+    function questionTip(mes,cnt)       //2
+    {
+        alert("请 " + mes + " 提问 ");
+        document.getElementById("questionDis").value = "已有" + cnt + "位同学提问";
+    }
+    function modNowDisGroup(mes)    //3
+    {
+		var obj = document.getElementById("groupDis");
+        obj.value = "当前展示小组：" + mes;
+	}
+</script>

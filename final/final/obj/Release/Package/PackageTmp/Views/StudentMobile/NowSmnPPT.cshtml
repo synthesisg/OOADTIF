@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "NowSmnPPT";
+    Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+}
+
+<!--需要 上面得数据要数组！ 小组可以是报名该次讨论课小组全部的信息 还有他们的PPT -->
+@if (ViewBag.model.status == 0)
+{
+    <p>讨论课未开始，不能浏览或下载参加小组的ppt</p>
+}
+else
+{
+    for (var i=1;i<=ViewBag.model.ppt_name.Length;i++)
+    {
+    <div class="container" style="width:100%;margin-top:2px">
+        <div class="container" style="background-color:#ffffff">
+            @if (ViewBag.model.ppt_name[i - 1] == null)
+            {
+            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">第 @i 组: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 未提交</p>
+            }
+            else
+            {
+                <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">第 @i 组:</p>
+                <a href="javascript:void(0);" onclick="dlMethod('@ViewBag.model.ppt_url[i-1]');" style="cursor:pointer">@ViewBag.model.ppt_name[i - 1]</a>
+            }
+        </div>
+    </div>
+    }
+}
+
+<script type="text/javascript">
+    function dlMethod(str) {
+        window.location.href = "/File/Download_stu" + str;
+    }
+</script>

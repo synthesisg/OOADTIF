@@ -1,0 +1,31 @@
+﻿
+@{
+	ViewBag.Title = "ChangeEmail";
+	Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+}
+<form method="post" onsubmit="if (!checkEmail()) return false;" action="chgemail">
+	<div class="input-group input-group-sm" style="margin:10px">
+		<span class="input-group-addon">E-mail</span>
+		<input id="email"name="email" type="text" class="form-control">
+	</div>
+	<div>
+		<span style="font-family:PingFangSC-regular;font-size:10px;">邮箱格式如user@qq.com</span><br />
+		<button type="submit" class="btn btn-primary btn-lg btn-block">确认提交</button>
+	</div>
+</form>
+
+<script>
+	function checkEmail() {
+		var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+		var obj = document.getElementById("email");
+		if (obj.value === "") { //输入不能为空
+			alert("邮箱不能为空!");
+			return false;
+		}
+		else if (!reg.test(obj.value)) { //正则验证不通过，格式不对
+			alert("邮箱格式错误！");
+			return false;
+		}
+		return true;
+	}
+</script>

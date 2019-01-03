@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "KlassSeminar";
+    Layout = "~/Views/Shared/SMobileLayout/_SMobileLayout4.cshtml";
+}
+<script>
+	function CheckExistFile() {
+		var file=document.querySelector("input[type=file]").files.length
+		if (!file) {
+			alert("请选择上传文件!");
+			return false;
+		}
+		return true;
+	}
+</script>
+<!-- Content Pane-->
+<div style="height:600px;width:100%;overflow:auto">
+
+    <div class="container" style="width:100%">
+        <div class="container" style="background-color:#ffffff">
+            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">轮次:</p>
+            <p style="height:40px;line-height:40px;display:inline;">第 @ViewBag.model.round 轮</p>
+        </div>
+    </div>
+
+    <div class="container" style="width:100%">
+        <div class="container" style="background-color:#f5f5f5">
+            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">主题:</p>
+            <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.seminar_name</p>
+        </div>
+    </div>
+
+    <div class="container" style="width:100%">
+        <div class="container" style="background-color:#ffffff">
+            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">课次序号:</p>
+            <p style="height:40px;line-height:40px;display:inline;">第 @ViewBag.model.serial 次</p>
+        </div>
+    </div>
+
+    <div class="container" style="width:100%">
+        <div class="container" style="background-color:#ffffff">
+            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">要求:</p>
+            <p style="line-height:40px;">@ViewBag.model.introduction</p>
+        </div>
+    </div>
+
+    <div class="container" style="width:100%">
+        <div class="container" style="background-color:#f0f0f0">
+            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">课程情况:</p>
+            <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.status</p>
+            <a href="/StudentMobile/BQueryEnrollSmn/@ViewBag.model.ksid">报名情况</a>
+            @if (ViewBag.model.seminar_status != 0)
+            {<a href="/StudentMobile/NowSmnPPT/@ViewBag.model.ksid">查看PPT</a>}
+        </div>
+    </div>
+    @{
+        if (ViewBag.model.seminar_status == 0)    //讨论课未开始
+        {
+            if (ViewBag.model.enroll_status == 0) //未报名 未组队
+            {
+                <div class="container" style="width:100%">
+                    <div class="container" style="background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">报名开始时间:</p>
+                        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.seminar.enroll_start_time</p>
+                    </div>
+                </div>
+                <div class="container" style="width:100%">
+                    <div class="container" style="background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">报名截止时间:</p>
+                        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.seminar.enroll_end_time</p>
+                    </div>
+                </div>
+                if (ViewBag.model.could_enroll)
+                {
+                    <div class="container" style="width:100%;margin-top:30px;">
+                        <button type="button" class="btn btn-primary" style="width:100%" onclick="window.location.href='/StudentMobile/BUEnrollSmn/@ViewBag.model.ksid'">
+                            报名本次讨论课
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="container" style="width:100%;margin-top:30px;">
+                        <button type="button" class="btn btn-primary" style="width:100%">
+                            当前状态不允许报名
+                        </button>
+                    </div>
+                }
+            }
+            else    //已报名
+            {
+                <div class="container" style="width:100%">
+                    <div class="container" style="background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">报名：</p>
+                        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.enroll</p>
+                    </div>
+                </div>
+                if (ViewBag.model.attendance.ppt_name == null || ViewBag.model.attendance.ppt_name == "")
+                {
+                    <div class="container" style="width:100%">
+
+                        <div class="container" style="background-color:#ffffff">
+                            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">PPT:</p>
+                            <p style="height:40px;line-height:40px;display:inline;"> 未提交 </p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="container" style="width:100%">
+
+                        <div class="container" style="background-color:#ffffff">
+                            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">PPT:</p>
+                            <a href="/File/Download_stu?ksid=@ViewBag.model.ksid&order=@ViewBag.model.attendance.team_order&path=@ViewBag.model.attendance.ppt_name" style="height:40px;line-height:40px;display:inline;">
+                                @ViewBag.model.attendance.ppt_name
+                            </a>
+
+                        </div>
+                    </div>
+                }
+                //提交界面
+
+                <div class="container" style="width:100%;margin-top:30px;">
+                    <form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post" action="/File/Upload_stu">
+                        <input type="hidden" id="ksid" name="ksid" value="@ViewBag.model.ksid" />
+                        <input type="hidden" id="filetype" name="filetype" value="ppt" />
+                        <input type="file" name="afile" id="afile" />
+                        <button type="submit" class="btn btn-primary" onclick="if (!CheckExistFile()) return false;" value="提交" style="width:100%;margin-top:20px;">
+                            PPT提交
+                        </button>
+                    </form>
+                </div>
+            }
+        }
+        else if (ViewBag.model.seminar_status == 1)//讨论课正在进行或处于暂停（没有暂停了 需求已改）
+        {
+            <div class="container" style="width:100%">
+                <div class="container" style="background-color:#ffffff">
+                    <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">报名：</p>
+                    <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.enroll</p>
+                </div>
+            </div>
+            if (ViewBag.model.attendance == null || ViewBag.model.attendance.ppt_name == null || ViewBag.model.attendance.ppt_name == "")
+            {
+                <div class="container" style="width:100%">
+
+                    <div class="container" style="background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">PPT:</p>
+                        <p style="height:40px;line-height:40px;display:inline;"> 未提交 </p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="container" style="width:100%">
+
+                    <div class="container" style="background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">PPT:</p>
+                        <a href="/File/Download_stu?ksid=@ViewBag.model.ksid&order=@ViewBag.model.attendance.team_order&path=@ViewBag.model.attendance.ppt_name" style="height:40px;line-height:40px;display:inline;">
+                            @ViewBag.model.attendance.ppt_name
+                        </a>
+
+                    </div>
+                </div>
+            }
+            <div class="container" style="width:100%;margin-top:30px;">
+                <button type="button" class="btn btn-primary" style="width:100%" onclick="window.location.href='/StudentMobile/NowSmnDisplay/@ViewBag.model.ksid'">
+                    进入讨论课
+                </button>
+            </div>
+        }
+        else if (ViewBag.model.seminar_status == 2)   //已结束
+        {
+            if (ViewBag.model.enroll_status == 1)
+            {
+                <div class="container" style="width:100%">
+                    <div class="container" style="background-color:#ffffff">
+                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">报名：</p>
+                        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.enroll</p>
+                    </div>
+                </div>
+                if (ViewBag.model.attendance != null)   //有队伍再谈提交
+                {
+                    if (ViewBag.model.attendance.report_name == null || ViewBag.model.attendance.report_name == "")
+                    {
+                    <div class="container" style="width:100%">
+
+                        <div class="container" style="background-color:#ffffff">
+                            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">书面报告:</p>
+                            <p style="height:40px;line-height:40px;display:inline;"> 未提交 </p>
+                        </div>
+                    </div>
+                    }
+                    else
+                    {
+                    <div class="container" style="width:100%">
+
+                        <div class="container" style="background-color:#ffffff">
+                            <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">书面报告:</p>
+                            <a href="/File/Download_stu?ksid=@ViewBag.model.ksid&order=@ViewBag.model.attendance.team_order&path=@ViewBag.model.attendance.report_name" style="height:40px;line-height:40px;display:inline;">
+                                @ViewBag.model.attendance.report_name
+                            </a>
+
+                        </div>
+                    </div>
+                    }
+
+                    if (ViewBag.model.could_report) //report未ddl
+                    {
+                    <div class="container" style="width:100%;margin-top:30px;">
+                        <form class="bs-example bs-example-form" role="form" enctype="multipart/form-data" method="post" action="/File/Upload_stu">
+                            <input type="hidden" id="ksid" name="ksid" value="@ViewBag.model.ksid" />
+                            <input type="hidden" id="filetype" name="filetype" value="report" />
+                            <input type="file" name="afile" id="afile" />
+                            <button type="submit" class="btn btn-primary" onclick="if (!CheckExistFile()) return false;" value="提交" style="width:100%;margin-top:20px;">
+                                书面报告提交
+                            </button>
+                        </form>
+                    </div>
+                    }
+                }
+            }
+        }
+        else
+        {
+            <p style="color:red;font-size:30px;">数据出现错误，请联系管理员</p>
+        }
+    }
+</div>
+<!--Button and another-->
+<!--Button and another-->

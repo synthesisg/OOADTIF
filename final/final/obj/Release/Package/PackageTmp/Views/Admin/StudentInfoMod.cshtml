@@ -1,0 +1,44 @@
+﻿@{
+	ViewBag.Title = "StudentInfoMod";
+	Layout = "~/Views/Shared/AdminLayout/_LayoutAdmin2.cshtml";
+}
+<!-- header -->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2>修改学生信息</h2>
+</div>
+
+<!-- body -->
+<form class="bs-example bs-example-form" role="form">
+	<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+		<div style="padding: 30px 30px">
+
+			<div class="input-group">
+				<span class="input-group-addon">学生姓名</span>
+				<input type="text" class="form-control" id="name" value="@Html.Raw(ViewBag.uimod.student_name)">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon">学号</span>
+				<input type="text" class="form-control" id="account" value="@Html.Raw(ViewBag.uimod.account)">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon">电子邮箱</span>
+				<input type="text" class="form-control" id="email" value="@Html.Raw(ViewBag.uimod.email)">
+			</div>
+
+		</div>
+	</div>
+    <div class="container" style="width:90%;margin-top:40px;text-align:center;">
+        <button type="submit" class="btn btn-primary btn-lg" onclick="mod()" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%">修改</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href = '/Admin/StudentInfo'" style="background-color:#e1e1e1;background-color:#5ab4ac;border:none;width:20%">取消</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="if(confirm('确认删除吗？')){window.location.href = '/Admin/StudentDel/@ViewBag.uimod.id'}" style="background-color:#5ab4ac;border:none;width:20%">删除</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="if(confirm('确认重置吗？')){ window.location.href = '/Admin/StudentReset/@ViewBag.uimod.id'}" style="background-color:#5ab4ac;border:none;width:20%">重置密码</button>
+    </div>
+</form>
+<script type="text/javascript">
+	function mod() {
+		alert("修改成功");
+	}
+</script>
+

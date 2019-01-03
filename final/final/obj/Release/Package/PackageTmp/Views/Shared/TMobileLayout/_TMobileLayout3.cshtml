@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<style type="text/css">
+		body {
+			background-color: #f0f0f0;
+			margin:0;
+			padding:0;
+		}
+
+		footer {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 100px;
+			color: black;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" style="height:50px ;width:100%; margin-top:5px; background-color:#1fa5e5;border-radius:2px;">
+
+		<p style="text-align:center;display:inline;line-height:50px;font-size:16px">@ViewBag.TitleText</p>
+
+		<div class="dropdown" style="float:right;line-height:50px">
+			<button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+				菜单
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				<li>
+					<a href="/TeacherMobile/Seminar">讨论课</a>
+				</li>
+				<li>
+					<a href="/TeacherMobile/TeacherIndividual">个人</a>
+				</li>
+				<li>
+					<a href="Daiban">待办</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div style="margin-top:5px">
+		@RenderBody()
+	</div>
+	<footer>
+		<hr />
+		<p style="text-align: center">&copy; @DateTime.Now.Year - TIF Group</p>
+	</footer>
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+</body>
+</html>
+

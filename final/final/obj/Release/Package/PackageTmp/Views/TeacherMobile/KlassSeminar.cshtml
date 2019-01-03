@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "KlassSeminar";
+    Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+}
+
+<div style="height:600px;width:100%;overflow:auto">
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#ffffff">
+			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">轮次:</p>
+			<p style="height:40px;line-height:40px;display:inline;">第 @ViewBag.model.round 轮</p>
+		</div>
+	</div>
+
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#f5f5f5">
+			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">主题:</p>
+			<p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.seminar_name</p>
+		</div>
+	</div>
+
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#ffffff">
+			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">课次序号:</p>
+			<p style="height:40px;line-height:40px;display:inline;">第 @ViewBag.model.serial 次</p>
+		</div>
+	</div>
+
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#ffffff">
+			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">要求:</p>
+			<p style="line-height:40px;">@ViewBag.model.introduction</p>
+		</div>
+	</div>
+
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#f0f0f0">
+			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">课程情况:</p>
+			<p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.status</p>
+			<a href="/TeacherMobile/QueryEnrollSmn/@ViewBag.model.ksid">报名情况</a>
+		</div>
+	</div>
+	//ViewBag.model.seminar_status == 0
+	//ViewBag.model.enroll_status == 0
+	//ViewBag.model.could_report //report未ddl
+	@{
+		if (ViewBag.model.seminar_status == 0)    //讨论课未开始
+		{
+			<button type="button" class="btn btn-primary" onclick="startSeminar()" style="width:100%;margin-top:20px;">
+				开始讨论课
+			</button>
+			<button type="button" class="btn btn-primary" onclick="window.location.href='TeacherMobile/modSeminar/@ViewBag.model.ksid'" style="width:100%;margin-top:20px;">
+				修改讨论课
+			</button>
+		}
+		else if (ViewBag.model.seminar_status == 1)//讨论课正在进行
+		{
+			<button type="button" class="btn btn-primary" onclick="window.location.href='/TeacherMobile/InSeminar/@ViewBag.model.ksid'" style="width:100%;margin-top:20px;">
+				进入讨论课
+			</button>
+		}
+		else if (ViewBag.model.seminar_status == 2)   //已结束
+		{
+			<button type="button" class="btn btn-primary" onclick="window.location.href='/TeacherMobile/MarkReport/@ViewBag.model.ksid'" style="width:100%;margin-top:20px;">
+				书面报告
+			</button>
+			<button type="button" class="btn btn-primary" onclick="window.location.href='/TeacherMobile/CheckModAllMark/@ViewBag.model.ksid'" style="width:100%;margin-top:20px;">
+				查看成绩
+			</button>
+		}
+		else {
+			<p style="color:red;font-size:30px;">数据出现错误，请联系管理员</p>
+		}
+	}
+</div>
+<script>
+    function startSeminar(ksid)
+    {
+		if (confirm("确认开始吗")) {
+			$.ajax({
+				'url': "TeacherMobile/start",
+				'type': "post",
+				'data': { ksid: @ViewBag.model.ksid },
+                success: function () {
+                    window.location.href="/TeacherMobile/InSeminar/@ViewBag.model.ksid";
+				},
+				error: function () {
+					alert("失败");
+				}
+			})
+		}
+	}
+</script>

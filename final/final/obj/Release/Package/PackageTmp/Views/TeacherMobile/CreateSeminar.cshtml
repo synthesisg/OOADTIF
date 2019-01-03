@@ -1,0 +1,80 @@
+﻿@{
+	Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
+	ViewBag.Title = "CreateSeminar";
+}
+<form class="bs-example bs-example-form" method="post" onsubmit="if (!validateCreate()) return false;">
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#ffffff;margin:1px;width:100%">
+			<div class="input-group" style="margin-top:5px">
+				<span class="input-group-addon">主题</span>
+				<input type="text" id="title"name="title" class="form-control">
+			</div>
+			<h4>讨论课要求：</h4>
+			<textarea rows="4" cols="35" id="content"name="content" style="margin-top:5px"></textarea>
+			<br />
+			<p style="font-weight:bold;height:40px;line-height:40px;display:inline;">讨论课可见:</p>
+			<input name="visible" type="checkbox" value="1" />可见
+		</div>
+	</div>
+	<div class="container" style="width:100%">
+		<div class="container" style="background-color:#ffffff;margin:1px;width:100%">
+			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3em">展示报名开始时间:</p>
+			<input type="datetime-local" id="start_date" name="start_date" style="line-height:15px;font-size:10px;border-style:none;" />
+			<br />
+			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:3em">展示报名截止时间:</p>
+			<input type="datetime-local" id="end_date" name="end_date" style="line-height:15px;font-size:10px;border-style:none;" />
+			<br />
+			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:4em">报名小组数:</p>
+			<input type=text id="groupCount" name="groupCount" style="width:30%;" /><br />
+			<p style="font-weight:bold;font-size:10px;height:30px;line-height:30px;display:inline;margin-right:4em">所属Round:</p>
+
+			<select id="roundInfo" name="roundInfo" style="width:40%;">
+				<option value="0" selected="selected">新增一轮</option>
+
+				@{
+					int length = ViewBag.rlist.Count;
+					for (int i = 0; i < length; i++) {
+						<option value="@ViewBag.rlist[i].round_serial"> @ViewBag.rlist[i].round_serial</option>
+					}
+				}
+			</select><br />
+		</div>
+	</div>
+	<div class="input-group input-group input-group-lg" style="margin: 80px auto">
+		<input type="submit" class="btn btn-primary btn-lg" value="发布" style="background-color:#1fa5e5;width:300px;">
+	</div>
+</form>
+	
+<script>
+	function validateCreate() {
+		var title = document.getElementById("title");
+		var content = document.getElementById("content");
+		var start = document.getElementById("start_date");
+		var end = document.getElementById("end_date");
+		var count = document.getElementById("groupCount");
+		if (title.value == "") {
+			alert("主题不能为空");
+			return false;
+		}
+		if (content.value == "") {
+			alert("讨论课要求不能为空");
+			return false;
+		}
+		if (start == "" || end == "") {
+			alert("开始或截止日期未填写");
+			return false;
+		}
+		if (count!="") {
+			var reg = new RegExp("[0-9]+"); //正则表达式
+
+			if (count.value === "") { //输入不能为空
+				alert("请填写小组上限");
+				return false;
+			}
+			else if (!reg.test(count.value)) { //正则验证不通过，格式不对
+				alert("请输入数字");
+				return false;
+			}
+		}
+	}
+</script>

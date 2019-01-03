@@ -1,0 +1,106 @@
+﻿
+@{
+	ViewBag.Title = "DownLoadReport";
+	Layout = "~/Views/Shared/TeacherLayout/_LayoutTeacher2.cshtml";
+}
+
+<style>
+	h3 {
+	color:#5ab4ac;
+	}
+	button.btn-lg {
+		margin: 0 auto;
+		background-color: #e1e1e1;
+		color: #5ab4ac;
+		border: hidden;
+	}
+</style>
+<!-- content hearder-->
+<div class="container" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+	<h2 style="color:#5ab4ac">下载讨论课材料</h2>
+</div>
+<div class="input-group" style="margin:20px;">
+	<span class="input-group-addon">课程</span>
+	<select id="course_id" name="course_id" class="form-control" onChange="queryRound(this.options[this.selectedIndex].value)">
+		@foreach (var co in ViewBag.colist) {
+			<option value="@co.id">@co.course_name</option>
+		}
+		<option value="-1" disabled selected="selected">-- 请选择 --</option>
+	</select>
+</div>
+<div class="input-group" style="margin:20px;">
+	<span class="input-group-addon">轮次</span>
+	<select id="round_id" name="round_id" class="form-control"  onchange="queryData(this.options[this.selectedIndex].value)">
+		<option value="-1" disabled selected="selected">-- 请选择 --</option>
+		<option value="1">-- 1 --</option>
+		<option value="2">-- 2--</option>
+		<option value="3">-3--</option>
+		<option value="4">-4--</option>
+	</select>
+</div>
+
+<!-- content body -->
+<!--data from db-->
+<div class="container" id="contentContainer" style=" width:90%; margin:20px; border-radius:3px 3px; border:inset;border-width:1px; border-color:#f7f7f7;">
+
+</div>
+<script>
+	//修改轮次
+	function queryRound(courseId) {
+		$.ajax({
+			'url': "/TeacherWeb/RRoundInfo",
+			'type': "post",
+			'data': { data: courseId },
+			'success': function (result) {
+				var obj = document.getElementById("round_id");
+				var list = result.split("|");
+				if (list.length > 1) {
+					obj.options.length = 0;
+					obj.options.add(new Option("-- 请选择 --", 0));
+					for (var i = 0; i < list.length; i += 2) {
+						obj.options.add(new Option(list[i], list[i + 1]));
+					}
+				}
+				else {
+					obj.options.length = 0;
+					obj.options.add(new Option("-- 请选择 --", 0));
+				}
+			},
+			'error': function () {
+				alert("发送失败！")
+			}
+		})
+	}
+	//显示信息
+	function queryData(roundN) {
+		$.ajax({
+			'url': '/TeacherWeb/querySeminarData',
+			'type': 'post',
+			'data': { roundN: roundN },
+			success: function (slist) {
+				var jsonLength = 0;
+				for (var i in slist) {
+					jsonLength++;
+				}
+				var container1 = document.getElementById("contentContainer");
+				container1.innerHTML = "";
+				sobj = eval("(" + slist + ")");
+				for (var i = 0; i < jsonLength; i++) {
+					var h3 = document.createElement('h3');
+					h3.innerHTML = sobj[i].seminar_name;
+					var p = document.createElement('p');
+					p.innerHTML = sobj[i].introduction;
+					container1.appendChild(h3);
+					container1.appendChild(p);
+					container1.innerHTML += "<button onclick='enter(" + sobj[i].id + ")' type='button' class='btn btn-primary btn-lg'>进入</button>";
+				}
+			},
+			error:function () {
+				alert("link error");
+			}
+		})
+	}
+	function enter(n) {
+		window.location.href = "InnerReport/" + n;
+	}
+</script>

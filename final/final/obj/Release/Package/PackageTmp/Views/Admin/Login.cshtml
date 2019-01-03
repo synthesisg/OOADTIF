@@ -1,0 +1,40 @@
+﻿
+@{
+	ViewBag.Title = "管理员登陆界面";
+	Layout = "~/Views/Shared/AdminLayout/_LayoutAdmin1.cshtml";
+}
+
+<div class="row">
+	<div class="col-md-4">
+	</div>
+
+	<div class="col-md-4">
+        <div style="padding: 100px 10px">
+            <form class="bs-example bs-example-form" role="form" method="post">
+
+                <div class="input-group input-group-lg" style="margin:0 auto">
+                    <input type="text" class="form-control" name="adminname" placeholder="账户名" style="width:300px" />
+                </div>
+                <br>
+                <div class="input-group input-group-lg" style="margin:0 auto">
+                    <input type="password" class="form-control" name="adminpwd" placeholder="密码" style="width:300px" />
+                </div>
+                <br>
+                <div class="input-group input-group input-group-lg" style="margin:0 auto">
+                    <input type="submit" class="btn btn-primary btn-lg" value="登陆" style="background-color:#5ab4ac;width:300px" />
+                </div>
+            </form>
+        </div>
+	</div>
+
+	<div class="col-md-4">
+	</div>
+</div>
+<script>
+	window.onload = function () {
+		var mes = '@ViewBag.mes';
+		if (mes !="" ) {
+			alert(mes);
+		}
+	}
+</script>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Net.Mail;
 using final.Models;
 namespace final.Controllers
 {
@@ -136,6 +137,44 @@ namespace final.Controllers
             Session["is_teacher"] = false;
             Session["is_student"] = false;
             return RedirectToAction("Index");
+        }
+
+        public ActionResult FindPassword()
+        {
+            return View();
+        }
+
+        public bool SendPW2Email(string data)
+        {
+            var uilist = (from ui in db.student where ui.account.Equals(data) select ui).ToList();
+            var uilist2 = (from ui in db.teacher where ui.account.Equals(data) select ui).ToList();
+            if (uilist.Count() == 0 && uilist2.Count()==0) return false;
+            string email, account, pwd;
+            if (uilist.Count() > 0 )
+            {
+                email = uilist.ToList()[0].email;
+                account = uilist.ToList()[0].account;
+                pwd = uilist.ToList()[0].password;
+            }
+            else
+            {
+                email = uilist2.ToList()[0].email;
+                account = uilist2.ToList()[0].account;
+                pwd = uilist2.ToList()[0].password;
+            }
+
+            if (email == null || email == "") return false;
+
+            SmtpClient client = new SmtpClient("smtp.163.com", 25);
+            MailMessage msg = new MailMessage("13600858179@163.com", email, "找回瓜皮账户", "感谢使用瓜皮课堂\n您的账号" + account + "的password为" + pwd);
+            client.UseDefaultCredentials = false;
+            System.Net.NetworkCredential basicAuthenticationInfo =
+                new System.Net.NetworkCredential("13600858179@163.com", "20100710A");
+            client.Credentials = basicAuthenticationInfo;
+            client.EnableSsl = true;
+            client.Send(msg);
+
+            return true;
         }
 
         MSSQLContext db = new MSSQLContext();

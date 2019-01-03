@@ -194,6 +194,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="Models\std_v3.2.cs" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -294,6 +295,7 @@
     <Content Include="Views\TeacherMobile\CreateCourse.cshtml" />
     <Content Include="Views\Home\MobileLogin.cshtml" />
     <Content Include="Views\Home\WebLogin.cshtml" />
+    <Content Include="Views\Home\FindPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

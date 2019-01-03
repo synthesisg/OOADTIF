@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "Daiban";
+    Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout3.cshtml";
+}
+<!--三个list-->
+<!--审核list-->
+<style>
+    div .container {
+        margin-top: 2px;
+    }
+
+    ul {
+        line-height: 40px;
+        list-style-type: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+    }
+
+    li {
+        width: 100%;
+        color: #000000;
+        border-style: none;
+        border-radius: 5px;
+        text-align: center;
+    }
+</style>
+@for (int i = 0; i < ViewBag.tvalist.Count; i++)
+{
+    <ul id="applyId">
+        <li onclick="f('applyId')" style="background-color:#1fa5e5"><p style="line-height:40px;">@ViewBag.strtva[i]</p></li>
+        <li style="display:none;">@ViewBag.tvalist[i].reason</li>
+        <li onclick="replyApply(1, @ViewBag.tvalist[i].id)" style="display:inline;display:none;">同意</li>
+        <li onclick="replyApply(0, @ViewBag.tvalist[i].id)" style="display:inline;display:none;">拒绝</li>
+    </ul>
+}
+<!--共享分组list-->
+@for (int i = 0; i < ViewBag.stalist.Count; i++)
+{
+
+    <ul id="shareId">
+        <li onclick="f('shareId')" style="background-color:#1fa5e5"><p style="line-height:40px;">@ViewBag.strsta[i]</p></li>
+        <li onclick="replyGroup(1,@ViewBag.stalist[i].id)" style="display:inline;display:none;">同意</li>
+        <li onclick="replyGroup(0,@ViewBag.stalist[i].id)" style="display:inline;display:none;">拒绝</li>
+    </ul>
+
+}
+<!--共享讨论课list-->
+@for (int i = 0; i < ViewBag.ssalist.Count; i++)
+{
+    <ul id="shareId2">
+        <li onclick="f('shareId2')" style="background-color:#1fa5e5"><p style="line-height:40px;">@ViewBag.strssa[i]</p></li>
+        <li onclick="replySeminar(1,@ViewBag.ssalist[i].id)" style="display:inline;display:none;"> 同意 </li>
+        <li onclick="replySeminar(0,@ViewBag.ssalist[i].id)" style="display:inline;display:none;">拒绝</li>
+    </ul>
+}
+@if (ViewBag.ssalist.Count + ViewBag.stalist.Count + ViewBag.tvalist.Count == 0)
+{
+    <ul id="shareId222">
+        <li style="background-color:#ffffff"><p style="line-height:40px;">暂无待办信息</p></li>
+    </ul>
+}
+<script>
+    function f(id) {
+        var liArr = document.querySelectorAll("ul[id='" + id + "'] li")
+        for (var i = 1; i < liArr.length; i++) {
+            if (liArr[i].style.display == "block") {
+                liArr[i].style.display = "none";
+            }
+            else
+                liArr[i].style.display = "block";
+        }
+    }
+    function replyApply(mes, id) {//tva
+        var flag = false;
+        if (mes == "1") {
+            flag = confirm("同意该请求吗？");
+        }
+        else {
+            flag = confirm("拒绝该请求吗？");
+        }
+        if (flag) {
+            $.ajax({
+                'url': "/TeacherMobile/Dealtva",
+                'type': "post",
+                'data': { mes: mes, id: id },
+                success: function () {
+                    alert("操作成功");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("操作失败");
+                    window.location.reload();
+                }
+            })
+        }
+    }
+    function replyGroup(mes, id) {//sta
+        var flag = false;
+        if (mes == "1") {
+            flag = confirm("同意该请求吗？");
+        }
+        else {
+            flag = confirm("拒绝该请求吗？");
+        }
+        if (flag) {
+            $.ajax({
+                'url': "/TeacherMobile/Dealsta",
+                'type': "post",
+                'data': { mes: mes, id: id },
+                success: function () {
+                    alert("操作成功");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("操作失败");
+                    window.location.reload();
+                }
+            })
+        }
+    }
+    function replySeminar(mes, id) {//ssa
+        var flag = false;
+        if (mes == "1") {
+            flag = confirm("同意该请求吗？");
+        }
+        else {
+            flag = confirm("拒绝该请求吗？");
+        }
+        if (flag) {
+            $.ajax({
+                'url': "/TeacherMobile/Dealssa",
+                'type': "post",
+                'data': { mes: mes, id: id },
+                success: function () {
+                    alert("操作成功");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("操作失败");
+                    window.location.reload();
+                }
+            })
+        }
+    }
+</script>
