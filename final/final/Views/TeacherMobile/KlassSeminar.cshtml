@@ -46,7 +46,7 @@
 	@{
 		if (ViewBag.model.seminar_status == 0)    //讨论课未开始
 		{
-			<button type="button" class="btn btn-primary" onclick="startSeminar(@ViewBag.model.ksid)" style="width:100%;margin-top:20px;">
+			<button type="button" class="btn btn-primary" onclick="startSeminar()" style="width:100%;margin-top:20px;">
 				开始讨论课
 			</button>
 			<button type="button" class="btn btn-primary" onclick="window.location.href='TeacherMobile/modSeminar/@ViewBag.model.ksid'" style="width:100%;margin-top:20px;">
@@ -55,7 +55,7 @@
 		}
 		else if (ViewBag.model.seminar_status == 1)//讨论课正在进行
 		{
-			<button type="button" class="btn btn-primary" onclick="window.location.href='/TeacherMobile/NowSmnDisplay/@ViewBag.model.ksid'" style="width:100%;margin-top:20px;">
+			<button type="button" class="btn btn-primary" onclick="window.location.href='/TeacherMobile/InSeminar/@ViewBag.model.ksid'" style="width:100%;margin-top:20px;">
 				进入讨论课
 			</button>
 		}
@@ -74,14 +74,15 @@
 	}
 </div>
 <script>
-	function startSeminar(ksid) {
+    function startSeminar(ksid)
+    {
 		if (confirm("确认开始吗")) {
 			$.ajax({
-				'url': "",
+				'url': "TeacherMobile/start",
 				'type': "post",
-				'data': { ksid: ksid },
-				success: function () {
-					window.location.reload();
+				'data': { ksid: @ViewBag.model.ksid },
+                success: function () {
+                    window.location.href="/TeacherMobile/InSeminar/@ViewBag.model.ksid";
 				},
 				error: function () {
 					alert("失败");

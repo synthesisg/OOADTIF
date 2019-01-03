@@ -42,7 +42,7 @@ namespace final.Models
         public int id { get; set; }
         public int klass_id { get; set; }
         public int course_id { get; set; }
-        public int leader_id { get; set; }//?
+        public int leader_id { get; set; }
         public string team_name { get; set; }
         public byte team_serial { get; set; }
         public byte? klass_serial { get; set; }
@@ -120,7 +120,7 @@ namespace final.Models
         public int team_id { get; set; }
         public int student_id { get; set; }
         public byte is_selected { get; set; }
-        public Nullable<decimal> score { get; set; }
+        public decimal? score { get; set; }
     }
     public class klass_seminar
     {
@@ -128,7 +128,7 @@ namespace final.Models
         public int id { get; set; }
         public int klass_id { get; set; }
         public int seminar_id { get; set; }
-        public Nullable<DateTime> report_ddl { get; set; }
+        public DateTime? report_ddl { get; set; }
         public short status { get; set; }
     }
     //*
@@ -148,7 +148,7 @@ namespace final.Models
         public int klass_id { get; set; }
         [Key, Column(Order = 1)]
         public int round_id { get; set; }
-        public Nullable<byte> enroll_number { get; set; }
+        public byte enroll_number { get; set; }
     }
     public class seminar_score
     {
@@ -156,10 +156,10 @@ namespace final.Models
         public int klass_seminar_id { get; set; }
         [Key, Column(Order = 1)]
         public int team_id { get; set; }
-        public Nullable<decimal> total_score { get; set; }
-        public Nullable<decimal> presentation_score { get; set; }
-        public Nullable<decimal> question_score { get; set; }
-        public Nullable<decimal> report_score { get; set; }
+        public decimal? total_score { get; set; }
+        public decimal? presentation_score { get; set; }
+        public decimal? question_score { get; set; }
+        public decimal? report_score { get; set; }
     }
     public class round_score
     {
@@ -167,10 +167,10 @@ namespace final.Models
         public int round_id { get; set; }
         [Key, Column(Order = 1)]
         public int team_id { get; set; }
-        public Nullable<decimal> total_score { get; set; }
-        public Nullable<decimal> presentation_score { get; set; }
-        public Nullable<decimal> question_score { get; set; }
-        public Nullable<decimal> report_score { get; set; }
+        public decimal? total_score { get; set; }
+        public decimal? presentation_score { get; set; }
+        public decimal? question_score { get; set; }
+        public decimal? report_score { get; set; }
     }
 
     public class share_seminar_application
@@ -180,7 +180,7 @@ namespace final.Models
         public int main_course_id { get; set; }
         public int sub_course_id { get; set; }
         public int sub_course_teacher_id { get; set; }
-        public Nullable<byte> status { get; set; }
+        public byte? status { get; set; }
     }
     public class share_team_application
     {
@@ -189,7 +189,7 @@ namespace final.Models
         public int main_course_id { get; set; }
         public int sub_course_id { get; set; }
         public int sub_course_teacher_id { get; set; }
-        public Nullable<byte> status { get; set; }
+        public byte? status { get; set; }
     }
     public class team_valid_application
     {
@@ -198,7 +198,7 @@ namespace final.Models
         public int team_id { get; set; }
         public int teacher_id { get; set; }
         public string reason { get; set; }
-        public Nullable<byte> status { get; set; }
+        public byte? status { get; set; }
     }
 
     public class conflict_course_strategy//0
@@ -213,15 +213,16 @@ namespace final.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         public int course_id { get; set; }
-        public Nullable<byte> min_member { get; set; }
-        public Nullable<byte> max_member { get; set; }
+        public byte? min_member { get; set; }
+        public byte? max_member { get; set; }
     }
     public class member_limit_strategy//1
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
-        public Nullable<byte> min_member { get; set; }
-        public Nullable<byte> max_member { get; set; }
+        public int course_id { get; set; }
+        public byte? min_member { get; set; }
+        public byte? max_member { get; set; }
     }
     public class team_and_strategy//0
     {

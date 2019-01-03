@@ -166,7 +166,7 @@ namespace final.Controllers
             ViewBag.c = c;
             ViewBag.TitleText = c.course_name;
             //本门课人数上下限mls   返回一个member_limit_strategy或null 唯一 id 与course_id 相同(大概)
-            ViewBag.mls=db.member_limit_strategy.Find(id);
+            ViewBag.mls = (from mls in db.member_limit_strategy where mls.course_id == id select mls).ToList()[0];
 
             /* 所有本门课的策略 ts (T/F)
              * 返回
@@ -565,7 +565,7 @@ namespace final.Controllers
 
             add(sidlist,NewTeam.id);
 
-            return RedirectToAction("Seminar");//==========================================================================导回未写====================
+            return RedirectToAction("StudentTeam/" + course_id.ToString());
         }
         public void add(List<int> student_id, int team_id)
         {
@@ -587,8 +587,8 @@ namespace final.Controllers
                     db.team_student.Add(Newts);
                 }
             }
-            //============================================================================================================================【入队合法校验】
             db.SaveChanges();
+            new team_valid_judge(team_id);
         }
         public void remove(int id)//team_id
         {
@@ -608,7 +608,7 @@ namespace final.Controllers
             {
                 var tslist = from ts in db.team_student where ts.team_id == id&&ts.student_id==sid select ts;
                 foreach (var ats in tslist) db.team_student.Remove(ats);
-                //============================================================================================================================【退队合法校验】
+                new team_valid_judge(id);
             }
             db.SaveChanges();
         }

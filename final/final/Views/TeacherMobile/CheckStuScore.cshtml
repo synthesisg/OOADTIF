@@ -28,14 +28,17 @@
             
             @foreach (var j in ViewBag.totalround[i])
             {
-                <li id="r_@i-r_@j.team_serial" style="background-color:#ffffff" onclick="f2('r_@i','r_@i-r_@j.team_serial')">
-                    @j.team_serial @j.total_score
+                <li id="r_@i-r_@j.team_serial" style="background-color:#ffffff;display:none">
+                    @j.team_serial  总分：<font id="tot_@i-r_@j.team_serial"> @j.total_score </font>
                     @foreach(var k in j.list)
                     {
                     <ul>
                         <li>
                             <h4>@k.seminar_name</h4>
-                            <p>提问:@k.question_score 展示:@k.presentation_score 报告:@k.report_score</p>
+                            展示：<input type="text" style="width:100%" name="presc_@i-r_@j.team_serial" maxlength="2" value="@k.presentation_score" />
+                            提问：<input type="text" style="width:100%" name="quesc_@i-r_@j.team_serial" maxlength="2" value="@k.question_score" />
+                            报告：<input type="text" style="width:100%" name="repsc_@i-r_@j.team_serial" maxlength="2" value="@k.report_score" />
+                            <button type="button" onclick="upd('_@i-r_@j.team_serial',@j.tid,@k.ksid);">修改</button>
                         </li>
                     </ul>
                     }
@@ -58,18 +61,27 @@
                 liArr[i].style.display = "block";
         }
     }
-    function f2(roundId, groupId) {
-        var liArr = document.querySelectorAll("ul[id='" + roundId + "'] li[id='" + groupId + "'] ul li")
-        for (var i = 0; i < liArr.length; i++) {
-            if (liArr[i].style.display == "block") {
-                liArr[i].style.display = "none";
-            }
-            else
-                liArr[i].style.display = "block";
-        }
-    }
     function dlMethod()
     {
         window.location.href = "/TeacherMobile/crtmarkxls/" + @ViewBag.course_id;
+    }
+    function upd(str,tid,ksid) {
+        $.ajax({
+            'url': "/TeacherMobile/chgscore",
+            'type': "post",
+            'data': {
+                pre: document.getElementById("pre" + str).value,
+                rep: document.getElementById("rep" + str).value,
+                que: document.getElementById("que" + str).value,
+                tid: tid,
+                ksid: ksid
+            },
+            success: function (mes) {
+                document.getElementById("tot" + str).value = mes;
+            },
+            error: function () {
+                alert("连接服务器失败，请重试");
+            }
+        })
     }
 </script>

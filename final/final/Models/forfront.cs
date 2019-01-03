@@ -45,6 +45,12 @@ namespace final.Models
             klass k = db.klass.Find(klass_id);
             return k.grade.ToString() + '-' + k.klass_serial.ToString();
         }
+
+        public string c2cs(int course_id)
+        {
+            course c = db.course.Find(course_id);
+            return c.course_name + '(' + db.teacher.Find(c.teacher_id).teacher_name + ')';
+        }
         MSSQLContext db = new MSSQLContext();
     }
 
@@ -163,7 +169,10 @@ namespace final.Models
             foreach(var rs in rslist)
             {
                 int team_id = rs.team_id;
-                var sslist = (from ss in db.seminar_score where ss.team_id == team_id select ss).ToList();
+                int klass_id = db.team.Find(team_id).klass_id;
+                var slist = (from s in db.seminar where s.round_id == round_id select s.id).ToList();
+                var kslist = (from ks in db.klass_seminar where slist.Contains(ks.seminar_id) && ks.klass_id == klass_id select ks.id).ToList();
+                var sslist = (from ss in db.seminar_score where ss.team_id == team_id &&kslist.Contains(ss.klass_seminar_id) select ss).ToList();
 
                 int cnt = 0;
                 decimal PS = 0, QS = 0, RS = 0;
@@ -191,6 +200,56 @@ namespace final.Models
                 rs.total_score = (PS * _p + QS * _q + RS * _r) / 100;
             }
             db.SaveChanges();
+        }
+
+        public decimal UpdataASeminarScore(int ksid,int tid)
+        {
+            var ssl = (from ss in db.seminar_score where ss.klass_seminar_id == ksid && ss.team_id == tid select ss).ToList();
+            if (ssl.Count() == 0) return 0;
+
+            course c = db.course.Find(db.seminar.Find(db.klass_seminar.Find(ksid).seminar_id).course_id);
+            byte p = c.presentation_percentage, q = c.question_percentage, r = c.report_percentage;
+
+            ssl[0].total_score = ((ssl[0].presentation_score == null ? 0 : ssl[0].presentation_score) * p + (ssl[0].question_score == null ? 0 : ssl[0].question_score) * q + (ssl[0].report_score == null ? 0 : ssl[0].report_score) * r) / 100;
+            db.SaveChanges();
+
+            round R = db.round.Find(db.seminar.Find(db.klass_seminar.Find(ksid).seminar_id).round_id);
+            var rsl = (from rs in db.round_score where rs.round_id == R.id && rs.team_id == tid select rs).ToList();
+            if (rsl.Count() == 0) return (decimal)ssl[0].total_score;
+
+            byte _p = R.presentation_score_method, _q = R.question_score_method, _r = R.report_score_method;
+            
+            int klass_id = db.team.Find(tid).klass_id;
+            var slist = (from s in db.seminar where s.round_id == R.id select s.id).ToList();
+            var kslist = (from ks in db.klass_seminar where slist.Contains(ks.seminar_id) && ks.klass_id == klass_id select ks.id).ToList();
+            var sslist = (from ss in db.seminar_score where ss.team_id == tid && kslist.Contains(ss.klass_seminar_id) select ss).ToList();
+
+            int cnt = 0;
+            decimal PS = 0, QS = 0, RS = 0;
+            foreach (var ss in sslist)
+            {
+                cnt++;
+                decimal _ps = (ss.presentation_score == null ? 0 : (decimal)ss.presentation_score);
+                decimal _qs = (ss.question_score == null ? 0 : (decimal)ss.question_score);
+                decimal _rs = (ss.report_score == null ? 0 : (decimal)ss.report_score);
+                if (_p == 1) PS = Math.Max(PS, _ps);
+                else PS += _ps;
+                if (_q == 1) QS = Math.Max(QS, _qs);
+                else QS += _qs;
+                if (_r == 1) RS = Math.Max(RS, _rs);
+                else RS += _rs;
+            }
+
+            if (_p == 0) PS /= cnt;
+            if (_q == 0) QS /= cnt;
+            if (_r == 0) RS /= cnt;
+
+            rsl[0].presentation_score = PS;
+            rsl[0].question_score = QS;
+            rsl[0].report_score = RS;
+            rsl[0].total_score = (PS * p + QS * q + RS * r) / 100;
+            db.SaveChanges();
+            return (decimal)rsl[0].total_score;
         }
         MSSQLContext db = new MSSQLContext();
     };
@@ -339,6 +398,7 @@ namespace final.Models
     {
         public decimal total_score;
         public string team_serial;
+        public int tid;
         public round_score rs;
         public List<line> list = new List<line>();
 
@@ -349,9 +409,11 @@ namespace final.Models
             public decimal? question_score;
             public decimal? report_score;
             public decimal? total_score;
+            public int ksid;
         }
         public round_team_score(int round_id,int team_id)
         {
+            tid = team_id;
             team_serial = new qt().t2ts(team_id);
             int klass_id = db.team.Find(team_id).klass_id;
             var sidlist = (from s in db.seminar where s.round_id == round_id select s.id);
@@ -367,6 +429,7 @@ namespace final.Models
                     newline.question_score = sslist[0].question_score;
                     newline.report_score = sslist[0].report_score;
                     newline.total_score = sslist[0].total_score;
+                    newline.ksid = sslist[0].klass_seminar_id;
                     list.Add(newline);
                 }
             }

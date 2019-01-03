@@ -262,7 +262,6 @@
     <Content Include="Views\TeacherMobile\CreateClass.cshtml" />
     <Content Include="Views\TeacherMobile\CreateSeminar.cshtml" />
     <Content Include="Views\StudentMobile\CreateTeam.cshtml" />
-    <Content Include="Views\TeacherMobile\StudentScore2.cshtml" />
     <Content Include="Views\TeacherMobile\ChsSpecKlass.cshtml" />
     <Content Include="Views\TeacherMobile\KlassSeminar.cshtml" />
     <Content Include="Views\TeacherMobile\QueryEnrollSmn.cshtml" />

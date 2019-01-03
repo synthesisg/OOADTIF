@@ -697,12 +697,12 @@ insert into klass_team(klass_id,team_id) values
 
 
 set IDENTITY_INSERT member_limit_strategy ON
-insert  into member_limit_strategy(id,min_member,max_member) values 
-(16,3,5);
-(17,0,9);
-(18,0,9);
-(19,0,9);
-(20,0,9);
+insert into member_limit_strategy(id,course_id,min_member,max_member) values 
+(1,16,3,5),
+(2,17,0,9),
+(3,18,0,9),
+(4,19,0,9),
+(5,20,0,9);
 set IDENTITY_INSERT member_limit_strategy OFF
 
 
@@ -1551,12 +1551,12 @@ insert  into team_and_strategy(id,strategy_name,strategy_id) values
 (1,'TeamOrStrategy',1);
 
 
-insert  into team_strategy(course_id,strategy_serial,strategy_name,strategy_id) values 
+insert into team_strategy(course_id,strategy_serial,strategy_name,strategy_id) values 
 (16,1,'TeamAndStrategy',1),
 (16,2,'ConflictCourseStrategy',1),
-(16,3,'ConflictCourseStrategy',2);
-(16,3,'CourseMemberLimitStrategy',1);
-(16,3,'CourseMemberLimitStrategy',2);
+(16,3,'ConflictCourseStrategy',2),
+(16,4,'CourseMemberLimitStrategy',1),
+(16,5,'CourseMemberLimitStrategy',2);
 
 insert  into team_student(team_id,student_id) values 
 (2,172),

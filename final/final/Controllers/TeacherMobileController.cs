@@ -173,7 +173,6 @@ namespace final.Controllers
 
             return View();
         }
-        public ActionResult StudentScore2() { return View(); }//===============================================================[???]===========================
         public ActionResult QueryEnrollSmn(int id)//klass_seminar_id 查看
         {
             klass_seminar_enroll_state_model model = new klass_seminar_enroll_state_model(id);
@@ -218,10 +217,23 @@ namespace final.Controllers
             }
                     return View();
         }
-        public ActionResult CheckModAllMark() {
-            return View();
-        }
-        public ActionResult NowSmnDisplay() {
+        public ActionResult CheckModAllMark(int id)//ksid
+        {
+            if(Request.HttpMethod=="POST")
+            {
+                int tid = Int32.Parse(Request["tid"]);
+                var modss = (from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == tid select ss).ToList()[0];
+                modss.presentation_score = decimal.Parse(Request["presc"]);
+                modss.question_score = decimal.Parse(Request["quesc"]);
+                modss.report_score = decimal.Parse(Request["repsc"]);
+                db.SaveChanges();
+            }
+
+            var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == id select ss).ToList();
+            List<string> team_serial = new List<string>();
+            foreach (var ss in sslist) team_serial.Add(new qt().t2ts(ss.team_id));
+            ViewBag.sslist = sslist;
+            ViewBag.team_serial = team_serial;
             return View();
         }
         public ActionResult modSeminar(int id)//seminar_id
@@ -282,7 +294,7 @@ namespace final.Controllers
                     s.is_visible = vis;
                     var ksrlist = (from ks in db.klass_seminar where ks.seminar_id == id select ks).ToList();
                     foreach (var ks in ksrlist)
-                        ks.report_ddl = Convert.ToDateTime(Request["ks_" + ks.id.ToString()]);
+                        ks.report_ddl = Convert.ToDateTime(Request["ks_" + ks.id.ToString()].Replace("T", " "));
                     db.SaveChanges();
 
                     //CreateKlassRound
@@ -369,8 +381,8 @@ namespace final.Controllers
                     seminar NewSeminar = new seminar
                     {
                         course_id = id,
-                        enroll_start_time = Convert.ToDateTime(Request["start_date"]),
-                        enroll_end_time = Convert.ToDateTime(Request["end_date"]),
+                        enroll_start_time = Convert.ToDateTime(Request["start_date"].Replace("T", " ")),
+                        enroll_end_time = Convert.ToDateTime(Request["end_date"].Replace("T", " ")),
                         introduction = Request["content"],
                         seminar_name = Request["title"],
                         max_team = byte.Parse(Request["groupCount"]),
@@ -419,37 +431,126 @@ namespace final.Controllers
             }
             return View();
         }
-        //public void createcourse()
-        //{
-        //    int teacher_id = 1;
-        //    course NewCourse = new course
-        //    {
-        //        teacher_id = teacher_id,
-        //        course_name = Request["course_name"],
-        //        introduction = Request["introduction"],
-        //        presentation_percentage = byte.Parse(Request["presentation_percentage"]),
-        //        question_percentage = byte.Parse(Request["question_percentage"]),
-        //        report_percentage = byte.Parse(Request["report_percentage"]),
-        //        team_start_time = Convert.ToDateTime(Request["team_start_time"]),
-        //        team_end_time = Convert.ToDateTime(Request["team_end_time"])
-        //    };
-        //    db.course.Add(NewCourse);
-        //    //人数 冲突 未实现
-        //    //两种策略:
-        //    //member_limit_strategy 队伍人数设置
-        //    //course_member_limit_strategy 队伍中选该课程人数
-        //    //team_and_strategy team_or_strategy  与或 对应策略
-        //    //team_strategy 每门课必须一个
+        public ActionResult CreateCourse()
+        {
+            if (is_judge)
+            {
+                if (Session["is_teacher"] == null || (bool)Session["is_teacher"] == false)
+                    return RedirectToAction("Login");
+            }
+            else Session["user_id"] = test_id;
 
-        //}
+
+            int tid = Int32.Parse(Session["user_id"].ToString());
+
+            switch (Request.HttpMethod)
+            {
+                case "GET":         //load
+                    List<string> name = new List<string>();
+                    List<int> coid = new List<int>();
+                    foreach (course c in db.course.ToList())
+                    {
+                        name.Add(c.course_name + '(' + db.teacher.Find(c.teacher_id).teacher_name + ')');
+                        coid.Add(c.id);
+                    }
+                    ViewBag.name = name;
+                    ViewBag.coid = coid;
+                    return View();
+                case "POST":        //create
+                    course NewCourse = new course
+                    {
+                        teacher_id = tid,
+                        course_name = Request["course_name"],
+                        introduction = Request["introduction"],
+                        presentation_percentage = byte.Parse(Request["presentation_percentage"]),
+                        question_percentage = byte.Parse(Request["question_percentage"]),
+                        report_percentage = byte.Parse(Request["report_percentage"]),
+                        team_start_time = Convert.ToDateTime(Request["team_start_time"].Replace('T',' ')),
+                        team_end_time = Convert.ToDateTime(Request["team_end_time"].Replace('T', ' '))
+                    };
+                    db.course.Add(NewCourse);
+                    db.SaveChanges();
+                    member_limit_strategy Newmlt = new member_limit_strategy
+                    {
+                        course_id = NewCourse.id,
+                        max_member = byte.Parse(Request["max_member"]),
+                        min_member = byte.Parse(Request["min_member"])
+                    };
+                    db.member_limit_strategy.Add(Newmlt);
+                    db.SaveChanges();
+                    int serial = 1;
+                    if (Request["TeamAndStrategy"]=="1")
+                    {
+                        serial++;
+                        team_strategy Newts = new team_strategy
+                        {
+                            course_id = NewCourse.id,
+                            strategy_serial = 1,
+                            strategy_name = "TeamAndStrategy",
+                            strategy_id = 0
+                        };
+                        db.team_strategy.Add(Newts);
+                    }
+                    int num1 = Int32.Parse(Request["num1"]);//cmls
+                    int num2 = Int32.Parse(Request["num2"]);//ccs
+                    int[] numinner = new int[]{ Int32.Parse(Request["numinner1"]) + 2,
+                    Int32.Parse(Request["numinner2"]) + 2,
+                    Int32.Parse(Request["numinner3"]) + 2 };
+                    //===================================================
+                    for (int i = 1; i <= num1; i++) 
+                    {
+                        course_member_limit_strategy Newcmls = new course_member_limit_strategy
+                        {
+                            course_id = Int32.Parse(Request["cmls" + i.ToString()]),
+                            min_member = byte.Parse(Request["minn" + i.ToString()]),
+                            max_member = byte.Parse(Request["maxn" + i.ToString()]),
+                        };
+                        db.course_member_limit_strategy.Add(Newcmls);
+                        db.SaveChanges();
+                        serial++;
+                        team_strategy Newts = new team_strategy
+                        {
+                            course_id = NewCourse.id,
+                            strategy_serial = serial,
+                            strategy_name = "CourseMemberLimitStrategy",
+                            strategy_id = Newcmls.id
+                        };
+                        db.team_strategy.Add(Newts);
+                        db.SaveChanges();
+                    }
+                    for (int i = 1; i <= num2; i++)//ccs
+                    {
+                        //calc ccsid
+                        int ccsid = db.conflict_course_strategy.Select(ccs => ccs.id).Max() + 1;
+                        serial++;
+                        int cnt = numinner[i - 1];
+                        for (int j = 1; j <= cnt; j++)
+                        {
+                            conflict_course_strategy Newccs = new conflict_course_strategy
+                            {
+                                id = ccsid,
+                                course_id = Int32.Parse(Request["ccs" + i.ToString() + j.ToString()])
+                            };
+                            db.conflict_course_strategy.Add(Newccs);
+                        }
+                        team_strategy Newts = new team_strategy
+                        {
+                            course_id = NewCourse.id,
+                            strategy_serial = serial,
+                            strategy_name = "ConflictCourseStrategy",
+                            strategy_id = ccsid
+                        };
+                        db.team_strategy.Add(Newts);
+                        db.SaveChanges();
+                    }
+                    return RedirectToAction("TeacherMyCourse");
+            }
+            return View();
+        }
         public ActionResult KlassSeminar(int id)//ksid
         {
             BEnrollSmn_model model = new BEnrollSmn_model(id, 0);
             ViewBag.model = model;
-            return View();
-        }
-        public ActionResult SetReportDDL(int id)//ksid
-        {
             return View();
         }
         public ActionResult TeacherIndividual()
@@ -556,7 +657,7 @@ namespace final.Controllers
             ViewBag.c = c;
             ViewBag.TitleText = c.course_name;
             //本门课人数上下限mls   返回一个member_limit_strategy或null 唯一 id 与course_id 相同(大概)
-            ViewBag.mls = db.member_limit_strategy.Find(id);
+            ViewBag.mls = (from mls in db.member_limit_strategy where mls.course_id == id select mls).ToList()[0];
 
             /* 所有本门课的策略 ts (T/F)
              * 返回
@@ -743,83 +844,87 @@ namespace final.Controllers
             ViewBag.ssrsta = strssa;
             return View();
         }
-        public ActionResult CreateCourse()
-        {
-            return View();
-        }
 
         //讨论课过程结束后调用
-        void updatetoseminarscore(int id)  //klass_seminar_id   klass_seminar->seminar_score
+        public ActionResult SetReportDDL(int id)  //klass_seminar_id   klass_seminar->seminar_score
         {
-            klass_seminar ks = db.klass_seminar.Find(id);
-            round r = db.round.Find(db.seminar.Find(ks.seminar_id).round_id);
-
-            ks.report_ddl = Convert.ToDateTime(Request["ddl"]);
-            db.SaveChanges();
-
-            bool method = false;
-            if (r.question_score_method == 1) method = true;    //true为取max
-            var alist = from a in db.attendance where a.klass_seminar_id == id select a.id;
-            var aid = alist.ToList();
-            var qlist = from q in db.question where aid.Contains(q.attendance_id) && q.is_selected == 1 select q;
-            Dictionary<int, decimal> score = new Dictionary<int, decimal>();
-            Dictionary<int, int> cnt = new Dictionary<int, int>();
-            foreach (var q in qlist)
+            switch (Request.HttpMethod)
             {
-                int team_id = new qt().k2t(ks.klass_id, q.student_id);
-                if (cnt.ContainsKey(team_id))
-                {
-                    cnt[team_id]++;
-                    if (method) score[team_id] = Math.Max((decimal)q.score, score[team_id]);
-                    else score[team_id] += (decimal)q.score;
-                }
-                else
-                {
-                    cnt[team_id] = 1;
-                    score[team_id] = (decimal)q.score;
-                }
-            }
-            foreach (var tmp in score)
-            {
-                if (!method) score[tmp.Key] /= cnt[tmp.Key];
-                var sslist = from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == tmp.Key select ss;
-                if (sslist.Count() > 0)
-                    sslist.ToList()[0].question_score = tmp.Value;
-                else
-                {
-                    seminar_score Newss = new seminar_score
+                case "GET":         //load
+                    return View();
+                case "POST":        //create
+                    klass_seminar ks = db.klass_seminar.Find(id);
+                    round r = db.round.Find(db.seminar.Find(ks.seminar_id).round_id);
+
+                    ks.report_ddl = Convert.ToDateTime(Request["ddl"].Replace("T", " "));
+                    db.SaveChanges();
+
+                    bool method = false;
+                    if (r.question_score_method == 1) method = true;    //true为取max
+                    var alist = from a in db.attendance where a.klass_seminar_id == id select a.id;
+                    var aid = alist.ToList();
+                    var qlist = from q in db.question where aid.Contains(q.attendance_id) && q.is_selected == 1 select q;
+                    Dictionary<int, decimal> score = new Dictionary<int, decimal>();
+                    Dictionary<int, int> cnt = new Dictionary<int, int>();
+                    foreach (var q in qlist)
                     {
-                        klass_seminar_id = id,
-                        question_score = tmp.Value,
-                        team_id = tmp.Key
-                    };
-                    db.seminar_score.Add(Newss);
-                }
+                        int team_id = new qt().k2t(ks.klass_id, q.student_id);
+                        if (cnt.ContainsKey(team_id))
+                        {
+                            cnt[team_id]++;
+                            if (method) score[team_id] = Math.Max((decimal)q.score, score[team_id]);
+                            else score[team_id] += (decimal)q.score;
+                        }
+                        else
+                        {
+                            cnt[team_id] = 1;
+                            score[team_id] = (decimal)q.score;
+                        }
+                    }
+                    foreach (var tmp in score)
+                    {
+                        if (!method) score[tmp.Key] /= cnt[tmp.Key];
+                        var sslist = from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == tmp.Key select ss;
+                        if (sslist.Count() > 0)
+                            sslist.ToList()[0].question_score = tmp.Value;
+                        else
+                        {
+                            seminar_score Newss = new seminar_score
+                            {
+                                klass_seminar_id = id,
+                                question_score = tmp.Value,
+                                team_id = tmp.Key
+                            };
+                            db.seminar_score.Add(Newss);
+                        }
+                    }
+                    db.SaveChanges();
+                    new UpdateScore().UpdateKlassSeminarScore(id);
+
+                    //判断这个klass的round结束否
+
+                    //本轮所有seminar_id
+                    var seidlist = (from s in db.seminar where s.round_id == r.id select s.id).ToList();
+                    int ksidcnt = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id && ks.status != 2 select aks).Count();
+                    if (ksidcnt > 0) return RedirectToAction("KlassSeminar/" + id);
+
+                    //本轮本班所有ksid
+                    var oksidlist = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id select aks.id).ToList();
+                    var tidlist = (from ss in db.seminar_score where oksidlist.Contains(ss.klass_seminar_id) select ss.team_id).Distinct().ToList();
+                    foreach (var tid in tidlist)
+                    {
+                        round_score NewRS = new round_score
+                        {
+                            round_id = r.id,
+                            team_id = tid
+                        };
+                        db.round_score.Add(NewRS);
+                    }
+                    db.SaveChanges();
+                    new UpdateScore().UpdateRoundScore(r.id);
+                    return RedirectToAction("KlassSeminar/" + id);
             }
-            db.SaveChanges();
-            new UpdateScore().UpdateKlassSeminarScore(id);
-
-            //判断这个klass的round结束否
-
-            //本轮所有seminar_id
-            var seidlist = (from s in db.seminar where s.round_id == r.id select s.id).ToList();
-            int ksidcnt = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id && ks.status != 2 select aks).Count();
-            if (ksidcnt > 0) return;
-
-            //本轮本班所有ksid
-            var oksidlist = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id select aks.id).ToList();
-            var tidlist = (from ss in db.seminar_score where oksidlist.Contains(ss.klass_seminar_id) select ss.team_id).Distinct().ToList();
-            foreach (var tid in tidlist)
-            {
-                round_score NewRS = new round_score
-                {
-                    round_id = r.id,
-                    team_id = tid
-                };
-                db.round_score.Add(NewRS);
-            }
-            db.SaveChanges();
-            new UpdateScore().UpdateRoundScore(r.id);
+            return RedirectToAction("KlassSeminar/" + id);
         }
 
         public ActionResult crtmarkxls(int id)  //course_id
@@ -912,7 +1017,15 @@ namespace final.Controllers
         }
 
 
-
+        public string chgscore(decimal? pre, decimal? rep, decimal? que, int tid, int ksid)
+        {
+            var ssl = (from ss in db.seminar_score where ss.klass_seminar_id == ksid && ss.team_id == tid select ss).ToList()[0];
+            ssl.presentation_score = pre;
+            ssl.report_score = rep;
+            ssl.question_score = que;
+            db.SaveChanges();
+            return new UpdateScore().UpdataASeminarScore(ksid,tid).ToString();
+        }
         public bool DelSeminar(int seminarId)
         {
             return new Del().DelSeminar(seminarId);
