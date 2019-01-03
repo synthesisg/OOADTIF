@@ -516,7 +516,7 @@ namespace final.Controllers
             if (stulist.Contains(sid) == false) return Content("您已有队伍，sid=" + sid);
 
             string[] sidstrlist = Request["sidlist"].Split(',');
-            List<int> sidlist = new List<int>();
+            List<int> sidlist = new List<int>();//List不包括Leader
             foreach (var str in sidstrlist) sidlist.Add(Int32.Parse(str));
 
             int serial = (from t in db.team where t.course_id == course_id select t).Count() + 1;
@@ -549,7 +549,7 @@ namespace final.Controllers
 
             add(sidlist,NewTeam.id);
 
-            return RedirectToAction("StudentTeam/" + course_id.ToString());
+            return Redirect("StudentMobile/StudentTeam/" + course_id.ToString());
         }
         public void add(List<int> student_id, int team_id)
         {
@@ -599,9 +599,9 @@ namespace final.Controllers
             return Redirect("/StudentMobile/StudentTeam/" + cid.ToString());
         }
         
-        public void submit_team_valid()
+        public ActionResult submit_team_valid()
         {
-            int team_id = 1;
+            int team_id = Int32.Parse(Request["team_id"]);
             team t = db.team.Find(team_id);
             if (t.status == 0)
             {
@@ -613,8 +613,10 @@ namespace final.Controllers
                     teacher_id = db.course.Find(t.course_id).teacher_id
                 };
                 db.team_valid_application.Add(Newtva);
+                t.status = 2;
                 db.SaveChanges();
             }
+            return Redirect("/StudentMobile/StudentMyTeam/"+t.course_id.ToString());
         }
 
         public string chgpwd(string oldpw,string newpw)

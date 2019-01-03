@@ -13,11 +13,11 @@
 				<span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
                 <span style="float:right;line-height:40px;margin-right:1em;">
     状态：
-    @if (ViewBag.ct[0].team.status == 0)
+    @if (ViewBag.ct[i].team.status == 0)
     {<font>不合法</font>}
-    @if (ViewBag.ct[0].team.status == 1)
+    @if (ViewBag.ct[i].team.status == 1)
     {<font>合法</font>}
-    @if (ViewBag.ct[0].team.status == 2)
+    @if (ViewBag.ct[i].team.status == 2)
     {<font> 审核中 </font>}
 </span>
 			</li>

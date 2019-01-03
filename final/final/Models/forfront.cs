@@ -260,8 +260,8 @@ namespace final.Models
     }
     public class shared_course
     {
-        List<int> id=new List<int>();
-        List<string> str=new List<string>();
+        public List<int> id=new List<int>();
+        public List<string> str=new List<string>();
         public shared_course(int course_id)
         {
             var clist = (from c in db.course where c.id != course_id select c).ToList();
@@ -913,10 +913,22 @@ namespace final.Models
         {
             t = db.team.Find(id);
             c = db.course.Find(t.course_id);
-
+            var mlsl = (from mls in db.member_limit_strategy where mls.course_id == c.id select mls).ToList();
+            if (mlsl.Count() > 0)
+            {
+                int cnt = (from ts in db.team_student where ts.team_id == id select ts).Count();
+                if (mlsl[0].min_member > cnt || cnt > mlsl[0].max_member)
+                {
+                    t.status = 0;
+                    db.SaveChanges();
+                    return;
+                }
+            }
             var tslist = (from ts in db.team_strategy where ts.course_id == id select ts).ToList();
             if (tslist.Count() > 0)//存在组队策略
             {
+                //本课程mls
+                
 
                 //先确定and还是or
                 var tsfirst = (from ts in db.team_strategy where ts.course_id == id && ts.strategy_serial == 1 select ts).ToList()[0];

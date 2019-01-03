@@ -566,9 +566,9 @@ namespace final.Controllers
                     db.member_limit_strategy.Add(Newmlt);
                     db.SaveChanges();
                     int serial = 1;
+                        serial++;
                     if (Request["TeamAndStrategy"]=="1")
                     {
-                        serial++;
                         team_strategy Newts = new team_strategy
                         {
                             course_id = NewCourse.id,
@@ -1125,6 +1125,38 @@ namespace final.Controllers
             ssl.question_score = que;
             db.SaveChanges();
             return new UpdateScore().UpdataASeminarScore(ksid,tid).ToString();
+        }
+        public bool Dealtva(int mes,int id)
+        {
+            var tva = db.team_valid_application.Find(id);
+            if (tva == null) return false;
+            if (mes == 1) 
+            {
+                db.team.Find(tva.team_id).status = 1;
+                db.team_valid_application.Remove(tva);
+                db.SaveChanges();
+            }
+            else
+            {
+                db.team.Find(tva.team_id).status = 0;
+                db.team_valid_application.Remove(tva);
+                db.SaveChanges();
+            }
+            return true;
+        }
+        public bool Dealsta(int mes,int id)
+        {
+            var sta = db.share_team_application.Find(id);
+            if (sta == null) return false;
+            new team_share(id, mes);
+            return true;
+        }
+        public bool Dealssa(int mes, int id)
+        {
+            var ssa = db.share_seminar_application.Find(id);
+            if (ssa == null) return false;
+            new seminar_share(id, mes);
+            return true;
         }
         public bool DelSeminar(int seminarId)
         {
