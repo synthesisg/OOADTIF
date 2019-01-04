@@ -79,7 +79,7 @@
 	//	alert(tabledata.rows.length);
 		var index = document.getElementById("select").selectedIndex;
 		var pageRow = document.getElementById("select").options[index].value;
-		var pageCount = tabledataCount / pageRow;
+		var pageCount = Math.ceil(tabledataCount / pageRow);
 		var ul = document.getElementById("pagination");
 		 ul.innerHTML = "";
 		ul.innerHTML += "<li class='previous'><a>&laquo;</a></li>";

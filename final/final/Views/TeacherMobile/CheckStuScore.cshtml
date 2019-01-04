@@ -22,10 +22,10 @@
 </style>
 @for (int i = 0; i < ViewBag.totalround.Count; i++)
 {
-        <ul id="r_@i">
-            
-            <li style="background-color:#1fa5e5;" onclick="f('r_@i')">@{i++;} 第 @i 轮 @{ i--;}</li>
-            
+        <ul id="r_@i" style="line-height:40px;list-style-type:none;width:100%;">   
+            <li style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;" onclick="f('r_@i')">@{i++;} 第 @i 轮 @{ i--;}
+				<span class="glyphicon glyphicon-align-justify" style="float:right;line-height:40px;margin-right:1em;"></span>
+			</li>    
             @foreach (var j in ViewBag.totalround[i])
             {
                 <li id="r_@i-r_@j.team_serial" style="background-color:#ffffff;display:none">
@@ -45,7 +45,6 @@
                 </li>
             }
         </ul>
-        <br/>
 }
 <button class="btn btn-primary btn-block" style="margin-top:40px" onclick="dlMethod()">
     导出成绩

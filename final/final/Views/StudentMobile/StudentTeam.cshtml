@@ -8,51 +8,46 @@
 @{
     for (int i = 0; i < ViewBag.ct.Count; i++)
     {
-        <ul id="@ViewBag.ct[i].team.id" class="container" style="line-height:40px;list-style-type:none;width:100%;">
-            <li onclick="f('@ViewBag.ct[i].team.id')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#ffffff;">
-                <span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em">组号 @ViewBag.ct[i].team_serial</span>
-                <span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:4em">组名 @ViewBag.ct[i].team.team_name</span>
-                <span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
-                <span style="float:right;line-height:40px;margin-right:1em;">
-                    状态：
-                    @if (ViewBag.ct[i].team.status == 0)
-                    {<font>不合法</font>}
-                    @if (ViewBag.ct[i].team.status == 1)
-                    {<font>合法</font>}
-                    @if (ViewBag.ct[i].team.status == 2)
-                    {<font> 审核中 </font>}
-                </span>
-            </li>
-            @{
-                <li style="width:100%;list-style-type:none;display:none;background-color:#f0f0f0;text-align:center;border-style:ridge;">
-                    <div style="width:100%;height:37px">
-                        <div class="container" style="background-color:#ffffff;margin:1px;height:36px">
-                            <table style="width:100%">
-                                <tr>
-                                    <td style="width:20%;" align="left"><p style="color:#224fac">组长:</p></td>
-                                    <td style="width:50%;" align="center"><p>@ViewBag.ct[i].account[0]</p></td>
-                                    <td style="width:30%;" align="center"><p>@ViewBag.ct[i].name[0]</p></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    @for (int j = 1; j < @ViewBag.ct[i].name.Count; j++)
-                    {
-                        <div style="width:100%;height:37px">
-                            <div class="container" style="background-color:#ffffff;margin:1px;height:36px">
-                                <table style="width:100%">
-                                    <tr>
-                                        <td style="width:20%;" align="left" ;><p style="color:#224fac;display:block">组员:</p></td>
-                                        <td style="width:50%;" align="center"><p>@ViewBag.ct[i].account[j]</p></td>
-                                        <td style="width:30%;" align="center"><p>@ViewBag.ct[i].name[j]</p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    }
-                </li>
-            }
-        </ul>
+<ul id="@ViewBag.ct[i].team.id" class="container" style="line-height:40px;list-style-type:none;width:100%;">
+	<li onclick="f('@ViewBag.ct[i].team.id')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#ffffff;">
+		<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em">组号 @ViewBag.ct[i].team_serial</span>
+		<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:4em">组名 @ViewBag.ct[i].team.team_name</span>
+		<span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
+	</li>
+	<li style="height:40px;text-align:center;width:100%;list-style-type:none;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
+		@if (ViewBag.ct[i].team.status == 0) {<p style="color:red">状态：不合法</p>}
+		@if (ViewBag.ct[i].team.status == 1) {<p style="color:green">状态：合法</p>}
+		@if (ViewBag.ct[i].team.status == 2) {<p style="color:red">状态：审核中 </p>}
+	</li>
+	@{
+		<li style="width:100%;list-style-type:none;display:none;background-color:#f0f0f0;text-align:center;border-style:ridge;">
+			<div style="width:100%;height:37px">
+				<div class="container" style="background-color:#ffffff;margin:1px;height:36px">
+					<table style="width:100%">
+						<tr>
+							<td style="width:20%;" align="left"><p style="color:#224fac">组长:</p></td>
+							<td style="width:50%;" align="center"><p>@ViewBag.ct[i].account[0]</p></td>
+							<td style="width:30%;" align="center"><p>@ViewBag.ct[i].name[0]</p></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			@for (int j = 1; j < @ViewBag.ct[i].name.Count; j++) {
+				<div style="width:100%;height:37px">
+					<div class="container" style="background-color:#ffffff;margin:1px;height:36px">
+						<table style="width:100%">
+							<tr>
+								<td style="width:20%;" align="left" ;><p style="color:#224fac;display:block">组员:</p></td>
+								<td style="width:50%;" align="center"><p>@ViewBag.ct[i].account[j]</p></td>
+								<td style="width:30%;" align="center"><p>@ViewBag.ct[i].name[j]</p></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			}
+		</li>
+	}
+</ul>
     }
 }
 <ul id="noTeam" class="container" style="line-height:40px;list-style-type:none;width:100%;">

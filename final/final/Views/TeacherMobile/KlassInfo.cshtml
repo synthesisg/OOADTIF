@@ -5,24 +5,32 @@
 }
 <style>
 	div .row {
-		margin-top:10px;
-		padding:0;
-		width:100%;
-		background-color:#ffffff;
+		margin: 0;
+		margin-top: 10px;
+		padding: 0;
+		width: 100%;
+		background-color: #ffffff;
 	}
+
 	p {
-		margin-left:2em;
+		margin-left: 2em;
 	}
 </style>
 @for (int i = 0; i < ViewBag.klist.Count; i++) {
-<div class="row">
-	<h4 style="font:bold">@ViewBag.klist[i].grade - ( @ViewBag.klist[i].klass_serial )</h4>
-	<p>讨论课时间：@ViewBag.klist[i].klass_time</p>
-    <p>讨论课地点：@ViewBag.klist[i].klass_location</p>
-    <a href="/TeacherMobile/DelKlass/@ViewBag.klist[i].id" >删除班级</a>
-</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12" style="width:100%;background-color:#49b4e7">
+			<h4 style="font:bold">@ViewBag.klist[i].grade - ( @ViewBag.klist[i].klass_serial )</h4>
+		</div>
+	</div>
+	<div class="row" style="margin-top:0">
+		<div class="col-xs-12 col-sm-12" style="width:100%">
+			<p>讨论课时间：@ViewBag.klist[i].klass_time</p>
+			<p>讨论课地点：@ViewBag.klist[i].klass_location</p>
+			<a href="/TeacherMobile/DelKlass/@ViewBag.klist[i].id">删除班级</a>
+		</div>
+	</div>
 }
-<button class="btn btn-primary btn-block" style="background-color:forestgreen" onclick="window.location.href='/TeacherMobile/CreateClass/@ViewBag.course_id'">
+<button class="btn btn-primary btn-block" style="background-color:forestgreen;margin-top:20px" onclick="window.location.href='/TeacherMobile/CreateClass/@ViewBag.course_id'">
 	<span class="glyphicon glyphicon-plus" style="float:left"></span>
 	新建班级
 </button>
