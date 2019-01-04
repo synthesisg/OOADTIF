@@ -62,7 +62,7 @@ namespace final.Controllers
                         attendance a = NextAttendace(ksid);
                         if (a == null)
                         {
-                            ret = "4" + ksid.ToString();  //End
+                            ret = "4" + '|' + ksid.ToString();  //End
                             break;
                         }
                         else

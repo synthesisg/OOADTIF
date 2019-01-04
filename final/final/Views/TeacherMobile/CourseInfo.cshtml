@@ -77,7 +77,7 @@
 			$.ajax({
                 'url': "/TeacherMobile/DelCourse",
 				'type': "post",
-				'data': { courseID: @ViewBag.c.id },
+				'data': { id: @ViewBag.c.id },
 				success: function () {
 					alert("删除成功");
 					window.location.href = "/TeacherMobile/TeacherMyCourse";
