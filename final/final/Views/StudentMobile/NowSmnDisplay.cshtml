@@ -119,16 +119,15 @@
     //修改 第i组展示中
     function modNowQuestion(mes)    //1
     {
-        document.getElementById("questionDis").value = "已有" + mes + "位同学提问";
+        document.getElementById("questionDis").innerHTML = "已有" + mes + "位同学提问";
     }
     function questionTip(mes,cnt)       //2
     {
         alert("请 " + mes + " 提问 ");
-        document.getElementById("questionDis").value = "已有" + cnt + "位同学提问";
+        document.getElementById("questionDis").innerHTML = "已有" + cnt + "位同学提问";
     }
     function modNowDisGroup(mes)    //3
     {
-		var obj = document.getElementById("groupDis");
-        obj.value = "当前展示小组：" + mes;
+		document.getElementById("groupDis").innerHTML = "当前展示小组：" + mes;
 	}
 </script>

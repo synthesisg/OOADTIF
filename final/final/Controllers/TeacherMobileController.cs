@@ -1158,9 +1158,9 @@ namespace final.Controllers
             new seminar_share(id, mes);
             return true;
         }
-        public bool DelSeminar(int seminarId)
+        public bool DelSeminar(int id)
         {
-            return new Del().DelSeminar(seminarId);
+            return new Del().DelSeminar(id);
         }
         public ActionResult DelKlass(int id)
         {

@@ -75,6 +75,7 @@
 </div>
 <div id="msg">
 </div>
+
 <script>
     window.onload = function ()
     {
@@ -139,23 +140,19 @@
                 }
             });
         $('#Extract').click(function () {
-            if (ws.readyState == WebSocket.OPEN)
-            {
+            if (ws.readyState == WebSocket.OPEN) {
                 ws.send("2|@ViewBag.ksid");
             }
-            else {$('#tips').text('连接已经关闭');}
-        }
-            $('#Next').click(function () {
-            if (ws.readyState == WebSocket.OPEN)
-            {
+            else { $('#tips').text('连接已经关闭'); }
+        });
+        $('#Next').click(function () {
+            if (ws.readyState == WebSocket.OPEN) {
                 ws.send("3|@ViewBag.ksid");
             }
-            else {$('#tips').text('连接已经关闭');}
-        }
-        );
+            else { $('#tips').text('连接已经关闭'); }
         });
-</script>
-<script>
+     });
+
     function modNowQuestion(mes)//1
     {
         var obj = document.getElementById("questionDis");
@@ -186,18 +183,16 @@
         window.location.href = "/TeacherMobile/SetReportDDL/" + ksid;
     }
 
-    function getscore_pre(n)
-    {
+    function getscore_pre(n) {
         $.ajax({
             'url': "/TeacherMobile/getscore_presentation",
             'type': "post",
-            'data': { id: n ,ksid: @ViewBag.ksid},
-            success: function (mes)
-            {
+            'data': { id: n, ksid: @ViewBag.ksid},
+            success: function (mes) {
                 document.getElementById("pre_score").value = mes;
             }
         })
-
+    }
     function getscore_que(n)
     {
         $.ajax({

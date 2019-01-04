@@ -47,7 +47,7 @@ namespace final.Controllers
                         if(question(ksid, sid))
                         {
                             int atid = Now(ksid).id;
-                            ret = "1|" + ksid.ToString()+'+'+(from q in db.question where q.attendance_id==atid && q.is_selected!=1 select q).Count();
+                            ret = "1|" + ksid.ToString()+'|'+(from q in db.question where q.attendance_id==atid && q.is_selected!=1 select q).Count();
                         }
                         break;
                     case "2":   //Extract
@@ -62,7 +62,7 @@ namespace final.Controllers
                         attendance a = NextAttendace(ksid);
                         if (a == null)
                         {
-                            ret = "4" + '|' + ksid.ToString();  //End
+                            ret = "4|" + ksid.ToString();  //End
                             break;
                         }
                         else

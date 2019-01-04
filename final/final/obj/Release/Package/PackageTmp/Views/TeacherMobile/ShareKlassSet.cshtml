@@ -5,25 +5,23 @@
 }
 <style>
     div .row {
+		margin:0;
         margin-top: 10px;
         padding: 0;
         width: 100%;
         background-color: #ffffff;
     }
-
-    p {
-        margin-left: 2em;
-    }
-
-    ul {
-        line-height: 40px;
-        list-style-type: none;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
+	ul {
+		margin: 0;
+		padding: 0;
+		line-height: 40px;
+		list-style-type: none;
+		width: 100%;
+	}
 
     li {
+		margin:0;
+		padding:0;
         width: 100%;
         color: #000000;
         border-style: inset;
@@ -35,56 +33,68 @@
 @for (int i = 0; i < ViewBag.ssalist1.Count; i++)
 {
     <div class="row">
-        <ul id="shareId">
-            <li onclick="f('ssa1_@ViewBag.ssalist1[i].id')" style="background-color:#1fa5e5;">@ViewBag.strssa1[i]</li>
-            <li><p>共享类型： 共享讨论课（作为主课程） </p></li>
-            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.ssalist1[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
-        </ul>
+		<div class="col-xs-12 col-sm-12" style="width:100%">
+			<ul id="shareId">
+				<li onclick="f('ssa1_@ViewBag.ssalist1[i].id')" style="background-color:#1fa5e5;">@ViewBag.strssa1[i]</li>
+				<li><p>共享类型： 共享讨论课（作为主课程） </p></li>
+				<li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.ssalist1[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+			</ul>
+		</div>
     </div>
 }
 @for (int i = 0; i < ViewBag.ssalist2.Count; i++)
 {
-    <div class="row">
-        <ul id="shareId">
-            <li onclick="f('ssa2_@ViewBag.ssalist2[i].id')" style="background-color:#1fa5e5;">@ViewBag.strssa2[i]</li>
-            <li><p>共享类型： 共享讨论课（作为从课程） </p></li>
-            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.ssalist2[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
-        </ul>
-    </div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12" style="width:100%">
+			<ul id="shareId">
+				<li onclick="f('ssa2_@ViewBag.ssalist2[i].id')" style="background-color:#1fa5e5;">@ViewBag.strssa2[i]</li>
+				<li><p>共享类型： 共享讨论课（作为从课程） </p></li>
+				<li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.ssalist2[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+			</ul>
+		</div>
+	</div>
 }
 @for (int i = 0; i < ViewBag.stalist1.Count; i++)
 {
-    <div class="row">
-        <ul id="shareId">
-            <li onclick="f('sta1_@ViewBag.stalist1[i].id')" style="background-color:#1fa5e5;">@ViewBag.strsta1[i]</li>
-            <li><p>共享类型： 共享组队信息（作为主课程） </p></li>
-            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.stalist1[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
-        </ul>
-    </div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12"style="width:100%">
+			<ul id="shareId">
+				<li onclick="f('sta1_@ViewBag.stalist1[i].id')" style="background-color:#1fa5e5;">@ViewBag.strsta1[i]</li>
+				<li><p>共享类型： 共享组队信息（作为主课程） </p></li>
+				<li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.stalist1[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+			</ul>
+		</div>
+	</div>
 }
 @for (int i = 0; i < ViewBag.stalist2.Count; i++)
 {
-    <div class="row">
-        <ul id="shareId">
-            <li onclick="f('sta2_@ViewBag.stalist2[i].id')" style="background-color:#1fa5e5;">@ViewBag.strsta2[i]</li>
-            <li><p>共享类型： 共享组队信息（作为从课程） </p></li>
-            <li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.stalist2[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
-        </ul>
-    </div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12"style="width:100%">
+			<ul id="shareId">
+				<li onclick="f('sta2_@ViewBag.stalist2[i].id')" style="background-color:#1fa5e5;">@ViewBag.strsta2[i]</li>
+				<li><p>共享类型： 共享组队信息（作为从课程） </p></li>
+				<li><button class="btn btn-default" onclick="cancelSharessa(@ViewBag.stalist2[i].id)" style="float:right;background-color:orangered">取消共享</button></li>
+			</ul>
+		</div>
+	</div>
 }
 @if (ViewBag.stalist1.Count + ViewBag.stalist2.Count + ViewBag.ssalist1.Count + ViewBag.ssalist2.Count == 0)
 {
-    <div class="row">
-        <ul id="shareId">
-            <li><p>本门课暂无已经实行的共享机制</p></li>
-        </ul>
-    </div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12"style="width:100%">
+			<ul id="shareId">
+				<li><p>本门课暂无已经实行的共享机制</p></li>
+			</ul>
+		</div>
+	</div>
 }
 <div class="row">
-    <button onclick="window.location.href='/TeacherMobile/CreateShare/@ViewBag.course_id'" class="btn btn-default btn-block" style="background-color:forestgreen">
-        <span class="glyphicon glyphicon-plus" style="float:left"></span>
-        新增共享
-    </button>
+	<div class="col-xs-12 col-sm-12"style="width:100%">
+		<button onclick="window.location.href='/TeacherMobile/CreateShare/@ViewBag.course_id'" class="btn btn-default btn-block" style="background-color:forestgreen">
+			<span class="glyphicon glyphicon-plus" style="float:left"></span>
+			新增共享
+		</button>
+	</div>
 </div>
 
 <script>

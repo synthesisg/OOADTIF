@@ -155,14 +155,12 @@
 
     function modNowQuestion(mes)//1
     {
-        var obj = document.getElementById("questionDis");
-        obj.value = "提问队列中有 " + mes + " 位同学";
+        document.getElementById("questionDis").innerHTML = "提问队列中有 " + mes + " 位同学";
     }
     function ExtractOne(name, value, mes)//2
     {
         //修改提问人数并刷新select
-        var obj = document.getElementById("questionDis");
-        obj.value = "提问队列中有 " + mes + " 位同学";
+        document.getElementById("questionDis").innerHTML = "提问队列中有 " + mes + " 位同学";
 
         //add select
         var sel = document.getElementById("ques_id");
@@ -176,11 +174,11 @@
         p.innerHTML = "提问队列中有 0 位同学";
         document.getElementById("ques_id").options.length = 0;
         alert("请 " + mes + " 小组开始展示 ");
-        document.getElementById("groupDis").value = "当前展示小组：" + mes;
+        document.getElementById("groupDis").innerHTML = "当前展示小组：" + mes;
     }
     function fin()//4
     {
-        window.location.href = "/TeacherMobile/SetReportDDL/" + ksid;
+        window.location.href = "/TeacherMobile/SetReportDDL/" + @ViewBag.ksid;
     }
 
     function getscore_pre(n) {

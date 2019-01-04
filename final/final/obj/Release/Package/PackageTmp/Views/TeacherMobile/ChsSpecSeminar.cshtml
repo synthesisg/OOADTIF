@@ -24,7 +24,7 @@
         foreach (var item in ViewBag.cs.rs)
         {
             <ul id="@round" style="line-height:40px;list-style-type:none;width:100%;">
-                <li onclick="f('@round')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;">
+                <li onclick="f('@round')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#1fa5e5;text-align:center;transition:height 2s;">
                     第 @round  轮
                     <span class="glyphicon glyphicon-align-justify" style="float:right;line-height:40px;margin-right:1em;"></span>
                 </li>
@@ -70,7 +70,7 @@
     function Go2SpecSmn(n) {
         window.location.href = "/TeacherMobile/ChsSpecKlass/" + n;
     }
-    function delSeminar(seminarId) {
+	function delSeminar(seminarId) {
         if (confirm("确认删除吗？")) {
             $.ajax({
                 'url': "/TeacherMobile/DelSeminar",
@@ -84,6 +84,7 @@
                     alert("删除失败！请重试");
                 }
             })
-        }
+		}
+		event.stopPropagation();
     }
 </script>
