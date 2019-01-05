@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using BCL.WebSockets;
+using final.WebSockets;
 
 using final.Models;
 namespace final.Controllers
@@ -26,12 +26,13 @@ namespace final.Controllers
             }
 
             var webSocketHandler = new WebSocketHandler();
+            /*
             if (_handlers.ContainsKey(user))
             {
                 var origHandler = _handlers[user];
                 await origHandler.Close();
             }
-
+            //*/
             _handlers[user] = webSocketHandler;
 
             webSocketHandler.TextMessageReceived += ((sendor, msg) =>
@@ -47,7 +48,7 @@ namespace final.Controllers
                         if(question(ksid, sid))
                         {
                             int atid = Now(ksid).id;
-                            ret = "1|" + ksid.ToString()+'|'+(from q in db.question where q.attendance_id==atid && q.is_selected!=1 select q).Count();
+                            ret = "1|" + ksid.ToString()+'|'+(from q in db.question where q.attendance_id==atid && q.is_selected!=1 select q).Count().ToString();
                         }
                         break;
                     case "2":   //Extract
@@ -55,7 +56,7 @@ namespace final.Controllers
                         if (ex != null)
                         {
                             int atid = Now(ksid).id;
-                            ret = "2|" + ksid.ToString() + '|' + new qt().t2ts(ex.team_id) + db.student.Find(ex.student_id).student_name + '|' + ex.id + '+' + (from q in db.question where q.attendance_id == atid && q.is_selected != 1 select q).Count();
+                            ret = "2|" + ksid.ToString() + '|' + new qt().t2ts(ex.team_id) + db.student.Find(ex.student_id).student_name + '|' + ex.id.ToString() + '|' + (from q in db.question where q.attendance_id == atid && q.is_selected != 1 select q).Count().ToString();
                         }
                         break;
                     case "3":   //Next
@@ -78,7 +79,7 @@ namespace final.Controllers
             webSocketHandler.Closed += (sendor, arg) =>
             {
                 BroadcastMessage(user, user + " Disconnected!");
-                _handlers.Remove(user);
+                //_handlers.Remove(user);
             };
 
             webSocketHandler.Opened += (sendor, arg) =>
@@ -108,6 +109,8 @@ namespace final.Controllers
             attendance now = Now(ksid);
             int team_id = new qt().ks2t(ksid, sid);
             if (now == null || team_id == 0) return false;
+            var ql = (from q in db.question where q.klass_seminar_id == ksid && q.student_id == sid && q.is_selected == 0 && q.attendance_id == now.id select q).Count();
+            if (ql > 0) return false;
             question NewQuestion = new question
             {
                 klass_seminar_id = ksid,
@@ -141,9 +144,10 @@ namespace final.Controllers
                 else found = true;
             }
             if (cnt > max_team) return null;
-            anlist[0].is_present = 1;
+            attendance at = db.attendance.Find(anlist[0].id);
+            at.is_present = 1;
             db.SaveChanges();
-            return anlist[0];
+            return at;
         }
 
         //[teacher]抽取提问

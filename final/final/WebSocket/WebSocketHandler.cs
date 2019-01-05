@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.WebSockets;
 
-namespace BCL.WebSockets
+namespace final.WebSockets
 {
     public class WebSocketHandler
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace BCL.WebSockets
+namespace final.WebSockets
 {
     public static class HttpContextExtension
     {

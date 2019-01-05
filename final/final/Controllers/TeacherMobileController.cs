@@ -956,7 +956,7 @@ namespace final.Controllers
                     klass_seminar ks = db.klass_seminar.Find(id);
                     round r = db.round.Find(db.seminar.Find(ks.seminar_id).round_id);
 
-                    ks.report_ddl = Convert.ToDateTime(Request["ddl"].Replace("T", " "));
+                    ks.report_ddl = Convert.ToDateTime(Request["end_time"].Replace("T", " "));
                     db.SaveChanges();
 
                     bool method = false;
