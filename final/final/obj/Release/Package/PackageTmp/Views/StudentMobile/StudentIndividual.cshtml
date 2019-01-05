@@ -6,13 +6,14 @@
 }
 <style>
 	div .row{
+	margin:0;
 	margin-top:10px;
 	padding:0;
 	width:100%;
 	background-color:#ffffff;
 	}
 </style>
-<div class="row"style="width:100%">
+<div class="row">
 	<div class="col-xs-1 col-sm-1">
 	</div>
 	<div class="col-xs-11 col-sm-11">
@@ -20,14 +21,11 @@
 		<p>@ViewBag.account</p>
 	</div>
 </div>
-
-<div class="row">
-	<!--add id==============================================-->>
-	<button type="button" class="btn btn-default btn-lg btn-block" onclick="window.location.href='/StudentMobile/StudentMyCourse'">我的课程
-		<span class="glyphicon glyphicon-chevron-right"style="float:right"></span>
-	</button>
-	<button type="button" class="btn btn-default btn-lg btn-block" onclick="window.location.href='/StudentMobile/AccountAndSet' ">账户与设置
-		<span class="glyphicon glyphicon-chevron-right" style="float:right"></span>
-	</button>
-</div>
-
+<button type="button" class="btn btn-default btn-lg btn-block" style="margin-top:10px" onclick="window.location.href='/StudentMobile/StudentMyCourse'">
+	我的课程
+	<span class="glyphicon glyphicon-chevron-right" style="float:right"></span>
+</button>
+<button type="button" class="btn btn-default btn-lg btn-block" style="margin-top:10px" onclick="window.location.href='/StudentMobile/AccountAndSet' ">
+	账户与设置
+	<span class="glyphicon glyphicon-chevron-right" style="float:right"></span>
+</button>
