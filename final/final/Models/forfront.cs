@@ -697,9 +697,6 @@ namespace final.Models
     //[teacher]seminar下文件列表
     public class seminar_report
     {
-        public seminar seminar;
-        public List<line> list = new List<line>();
-        public int listLength;
         public class line
         {
             public int id;
@@ -713,7 +710,12 @@ namespace final.Models
             public string ppt_url;
             public string ppt_name="";
             public decimal? report_score;
+            //public line() { }
         }
+        public seminar seminar;
+        public List<line> list = new List<line>();
+        public int listLength;
+        
         public seminar_report(int seminar_id)
         {
             seminar = db.seminar.Find(seminar_id);
@@ -748,19 +750,17 @@ namespace final.Models
                 team t = db.team.Find(a.team_id);
                 var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == klass_seminar_id && ss.team_id == t.id select ss).ToList();
 
-                line tmp = new line
-                {
-                    team_name = t.team_name,
-                    leader_name = db.student.Find(t.leader_id).student_name,
-                    report_status = (a.report_url != null),
-                    report_url = a.report_url,
-                    report_name = a.report_name,
-                    ppt_status = (a.ppt_url != null),
-                    ppt_url = a.ppt_url,
-                    ppt_name = a.ppt_name,
-                    id = a.id,
-                    report_score = (sslist == null ? null : sslist[0].report_score)
-                };
+                line tmp = new line();
+                tmp.team_name = t.team_name;
+                tmp.leader_name = db.student.Find(t.leader_id) == null ? "none" : db.student.Find(t.leader_id).student_name;
+                tmp.report_status = (a.report_url != null);
+                tmp.report_url = a.report_url;
+                tmp.report_name = a.report_name;
+                tmp.ppt_status = (a.ppt_url != null);
+                tmp.ppt_url = a.ppt_url;
+                tmp.ppt_name = a.ppt_name;
+                    tmp.id = a.id;
+                    tmp.report_score = (sslist.Count() == 0 ? null : sslist[0].report_score);
                 list.Add(tmp);
             }
             listLength = list.Count;

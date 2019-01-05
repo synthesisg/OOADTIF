@@ -197,7 +197,7 @@ namespace final.Controllers
                     }
                     break;
             }
-                    return View();
+            return View();
         }
         public ActionResult CheckModAllMark(int id)//ksid
         {
@@ -317,7 +317,8 @@ namespace final.Controllers
             if (alist.Count() > 0)
             {
                 ViewBag.NowAttend = new qt().t2ts(alist[0].team_id);
-                ViewBag.NowQue = (from q in db.question where q.is_selected != 1 && q.attendance_id == alist[0].id select q).Count();
+                int atid = alist[0].id;
+                ViewBag.NowQue = (from q in db.question where q.is_selected != 1 && q.attendance_id == atid select q).Count();
             }
             else
             {
@@ -957,6 +958,7 @@ namespace final.Controllers
                     round r = db.round.Find(db.seminar.Find(ks.seminar_id).round_id);
 
                     ks.report_ddl = Convert.ToDateTime(Request["end_time"].Replace("T", " "));
+                    ks.status = 2;
                     db.SaveChanges();
 
                     bool method = false;
@@ -973,26 +975,30 @@ namespace final.Controllers
                         {
                             cnt[team_id]++;
                             if (method) score[team_id] = Math.Max((decimal)q.score, score[team_id]);
-                            else score[team_id] += (decimal)q.score;
+                            else score[team_id] += q.score==null?0:(decimal)q.score;
                         }
                         else
                         {
                             cnt[team_id] = 1;
-                            score[team_id] = (decimal)q.score;
+                            score[team_id] = q.score == null ? 0 : (decimal)q.score;
                         }
                     }
                     foreach (var tmp in score)
                     {
-                        if (!method) score[tmp.Key] /= cnt[tmp.Key];
+                        decimal sc = score[tmp.Key];
+                        if (!method) sc /= cnt[tmp.Key];
                         var sslist = from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == tmp.Key select ss;
                         if (sslist.Count() > 0)
-                            sslist.ToList()[0].question_score = tmp.Value;
+                            sslist.ToList()[0].question_score = sc;
                         else
                         {
                             seminar_score Newss = new seminar_score
                             {
                                 klass_seminar_id = id,
-                                question_score = tmp.Value,
+                                question_score = sc,
+                                presentation_score = null,
+                                report_score = null,
+                                total_score = null,
                                 team_id = tmp.Key
                             };
                             db.seminar_score.Add(Newss);
@@ -1016,7 +1022,7 @@ namespace final.Controllers
                         round_score NewRS = new round_score
                         {
                             round_id = r.id,
-                            team_id = tid
+                            team_id = tid,
                         };
                         db.round_score.Add(NewRS);
                     }

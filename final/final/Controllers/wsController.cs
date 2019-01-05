@@ -56,7 +56,7 @@ namespace final.Controllers
                         if (ex != null)
                         {
                             int atid = Now(ksid).id;
-                            ret = "2|" + ksid.ToString() + '|' + new qt().t2ts(ex.team_id) + db.student.Find(ex.student_id).student_name + '|' + ex.id.ToString() + '|' + (from q in db.question where q.attendance_id == atid && q.is_selected != 1 select q).Count().ToString();
+                            ret = "2|" + ksid.ToString() + '|' + new qt().t2ts(ex.team_id) + ' ' + db.student.Find(ex.student_id).student_name + '|' + ex.id.ToString() + '|' + (from q in db.question where q.attendance_id == atid && q.is_selected != 1 select q).Count().ToString();
                         }
                         break;
                     case "3":   //Next
