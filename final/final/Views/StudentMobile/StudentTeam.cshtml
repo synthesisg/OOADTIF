@@ -10,8 +10,8 @@
     {
 <ul id="@ViewBag.ct[i].team.id" class="container" style="line-height:40px;list-style-type:none;width:100%;">
 	<li onclick="f('@ViewBag.ct[i].team.id')" style="width:100%;color:#000000;border-style:ridge;border-radius:5px;background-color:#ffffff;">
-		<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em">组号 @ViewBag.ct[i].team_serial</span>
-		<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:4em">组名 @ViewBag.ct[i].team.team_name</span>
+		<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:1em">@ViewBag.ct[i].team_serial</span>
+		<span style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:1em">@ViewBag.ct[i].team.team_name</span>
 		<span class="glyphicon glyphicon-chevron-down" style="float:right;line-height:40px;margin-right:1em;"></span>
 	</li>
 	<li style="height:40px;text-align:center;width:100%;list-style-type:none;display:none;background-color:#ffffff;text-align:center;border-style:ridge;">
@@ -76,7 +76,6 @@
     if (ViewBag.hasteam)
     {
         <button type="button" class="btn btn-primary btn-lg btn-block" onclick="window.location.href='/StudentMobile/StudentMyTeam/@ViewBag.course_id'">
-            <span class="glyphicon glyphicon-plus" style="float:left"></span>
             我的小组
         </button>
     }

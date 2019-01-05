@@ -5,58 +5,60 @@
 }
 <form method="post">
 <h3 style="text-align:center">成绩设置</h3>
-<div class="row" style="margin-top:20px;">
-	<p style="display:inline;margin:3em">展示</p>
-    <select id="presentation_score_method" name="presentation_score_method" class="form-control" style="display:inline">
-        @if (ViewBag.round.presentation_score_method == null || ViewBag.round.presentation_score_method == 0)
-        {
-            <option value="0" selected="selected">平均分</option>
-            <option value="1">最高分</option>
-        }
-        else
-        {
-            <option value="0">平均分</option>
-            <option value="1" selected="selected">最高分</option>
-        }
-    </select>
+<div class="row" style="margin-top:20px;width:100%">
+	<div class="col-xs-1 col-sm-1"></div>
+	<div class="col-xs-11 col-sm-11">
+		<p style="display:inline;margin:3em">展示</p>
+		<select id="presentation_score_method" name="presentation_score_method" class="form-control" style="display:inline">
+			@if (ViewBag.round.presentation_score_method == null || ViewBag.round.presentation_score_method == 0) {
+				<option value="0" selected="selected">平均分</option>
+				<option value="1">最高分</option>
+			}
+			else {
+				<option value="0">平均分</option>
+				<option value="1" selected="selected">最高分</option>
+			}
+		</select>
+	</div>
 </div>
-<div class="row" style="margin-top:20px;">
-	<p style="display:inline;margin:3em">提问</p>
-    <select id="question_score_method" name="question_score_method" class="form-control" style="display:inline">
-        @if (ViewBag.round.question_score_method == null || ViewBag.round.question_score_method == 0)
-        {
-            <option value="0" selected="selected">平均分</option>
-            <option value="1">最高分</option>
-        }
-        else
-        {
-            <option value="0">平均分</option>
-            <option value="1" selected="selected">最高分</option>
-        }
-    </select>
+<div class="row" style="margin-top:20px;width:100%">
+	<div class="col-xs-1 col-sm-1"></div>
+	<div class="col-xs-11 col-sm-11">
+		<p style="display:inline;margin:3em">提问</p>
+		<select id="question_score_method" name="question_score_method" class="form-control" style="display:inline">
+			@if (ViewBag.round.question_score_method == null || ViewBag.round.question_score_method == 0) {
+				<option value="0" selected="selected">平均分</option>
+				<option value="1">最高分</option>
+			}
+			else {
+				<option value="0">平均分</option>
+				<option value="1" selected="selected">最高分</option>
+			}
+		</select>
+	</div>	
 </div>
-<div class="row" style="margin-top:20px;">
-	<p style="display:inline;margin:3em">报告</p>
-    <select id="report_score_method" name="report_score_method" class="form-control" style="display:inline">
-        @if (ViewBag.round.report_score_method == null || ViewBag.round.report_score_method == 0)
-        {
-            <option value="0" selected="selected">平均分</option>
-            <option value="1">最高分</option>
-        }
-        else
-        {
-            <option value="0">平均分</option>
-            <option value="1" selected="selected">最高分</option>
-        }
-    </select>
-</div>
-<h3 style="text-align:center">本轮讨论课报名次数</h3>
-@for(int i=0;i< ViewBag.klass_serial.Count;i++)
-{
-<div class="row" style="margin-top:20px;">
-    <p style="display:inline;margin:3em">@ViewBag.klass_serial[i]</p>
-	<input type="text" id="k_@ViewBag.klassid[i]" name="k_@ViewBag.klassid[i]" class="form-control" value="@ViewBag.enroll_number[i]" style="display:inline"/>
-</div>
-}
-<input type="submit" class="btn btn-primary btn-lg" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%"/>
-</form>
+	<div class="row" style="margin-top:20px;">
+		<div class="col-xs-1 col-sm-1"></div>
+		<div class="col-xs-11 col-sm-1">
+			<p style="display:inline;margin:3em">报告</p>
+			<select id="report_score_method" name="report_score_method" class="form-control" style="display:inline">
+				@if (ViewBag.round.report_score_method == null || ViewBag.round.report_score_method == 0) {
+					<option value="0" selected="selected">平均分</option>
+					<option value="1">最高分</option>
+				}
+				else {
+					<option value="0">平均分</option>
+					<option value="1" selected="selected">最高分</option>
+				}
+			</select>
+			<h3 style="text-align:center">本轮讨论课报名次数</h3>
+			@for (int i = 0; i < ViewBag.klass_serial.Count; i++) {
+				<div class="row" style="margin-top:20px;">
+					<p style="display:inline;margin:3em">@ViewBag.klass_serial[i]</p>
+					<input type="text" id="k_@ViewBag.klassid[i]" name="k_@ViewBag.klassid[i]" class="form-control" value="@ViewBag.enroll_number[i]" style="display:inline" />
+				</div>
+			}
+			<input type="submit" class="btn btn-primary btn-lg" style="margin-right:20px;background-color:#5ab4ac;border:none;width:20%" />
+		</div>
+	</div>
+	</form>

@@ -75,7 +75,7 @@
 </div>
 <script>
 	 function loadPagination() {
-		var tabledataCount = document.getElementById("tableData").rows.length-2;
+		var tabledataCount = "@ViewBag.datacount"
 	//	alert(tabledata.rows.length);
 		var index = document.getElementById("select").selectedIndex;
 		var pageRow = document.getElementById("select").options[index].value;

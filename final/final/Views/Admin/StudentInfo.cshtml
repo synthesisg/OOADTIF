@@ -89,7 +89,7 @@
 			f(1);
 	}
 	function f(n) {
-		var tabledataCount = document.getElementById("tableData").rows.length - 2;
+		var tabledataCount = "@ViewBag.datacount";
 		var tbody = document.getElementById("tbody1");
 		var index = document.getElementById("select").selectedIndex;
 		var pageRow = document.getElementById("select").options[index].value;
