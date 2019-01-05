@@ -203,12 +203,14 @@ namespace final.Controllers
         {
             if(Request.HttpMethod=="POST")
             {
+                decimal ttt=0;
                 int tid = Int32.Parse(Request["tid"]);
                 var modss = (from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == tid select ss).ToList()[0];
-                modss.presentation_score = decimal.Parse(Request["presc"]);
-                modss.question_score = decimal.Parse(Request["quesc"]);
-                modss.report_score = decimal.Parse(Request["repsc"]);
+                if (decimal.TryParse(Request["presc"], out ttt)) modss.presentation_score = ttt;
+                if (decimal.TryParse(Request["quesc"], out ttt)) modss.question_score = ttt;
+                if (decimal.TryParse(Request["repsc"],out ttt)) modss.report_score = ttt;
                 db.SaveChanges();
+                new UpdateScore().UpdataASeminarScore(id, tid);
             }
 
             var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == id select ss).ToList();
@@ -1005,6 +1007,28 @@ namespace final.Controllers
                         }
                     }
                     db.SaveChanges();
+
+                    //补全att的ss
+                    var atlist = (from a in db.attendance where a.klass_seminar_id == id select a.team_id).ToList();
+                    foreach(var tid in atlist)
+                    {
+                        var x = (from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == tid select ss).Count();
+                        if(x==0)
+                        {
+                            seminar_score Newss = new seminar_score
+                            {
+                                klass_seminar_id = id,
+                                question_score = null,
+                                presentation_score = null,
+                                report_score = null,
+                                total_score = null,
+                                team_id = tid
+                            };
+                            db.seminar_score.Add(Newss);
+                        }
+                    }
+                    db.SaveChanges();
+
                     new UpdateScore().UpdateKlassSeminarScore(id);
 
                     //判断这个klass的round结束否
@@ -1012,7 +1036,8 @@ namespace final.Controllers
                     //本轮所有seminar_id
                     var seidlist = (from s in db.seminar where s.round_id == r.id select s.id).ToList();
                     int ksidcnt = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id && ks.status != 2 select aks).Count();
-                    if (ksidcnt > 0) return RedirectToAction("KlassSeminar/" + id);
+                    if (ksidcnt > 0) return Redirect("/TeacherMobile/KlassSeminar/" + id);
+                    
 
                     //本轮本班所有ksid
                     var oksidlist = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id select aks.id).ToList();
@@ -1028,9 +1053,9 @@ namespace final.Controllers
                     }
                     db.SaveChanges();
                     new UpdateScore().UpdateRoundScore(r.id);
-                    return RedirectToAction("KlassSeminar/" + id);
+                    return Redirect("/TeacherMobile/KlassSeminar/" + id);
             }
-            return RedirectToAction("KlassSeminar/" + id);
+            return Redirect("/TeacherMobile/KlassSeminar/" + id);
         }
 
         public ActionResult crtmarkxls(int id)  //course_id

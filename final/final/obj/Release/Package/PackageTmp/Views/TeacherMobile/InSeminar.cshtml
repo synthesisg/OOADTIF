@@ -36,7 +36,7 @@
     </div>
 </div>
 <div style="margin-top:40px">
-    <button type="button" class="btn btn-primary btn-lg btn-block">保存展示分数</button>
+    <button type="button" onclick="score_presentation();" class="btn btn-primary btn-lg btn-block">保存展示分数</button>
 </div>
 
 <div class="row" style="background-color:#ffffff;width:100%;margin-top:10px">
@@ -55,7 +55,7 @@
 </div>
 
 <div style="margin-top:40px">
-    <button type="button" class="btn btn-primary btn-lg btn-block">保存提问分数</button>
+    <button type="button" onclick="score_question();" class="btn btn-primary btn-lg btn-block">保存提问分数</button>
 </div>
 <div>
     <button type="button" class="btn btn-primary btn-lg btn-block" id="Extract">抽取提问</button>
@@ -207,7 +207,7 @@
     function score_presentation()
     {
         $.ajax({
-            'url': "TeacherMobile/score_presentation",
+            'url': "/TeacherMobile/score_presentation",
             'type': "post",
             'data': { id: document.getElementById("team_id").value, score: document.getElementById("pre_score").value,ksid:@ViewBag.ksid },
             success: function ()
@@ -219,7 +219,7 @@
     function score_question()
     {
         $.ajax({
-            'url': "TeacherMobile/score_question",
+            'url': "/TeacherMobile/score_question",
             'type': "post",
             'data': { id: document.getElementById("ques_id").value, score: document.getElementById("que_score").value},
             success: function ()

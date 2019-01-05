@@ -28,10 +28,10 @@
       <publishTime>12/26/2018 04:01:54</publishTime>
     </File>
     <File Include="bin/final.dll">
-      <publishTime>01/06/2019 02:22:26</publishTime>
+      <publishTime>01/06/2019 04:05:18</publishTime>
     </File>
     <File Include="bin/final.pdb">
-      <publishTime>01/06/2019 02:22:26</publishTime>
+      <publishTime>01/06/2019 04:05:18</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>12/26/2018 04:01:55</publishTime>
@@ -484,7 +484,7 @@
       <publishTime>01/05/2019 03:18:49</publishTime>
     </File>
     <File Include="Views/StudentMobile/StudentMyTeam.cshtml">
-      <publishTime>01/03/2019 22:15:00</publishTime>
+      <publishTime>01/06/2019 03:15:29</publishTime>
     </File>
     <File Include="Views/StudentMobile/StudentTeam.cshtml">
       <publishTime>01/06/2019 02:03:19</publishTime>
@@ -511,7 +511,7 @@
       <publishTime>01/03/2019 14:41:15</publishTime>
     </File>
     <File Include="Views/TeacherMobile/CheckModAllMark.cshtml">
-      <publishTime>01/03/2019 14:41:15</publishTime>
+      <publishTime>01/06/2019 03:40:30</publishTime>
     </File>
     <File Include="Views/TeacherMobile/CheckStuGroup.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>
@@ -544,7 +544,7 @@
       <publishTime>01/03/2019 22:15:00</publishTime>
     </File>
     <File Include="Views/TeacherMobile/InSeminar.cshtml">
-      <publishTime>01/06/2019 02:21:49</publishTime>
+      <publishTime>01/06/2019 03:29:12</publishTime>
     </File>
     <File Include="Views/TeacherMobile/KlassInfo.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>
