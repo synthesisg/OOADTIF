@@ -175,8 +175,12 @@ namespace final.Controllers
                     foreach (var item in sr.list)
                     {
                         string str = Request[item.id.ToString()];
-                        decimal? score = (str == null ? null : (decimal?) decimal.Parse(str));
-
+                        decimal score;
+                        if (decimal.TryParse(str, out score) == false)
+                        {
+                            ViewBag.model = new seminar_report("ksid", id);
+                            break;
+                        }
                         int team_id = db.attendance.Find(item.id).team_id;
 
                         var sslist = (from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == team_id select ss).ToList();
@@ -195,6 +199,8 @@ namespace final.Controllers
                         us.UpdateKlassSeminarScore(id);
                         us.UpdateRoundScore(db.seminar.Find(db.klass_seminar.Find(id).seminar_id).round_id);
                     }
+
+                    ViewBag.model = new seminar_report("ksid", id);
                     break;
             }
             return View();

@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/TMobileLayout/_TMobileLayout4.cshtml";
 }
 <p>书面报告打分</p>
+<form method="post">
 @{
     int count = ViewBag.model.list.Count;
     for (int i = 1; i <= count; i++)
@@ -18,13 +19,14 @@
     {
         <a href="javascript:void(0);" onclick="dlMethod('@ViewBag.model.list[i - 1].report_url');" style="cursor:pointer;width:40%;">@ViewBag.model.list[i - 1].report_name</a>
     }
-    <input type="text" style="width:3em" maxlength="2" name="@ViewBag.model.list[i - 1].id" value="@ViewBag.model.list[i - 1].report_score" onkeyup="value=value.replace(/[^\d]/g,'') " ng-pattern="/[^a-zA-Z]/" />
+    <input type="text" style="width:3em" maxlength="2" name="@ViewBag.model.list[i - 1].id" value="@ViewBag.model.list[i - 1].report_score"  />
 </div>
     }
 }
-<button type="button" class="btn btn-primary" style="width:100%;margin-top:20px;margin-bottom:20px">
+<button type="submit" class="btn btn-primary" style="width:100%;margin-top:20px;margin-bottom:20px">
     保存修改
 </button>
+    </form>
 <script>
     function dlMethod(str) {
         window.location.href = "/File/Download_stu" + str;
