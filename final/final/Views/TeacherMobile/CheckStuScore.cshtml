@@ -11,9 +11,15 @@
         margin: 0;
         padding: 0;
     }
-
+	p {
+		display:inline;
+		margin:0;
+		padding:0;
+	}
     li {
         width: 100%;
+		margin:0;
+		padding:0;
         color: #000000;
         border-style: none;
         border-radius: 5px;
@@ -29,16 +35,18 @@
             @foreach (var j in ViewBag.totalround[i])
             {
                 <li id="r_@i-r_@j.team_serial" style="background-color:#ffffff;display:none">
-                    @j.team_serial  总分：<font id="tot_@i-r_@j.team_serial"> @j.total_score </font>
+					<div style="margin:0;padding:0;background-color:#f0f0f0">
+						@j.team_serial  总分：<font id="tot_@i-r_@j.team_serial"> @j.total_score </font>
+					</div>
                     @foreach(var k in j.list)
                     {
                     <ul>
                         <li>
                             <h4>@k.seminar_name</h4>
-                            展示：<input type="text" style="width:100%" name="presc_@i-r_@j.team_serial" maxlength="2" value="@k.presentation_score" />
-                            提问：<input type="text" style="width:100%" name="quesc_@i-r_@j.team_serial" maxlength="2" value="@k.question_score" />
-                            报告：<input type="text" style="width:100%" name="repsc_@i-r_@j.team_serial" maxlength="2" value="@k.report_score" />
-                            <button type="button" onclick="upd('_@i-r_@j.team_serial',@j.tid,@k.ksid);">修改</button>
+							<p>展示：</p><input type="text" class="form-control"style="display:inline;width:3em" name="presc_@i-r_@j.team_serial" maxlength="2" value="@k.presentation_score" />
+							<p>提问：</p><input type="text" class="form-control"style="display:inline;width:3em" name="quesc_@i-r_@j.team_serial" maxlength="2" value="@k.question_score" />
+							<p>报告：</p><input type="text" class="form-control"style="display:inline;width:3em" name="repsc_@i-r_@j.team_serial" maxlength="2" value="@k.report_score" />
+                            <button type="button"class="btn btn-default" style="float:right" onclick="upd('_@i-r_@j.team_serial',@j.tid,@k.ksid);">修改</button>
                         </li>
                     </ul>
                     }
