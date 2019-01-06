@@ -600,7 +600,7 @@ namespace final.Models
         public string team_serial;
         public List<string> name = new List<string>();
         public List<string> account = new List<string>();
-
+        public List<int> sid = new List<int>();
         public teamlist(int team_id)
         {
             team = db.team.Find(team_id);
@@ -608,6 +608,7 @@ namespace final.Models
             //Leader
             name.Add(db.student.Find(team.leader_id).student_name);
             account.Add(db.student.Find(team.leader_id).account);
+            sid.Add(team.leader_id);
             //Member
             var stlist = from ts in db.team_student where ts.team_id == team_id select ts.student_id;
             foreach (var st in stlist)
@@ -615,6 +616,7 @@ namespace final.Models
             {
                 name.Add(db.student.Find(st).student_name);
                 account.Add(db.student.Find(st).account);
+                sid.Add(st);
             }
         }
 
@@ -924,14 +926,14 @@ namespace final.Models
                     return;
                 }
             }
-            var tslist = (from ts in db.team_strategy where ts.course_id == id select ts).ToList();
+            var tslist = (from ts in db.team_strategy where ts.course_id == c.id select ts).ToList();
             if (tslist.Count() > 0)//存在组队策略
             {
                 //本课程mls
                 
 
                 //先确定and还是or
-                var tsfirst = (from ts in db.team_strategy where ts.course_id == id && ts.strategy_serial == 1 select ts).ToList()[0];
+                var tsfirst = (from ts in db.team_strategy where ts.course_id == c.id && ts.strategy_serial == 1 select ts).ToList()[0];
                 var sidlist = (from ts in db.team_student where ts.team_id == t.id select ts.student_id).ToList();
                 bool ac = (tsfirst.strategy_name == "TeamAndStrategy" ? true : false);
 

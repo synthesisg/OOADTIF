@@ -16,8 +16,12 @@
 
             @for (int i = 1; i < ViewBag.list.account.Count; i++)
             {
-                <div style="float:left;">组员：</div><div style="float:left;margin-left:15%">@ViewBag.list.account[i]</div><div style="float:left;margin-left:15%">@ViewBag.list.name[i]</div><hr /><br />
-            }
+                <div style="float:left;">组员：</div><div style="float:left;margin-left:15%">@ViewBag.list.account[i]</div><div style="float:left;margin-left:15%">@ViewBag.list.name[i]</div>
+
+                if (ViewBag.is_leader)
+                {<a onclick="delMember(@ViewBag.list.sid[i]);">删除</a>}
+                    <hr /><br />
+             }
             </div>
 	</div>
 	@{
@@ -39,7 +43,7 @@
 					<p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:2em">添加成员:</p><br />
 				</div>
 			</div>
-			<form class="bs-example bs-example-form" method="post" action="/StudentMobile/submit_team_valid">
+			<form class="bs-example bs-example-form" method="post">
                 <input type="hidden" value="@ViewBag.list.team.id" name="team_id"/>
 				<div class="container" style="width:100%;height: 190px; overflow:scroll">
 					<div class="container" style="background-color:#ffffff;margin:1px;width:100%">
@@ -49,7 +53,6 @@
 									<td><input type="checkbox" name="sidlist" value="@ViewBag.stulist.student_id[i]" /></td>
 									<td><p>@ViewBag.stulist.account[i]</p></td>
 									<td><p>@ViewBag.stulist.name[i]</p></td>
-									<td><a onclick="delMember('@ViewBag.stulist.account[i]')">删除</a>
 								</tr>
 							}
 						</table>
@@ -90,9 +93,9 @@
 	function delMember(account) {
 		if (confirm("确认删除该成员吗？")) {
 			$.ajax({
-                'url': "/StudentMobile/remove",
+                'url': "/StudentMobile/removesb",
 				'type': "post",
-				'data': { id:@ViewBag.team_id },
+				'data': { id:@ViewBag.team_id, sid:account },
 				success: function () {
 					alert("删除成功");
 					window.location.reload();

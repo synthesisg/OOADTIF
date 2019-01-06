@@ -5,15 +5,16 @@
 }
 
 <style>
-    div {
+    div.row {
         margin: 0;
+		margin-top:2px;
         padding: 0;
     }
 </style>
 @if (ViewBag.sc.is_valid)
 {
 <div class="row" style="background-color:#ffffff;width:100%">
-    <div class="col-xs-2 col-sm-2" style="text-align:center">
+    <div class="col-xs-4 col-sm-4" style="text-align:center">
 
     </div>
     <div class="col-xs-2 col-sm-2" style="text-align:center">
@@ -28,8 +29,6 @@
     <div class="col-xs-2 col-sm-2" style="text-align:center">
         <p style="display:inline">总分</p>
     </div>
-    <div class="col-xs-2 col-sm-2" style="text-align:center">
-    </div>
 </div>
 }
 else
@@ -39,7 +38,7 @@ else
 @for (int i = 0; i < ViewBag.sc.serial.Count; i++)
 {
     <div class="row" style="background-color:#ffffff;width:100%">
-        <div class="col-xs-2 col-sm-2">
+        <div class="col-xs-4 col-sm-4">
             <p style="text-align:center">@ViewBag.sc.seminar_name[i]</p>
         </div>
         <div class="col-xs-2 col-sm-2" style="text-align:center">
@@ -54,16 +53,14 @@ else
         <div class="col-xs-2 col-sm-2" style="text-align:center">
             <p style="display:inline">@ViewBag.sc.ss[i].total_score</p>
         </div>
-        <div class="col-xs-2 col-sm-2" style="text-align:center">
-        </div>
     </div>
 }
 @for (int i = 0; i < ViewBag.sc.rs.Count; i++)
 {
     <div class="row" style="background-color:#ffffff;width:100%">
-        <div class="col-xs-2 col-sm-2">
+        <div class="col-xs-4 col-sm-4">
             @{ i++;}
-            <p style="text-align:center">第 @i 轮 总分</p>
+            <p style="text-align:center">第 @i 轮总分</p>
             @{ i--;}
         </div>
         <div class="col-xs-2 col-sm-2" style="text-align:center">
@@ -77,8 +74,6 @@ else
         </div>
         <div class="col-xs-2 col-sm-2" style="text-align:center">
             <p style="display:inline">@ViewBag.sc.rs[i].total_score</p>
-        </div>
-        <div class="col-xs-2 col-sm-2" style="text-align:center">
         </div>
     </div>
 }

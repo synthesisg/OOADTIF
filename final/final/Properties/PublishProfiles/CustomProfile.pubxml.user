@@ -28,10 +28,10 @@
       <publishTime>12/26/2018 04:01:54</publishTime>
     </File>
     <File Include="bin/final.dll">
-      <publishTime>01/05/2019 08:08:55</publishTime>
+      <publishTime>01/06/2019 04:05:18</publishTime>
     </File>
     <File Include="bin/final.pdb">
-      <publishTime>01/05/2019 08:08:55</publishTime>
+      <publishTime>01/06/2019 04:05:18</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>12/26/2018 04:01:55</publishTime>
@@ -355,7 +355,7 @@
       <publishTime>12/26/2018 04:01:52</publishTime>
     </File>
     <File Include="Views/Admin/StudentInfo.cshtml">
-      <publishTime>01/05/2019 03:18:49</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/Admin/StudentInfoMod.cshtml">
       <publishTime>12/28/2018 02:27:53</publishTime>
@@ -364,7 +364,7 @@
       <publishTime>12/26/2018 04:01:52</publishTime>
     </File>
     <File Include="Views/Admin/TeacherInfo.cshtml">
-      <publishTime>01/05/2019 03:18:49</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/Admin/TeacherInfoMod.cshtml">
       <publishTime>12/28/2018 02:27:53</publishTime>
@@ -427,7 +427,7 @@
       <publishTime>12/26/2018 04:01:52</publishTime>
     </File>
     <File Include="Views/StudentMobile/AccountAndSet.cshtml">
-      <publishTime>01/03/2019 22:15:00</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/StudentMobile/Activate.cshtml">
       <publishTime>12/26/2018 04:01:52</publishTime>
@@ -448,7 +448,7 @@
       <publishTime>01/03/2019 14:41:15</publishTime>
     </File>
     <File Include="Views/StudentMobile/CheckMark.cshtml">
-      <publishTime>01/03/2019 21:03:09</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/StudentMobile/ChsSpecSeminar.cshtml">
       <publishTime>12/26/2018 04:01:52</publishTime>
@@ -469,7 +469,7 @@
       <publishTime>12/28/2018 02:27:53</publishTime>
     </File>
     <File Include="Views/StudentMobile/NowSmnDisplay.cshtml">
-      <publishTime>01/05/2019 04:41:18</publishTime>
+      <publishTime>01/06/2019 02:21:49</publishTime>
     </File>
     <File Include="Views/StudentMobile/NowSmnPPT.cshtml">
       <publishTime>01/03/2019 14:41:15</publishTime>
@@ -478,16 +478,16 @@
       <publishTime>12/26/2018 04:01:52</publishTime>
     </File>
     <File Include="Views/StudentMobile/StudentIndividual.cshtml">
-      <publishTime>01/03/2019 14:41:15</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/StudentMobile/StudentMyCourse.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>
     </File>
     <File Include="Views/StudentMobile/StudentMyTeam.cshtml">
-      <publishTime>01/03/2019 22:15:00</publishTime>
+      <publishTime>01/06/2019 03:15:29</publishTime>
     </File>
     <File Include="Views/StudentMobile/StudentTeam.cshtml">
-      <publishTime>01/05/2019 03:18:49</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/StudentWeb/ChsLesson.cshtml">
       <publishTime>12/28/2018 02:27:53</publishTime>
@@ -511,7 +511,7 @@
       <publishTime>01/03/2019 14:41:15</publishTime>
     </File>
     <File Include="Views/TeacherMobile/CheckModAllMark.cshtml">
-      <publishTime>01/03/2019 14:41:15</publishTime>
+      <publishTime>01/06/2019 03:40:30</publishTime>
     </File>
     <File Include="Views/TeacherMobile/CheckStuGroup.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>
@@ -544,16 +544,16 @@
       <publishTime>01/03/2019 22:15:00</publishTime>
     </File>
     <File Include="Views/TeacherMobile/InSeminar.cshtml">
-      <publishTime>01/05/2019 04:46:22</publishTime>
+      <publishTime>01/06/2019 03:29:12</publishTime>
     </File>
     <File Include="Views/TeacherMobile/KlassInfo.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>
     </File>
     <File Include="Views/TeacherMobile/KlassSeminar.cshtml">
-      <publishTime>01/05/2019 04:28:23</publishTime>
+      <publishTime>01/06/2019 02:21:49</publishTime>
     </File>
     <File Include="Views/TeacherMobile/MarkReport.cshtml">
-      <publishTime>01/03/2019 14:41:15</publishTime>
+      <publishTime>01/05/2019 08:40:08</publishTime>
     </File>
     <File Include="Views/TeacherMobile/modSeminar.cshtml">
       <publishTime>01/03/2019 14:41:15</publishTime>
@@ -568,13 +568,13 @@
       <publishTime>01/03/2019 14:41:15</publishTime>
     </File>
     <File Include="Views/TeacherMobile/SetSeminarSerial.cshtml">
-      <publishTime>01/03/2019 14:41:15</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/TeacherMobile/ShareKlassSet.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>
     </File>
     <File Include="Views/TeacherMobile/TeacherIndividual.cshtml">
-      <publishTime>01/03/2019 14:41:15</publishTime>
+      <publishTime>01/06/2019 02:03:19</publishTime>
     </File>
     <File Include="Views/TeacherMobile/TeacherMyCourse.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>

@@ -347,6 +347,7 @@ namespace final.Controllers
         }
         public ActionResult StudentMyTeam(int id)        //course_id
         {
+            
             if (is_judge)
             {
                 if (Session["is_student"] == null || (bool)Session["is_student"] == false)
@@ -356,10 +357,22 @@ namespace final.Controllers
 
             int sid = Int32.Parse(Session["user_id"].ToString());
             int team_id = new qt().c2t(id, sid);
+
+            if (Request.HttpMethod == "POST")
+            {
+                string[] sidstrlist = Request["sidlist"].Split(',');
+                List<int> sidlist = new List<int>();
+                foreach (var str in sidstrlist) sidlist.Add(Int32.Parse(str));
+                add(sidlist, team_id);
+            }
+
             if (team_id > 0)
                 ViewBag.list = new teamlist(team_id);
             else
                 return Content("You have no team.");
+
+
+            
 
             ViewBag.course_id = id;
             ViewBag.team_id = team_id;
@@ -549,7 +562,7 @@ namespace final.Controllers
 
             add(sidlist,NewTeam.id);
 
-            return Redirect("StudentMobile/StudentTeam/" + course_id.ToString());
+            return Redirect("/StudentMobile/StudentTeam/" + course_id.ToString());
         }
         public void add(List<int> student_id, int team_id)
         {
@@ -588,17 +601,27 @@ namespace final.Controllers
                 var ktlist = from kt in db.klass_team where kt.klass_id == klass_id && kt.team_id == id select kt;
                 foreach (var akt in ktlist) db.klass_team.Remove(akt);
                 db.team.Remove(db.team.Find(id));
+                db.SaveChanges();
             }
             else//单人退出
             {
                 var tslist = from ts in db.team_student where ts.team_id == id&&ts.student_id==sid select ts;
                 foreach (var ats in tslist) db.team_student.Remove(ats);
+                db.SaveChanges();
                 new team_valid_judge(id);
             }
-            db.SaveChanges();
             return Redirect("/StudentMobile/StudentTeam/" + cid.ToString());
         }
-        
+        public string removesb(int id, int sid)
+        {
+            int klass_id = db.team.Find(id).klass_id;
+            int cid = db.team.Find(id).course_id;
+            var tslist = from ts in db.team_student where ts.team_id == id && ts.student_id == sid select ts;
+            foreach (var ats in tslist) db.team_student.Remove(ats);
+            db.SaveChanges();
+            new team_valid_judge(id);
+            return "success";
+        }
         public ActionResult submit_team_valid()
         {
             int team_id = Int32.Parse(Request["team_id"]);
