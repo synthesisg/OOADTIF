@@ -20,10 +20,12 @@ namespace final.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> Connect(string user)
         {
+            /*
             if (string.IsNullOrEmpty(user))
             {
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
+            */
 
             var webSocketHandler = new WebSocketHandler();
             /*
@@ -154,7 +156,7 @@ namespace final.Controllers
         public question Extract(int ksid)
         {
             int atid = Now(ksid).id;
-            var qlist = (from q in db.question where q.klass_seminar_id == ksid && q.attendance_id == atid select q).ToList();
+            var qlist = (from q in db.question where q.klass_seminar_id == ksid && q.attendance_id == atid && q.is_selected != 1 select q).ToList();
             if (qlist.Count() == 0) return null;
             qlist[0].is_selected = 1;
             db.SaveChanges();

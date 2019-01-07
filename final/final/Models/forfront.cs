@@ -190,9 +190,9 @@ namespace final.Models
                     else RS += _rs;
                 }
 
-                if (p == 0) PS /= cnt;
-                if (q == 0) QS /= cnt;
-                if (r == 0) RS /= cnt;
+                if (p == 0 && cnt > 0) PS /= cnt;
+                if (q == 0 && cnt > 0) QS /= cnt;
+                if (r == 0 && cnt > 0) RS /= cnt;
 
                 rs.presentation_score = PS;
                 rs.question_score = QS;
@@ -1007,7 +1007,7 @@ namespace final.Models
                 var tslist = (from ts in db.team_student where ts.student_id == target select ts.team_id).ToList();
                 foreach(var tidd in tslist)
                 {
-                    if (db.team.Find(tidd).course_id == c)
+                    if (db.team.Find(tidd)!=null && db.team.Find(tidd).course_id == c)
                     {
                         if(list.Contains(tidd)==false)
                         list.Add(tidd);

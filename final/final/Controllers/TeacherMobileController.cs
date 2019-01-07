@@ -971,9 +971,8 @@ namespace final.Controllers
 
                     bool method = false;
                     if (r.question_score_method == 1) method = true;    //true为取max
-                    var alist = from a in db.attendance where a.klass_seminar_id == id select a.id;
-                    var aid = alist.ToList();
-                    var qlist = from q in db.question where aid.Contains(q.attendance_id) && q.is_selected == 1 select q;
+                    var aid = (from a in db.attendance where a.klass_seminar_id == id select a.id).ToList();
+                    var qlist = (from q in db.question where aid.Contains(q.attendance_id) && q.is_selected == 1 select q).ToList();
                     Dictionary<int, decimal> score = new Dictionary<int, decimal>();
                     Dictionary<int, int> cnt = new Dictionary<int, int>();
                     foreach (var q in qlist)
@@ -994,7 +993,7 @@ namespace final.Controllers
                     foreach (var tmp in score)
                     {
                         decimal sc = score[tmp.Key];
-                        if (!method) sc /= cnt[tmp.Key];
+                        if (!method && cnt[tmp.Key] > 0) sc /= cnt[tmp.Key];
                         var sslist = from ss in db.seminar_score where ss.klass_seminar_id == id && ss.team_id == tmp.Key select ss;
                         if (sslist.Count() > 0)
                             sslist.ToList()[0].question_score = sc;
@@ -1013,7 +1012,7 @@ namespace final.Controllers
                         }
                     }
                     db.SaveChanges();
-
+                    System.Diagnostics.Debug.Write("P2");
                     //补全att的ss
                     var atlist = (from a in db.attendance where a.klass_seminar_id == id select a.team_id).ToList();
                     foreach(var tid in atlist)
@@ -1048,14 +1047,19 @@ namespace final.Controllers
                     //本轮本班所有ksid
                     var oksidlist = (from aks in db.klass_seminar where seidlist.Contains(aks.seminar_id) && aks.klass_id == ks.klass_id select aks.id).ToList();
                     var tidlist = (from ss in db.seminar_score where oksidlist.Contains(ss.klass_seminar_id) select ss.team_id).Distinct().ToList();
+
                     foreach (var tid in tidlist)
                     {
-                        round_score NewRS = new round_score
+                        var rsjudge = (from rs in db.round_score where rs.round_id == r.id && rs.team_id == tid select rs).Count();
+                        if (rsjudge == 0)
                         {
-                            round_id = r.id,
-                            team_id = tid,
-                        };
-                        db.round_score.Add(NewRS);
+                            round_score NewRS = new round_score
+                            {
+                                round_id = r.id,
+                                team_id = tid,
+                            };
+                            db.round_score.Add(NewRS);
+                        }
                     }
                     db.SaveChanges();
                     new UpdateScore().UpdateRoundScore(r.id);
