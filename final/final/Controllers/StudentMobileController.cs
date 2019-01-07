@@ -364,6 +364,12 @@ namespace final.Controllers
                 List<int> sidlist = new List<int>();
                 foreach (var str in sidstrlist) sidlist.Add(Int32.Parse(str));
                 add(sidlist, team_id);
+
+                List<int> list = new team_ex(id).list;
+                foreach(var aid in list)
+                {
+                    add(sidlist, aid);
+                }
             }
 
             if (team_id > 0)
@@ -380,8 +386,8 @@ namespace final.Controllers
             course c = db.course.Find(id);
             if (c.team_start_time <= DateTime.Now && DateTime.Now <= c.team_end_time) ViewBag.Time = true;
                 else ViewBag.Time = false;
-            if (db.team.Find(team_id).leader_id == sid) ViewBag.is_leader = true;
-                else ViewBag.is_leader = false;
+            if (db.team.Find(team_id).leader_id == sid && c.team_main_course_id == null) ViewBag.is_leader = true;
+            else ViewBag.is_leader = false;
             ViewBag.stulist = studentlist(id);
             return View();
         }
@@ -562,6 +568,40 @@ namespace final.Controllers
 
             add(sidlist,NewTeam.id);
 
+            var clist = (from c in db.course where c.team_main_course_id == course_id select c.id).ToList();
+            foreach(var c in clist)
+            {
+                int aserial = (from t in db.team where t.course_id == c select t).Count() + 1;
+                team aNewTeam = new team
+                {
+                    klass_id = klass_id,
+                    course_id = c,
+                    leader_id = sid,
+                    team_name = team_name,
+                    team_serial = (byte)serial,
+                    status = 0,
+                    klass_serial = db.klass.Find(klass_id).klass_serial
+                };
+                db.team.Add(aNewTeam);
+                db.SaveChanges();   //Create team_id
+
+                klass_team aNewks = new klass_team
+                {
+                    klass_id = klass_id,
+                    team_id = aNewTeam.id
+                };
+                db.klass_team.Add(aNewks);
+                team_student aNewts = new team_student
+                {
+                    team_id = aNewTeam.id,
+                    student_id = sid
+                };
+                db.team_student.Add(aNewts);
+                db.SaveChanges();
+
+                add(sidlist, aNewTeam.id);
+            }
+
             return Redirect("/StudentMobile/StudentTeam/" + course_id.ToString());
         }
         public void add(List<int> student_id, int team_id)
@@ -574,7 +614,9 @@ namespace final.Controllers
             List<int> stuid = studentlist(db.team.Find(team_id).course_id).student_id;
             foreach (int sid in student_id)
             {
-                if (stuid.Contains(sid))
+                //检查是否有课
+                var cnt = (from ks in db.klass_student where ks.student_id == sid && ks.course_id == course_id select ks).Count();
+                if (stuid.Contains(sid) && cnt > 0) 
                 {
                     team_student Newts = new team_student
                     {
@@ -590,36 +632,60 @@ namespace final.Controllers
         public ActionResult remove(int id)//team_id
         {
             int klass_id = db.team.Find(id).klass_id;
-
+            List<int> list = new team_ex(id).list;
             int sid = Int32.Parse(Session["user_id"].ToString());
 
             int cid = db.team.Find(id).course_id;
             if (db.team.Find(id).leader_id == sid)//解散
             {
-                var tslist = from ts in db.team_student where ts.team_id == id select ts;
+                var tslist = (from ts in db.team_student where ts.team_id == id select ts).ToList(); ;
                 foreach (var ats in tslist) db.team_student.Remove(ats);
-                var ktlist = from kt in db.klass_team where kt.klass_id == klass_id && kt.team_id == id select kt;
+                var ktlist = (from kt in db.klass_team where kt.klass_id == klass_id && kt.team_id == id select kt).ToList();
                 foreach (var akt in ktlist) db.klass_team.Remove(akt);
                 db.team.Remove(db.team.Find(id));
+
+                foreach(var _tid in list)
+                {
+                    var atslist = (from ts in db.team_student where ts.team_id == _tid select ts).ToList();
+                    foreach (var ats in atslist) db.team_student.Remove(ats);
+                    var aktlist = (from kt in db.klass_team where kt.klass_id == klass_id && kt.team_id == _tid select kt).ToList();
+                    foreach (var akt in aktlist) db.klass_team.Remove(akt);
+                    db.team.Remove(db.team.Find(_tid));
+                }
                 db.SaveChanges();
             }
             else//单人退出
             {
-                var tslist = from ts in db.team_student where ts.team_id == id&&ts.student_id==sid select ts;
+                var tslist = (from ts in db.team_student where ts.team_id == id&&ts.student_id==sid select ts).ToList();
                 foreach (var ats in tslist) db.team_student.Remove(ats);
                 db.SaveChanges();
                 new team_valid_judge(id);
+
+                foreach (var _tid in list)
+                {
+                    var atslist = (from ts in db.team_student where ts.team_id == _tid && ts.student_id == sid select ts).ToList();
+                    foreach (var ats in tslist) db.team_student.Remove(ats);
+                    db.SaveChanges();
+                    new team_valid_judge(_tid);
+                }
             }
             return Redirect("/StudentMobile/StudentTeam/" + cid.ToString());
         }
         public string removesb(int id, int sid)
         {
-            int klass_id = db.team.Find(id).klass_id;
-            int cid = db.team.Find(id).course_id;
-            var tslist = from ts in db.team_student where ts.team_id == id && ts.student_id == sid select ts;
+            List<int> list = new team_ex(id).list;
+            var tslist = (from ts in db.team_student where ts.team_id == id && ts.student_id == sid select ts).ToList();
             foreach (var ats in tslist) db.team_student.Remove(ats);
             db.SaveChanges();
             new team_valid_judge(id);
+
+            foreach (var _tid in list)
+            {
+                var atslist = (from ts in db.team_student where ts.team_id == _tid && ts.student_id == sid select ts).ToList();
+                foreach (var ats in atslist) db.team_student.Remove(ats);
+                db.SaveChanges();
+                new team_valid_judge(_tid);
+            }
             return "success";
         }
         public ActionResult submit_team_valid()

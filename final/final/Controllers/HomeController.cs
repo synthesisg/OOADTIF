@@ -11,7 +11,7 @@ namespace final.Controllers
     {
         public ActionResult Index()
         {
-            /*
+            //*
             admin cdx = new admin
             {
                 account = "admin",

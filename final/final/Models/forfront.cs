@@ -913,6 +913,7 @@ namespace final.Models
         course c;
         public team_valid_judge(int id)
         {
+            System.Diagnostics.Debug.WriteLine("=============================" + id.ToString());
             t = db.team.Find(id);
             c = db.course.Find(t.course_id);
             var mlsl = (from mls in db.member_limit_strategy where mls.course_id == c.id select mls).ToList();
@@ -944,6 +945,7 @@ namespace final.Models
                     switch (ts.strategy_name)
                     {
                         case "ConflictCourseStrategy":      //冲突课程校验 必须合法
+                            System.Diagnostics.Debug.WriteLine("=======ccs======================");
                             var ccslist = (from ccs in db.conflict_course_strategy where ccs.id == tid select ccs.course_id).ToList();
                             Dictionary<int, int> cssjudge = new Dictionary<int, int>();
                             int csscnt = 0;
@@ -965,6 +967,7 @@ namespace final.Models
                             int cmlscid = cmls.course_id;
                             int cmlscidcnt = (from ks in db.klass_student where ks.course_id == cmlscid && sidlist.Contains(ks.student_id) select ks).Count();
                             if (cmls.min_member <= cmlscidcnt && cmlscidcnt <= cmls.max_member) cmlscnt++;
+                            System.Diagnostics.Debug.WriteLine("============cmls================="+cmls.max_member.ToString()+cmls.min_member.ToString()+cmlscidcnt,ToString());
                             break;
                     }
                 }
@@ -982,6 +985,43 @@ namespace final.Models
             }
         }
 
+        MSSQLContext db = new MSSQLContext();
+    }
+    public class team_ex
+    {
+        team t;
+        public List<int> list = new List<int>();
+        public team_ex(int team_id)
+        {
+            t = db.team.Find(team_id);
+            int course_id = t.course_id;
+            var sidlist = (from ts in db.team_student where ts.team_id == team_id select ts.student_id).ToList();
+            var clist = (from c in db.course where c.team_main_course_id == course_id select c.id).ToList();
+            foreach(var c in clist)
+            {
+                int target = 0;
+                for(int i=0;i<sidlist.Count();i++)
+                {
+                    int tmp = sidlist[i];
+                    var ex = (from ks in db.klass_student where ks.course_id == c && ks.student_id == tmp select ks.student_id).Count();
+                    if (ex > 0) 
+                    {
+                        target = tmp;
+                        i = sidlist.Count();
+                    }
+                }
+                if (target == 0) continue;
+                var tslist = (from ts in db.team_student where ts.student_id == target select ts.team_id).ToList();
+                foreach(var tidd in tslist)
+                {
+                    if (db.team.Find(tidd).course_id == c)
+                    {
+                        list.Add(tidd);
+                        continue;
+                    }
+                }
+            }
+        }
         MSSQLContext db = new MSSQLContext();
     }
 }

@@ -1546,13 +1546,13 @@ insert into teams(id,klass_id,course_id,leader_id,team_name,team_serial,klass_se
 set IDENTITY_INSERT teams OFF
 
 
-insert  into team_and_strategy(id,strategy_name,strategy_id) values 
+insert into team_and_strategy(id,strategy_name,strategy_id) values 
 (1,'MemberLimitStrategy',1),
 (1,'TeamOrStrategy',1);
 
 
 insert into team_strategy(course_id,strategy_serial,strategy_name,strategy_id) values 
-(16,1,'TeamAndStrategy',1),
+(16,1,'TeamOrStrategy',1),
 (16,2,'ConflictCourseStrategy',1),
 (16,3,'ConflictCourseStrategy',2),
 (16,4,'CourseMemberLimitStrategy',1),
