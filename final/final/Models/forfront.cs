@@ -62,11 +62,11 @@ namespace final.Models
             klass_seminar ks = db.klass_seminar.Find(id);
             if (ks == null) return false;
 
-            var alist = from a in db.attendance where a.klass_seminar_id == id select a;
+            var alist = (from a in db.attendance where a.klass_seminar_id == id select a).ToList();
             foreach (var a in alist) db.attendance.Remove(a);
-            var qlist = from q in db.question where q.klass_seminar_id == id select q;
+            var qlist = (from q in db.question where q.klass_seminar_id == id select q).ToList();
             foreach (var q in qlist) db.question.Remove(q);
-            var sclist = from sc in db.seminar_score where sc.klass_seminar_id == id select sc;
+            var sclist = (from sc in db.seminar_score where sc.klass_seminar_id == id select sc).ToList();
             foreach (var sc in sclist) db.seminar_score.Remove(sc);
 
             db.klass_seminar.Remove(ks);
@@ -80,7 +80,7 @@ namespace final.Models
             seminar s = db.seminar.Find(id);
             if (s == null) return false;
 
-            var kslist = from ks in db.klass_seminar where ks.seminar_id == id select ks;
+            var kslist = (from ks in db.klass_seminar where ks.seminar_id == id select ks).ToList();
             foreach (var ks in kslist)
                 DelKlassSeminar(ks.id);
 
@@ -95,7 +95,7 @@ namespace final.Models
             klass k = db.klass.Find(id);
             if (k == null) return false;
 
-            var kslist = from ks in db.klass_seminar where ks.klass_id == id select ks;
+            var kslist = (from ks in db.klass_seminar where ks.klass_id == id select ks).ToList();
             foreach (var ks in kslist)
                 DelKlassSeminar(ks.id);
 
@@ -106,11 +106,11 @@ namespace final.Models
                 tid.Add(t.id);
                 db.team.Remove(t);
             }
-            var kstlist = from ks in db.klass_student where ks.klass_id == id select ks;
+            var kstlist = (from ks in db.klass_student where ks.klass_id == id select ks).ToList();
             foreach (var ks in kstlist) db.klass_student.Remove(ks);
-            var krlist = from kr in db.klass_round where kr.klass_id == id select kr;
+            var krlist = (from kr in db.klass_round where kr.klass_id == id select kr).ToList();
             foreach (var kr in krlist) db.klass_round.Remove(kr);
-            var ktlist = from kt in db.klass_team where kt.klass_id == id select kt;
+            var ktlist = (from kt in db.klass_team where kt.klass_id == id select kt).ToList();
             foreach (var kt in ktlist) db.klass_team.Remove(kt);
 
             db.klass.Remove(k);
@@ -518,7 +518,7 @@ namespace final.Models
         public string enroll;
         public short enroll_status;
 
-        public BEnrollSmn_model(int klass_seminar_id, int student_id=0)
+        public BEnrollSmn_model(int klass_seminar_id, int student_id = 0)
         {
             sid = student_id;
             ksid = klass_seminar_id;
@@ -548,13 +548,6 @@ namespace final.Models
                     status = "已结束";
                     could_enroll = false;
                     break;
-                case 3:
-                    status = "暂停";
-                    could_enroll = false;
-                    break;
-                default:
-                    status = "";
-                    break;
             };
 
             int team_id = new qt().c2t(seminar.course_id, student_id);
@@ -581,7 +574,7 @@ namespace final.Models
                 var slist = (from s in db.seminar where s.round_id == rid select s.id).ToList();
                 int klass_id = db.team.Find(team_id).klass_id;
                 var kslist = (from ks in db.klass_seminar where slist.Contains(ks.seminar_id) && ks.klass_id==klass_id select ks.id).ToList();
-                int acount = (from a in db.attendance where kslist.Contains(a.klass_seminar_id) select a).Count();
+                int acount = (from a in db.attendance where kslist.Contains(a.klass_seminar_id) &&a.team_id==team_id select a.team_order).Distinct().Count();
                 if (acount >= maxi) could_enroll = false;
                 return;
             }

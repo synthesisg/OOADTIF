@@ -9,7 +9,7 @@
 
     //websoc展示同学提问与何组正在进行展示
 }
-<script>
+<script type="text/javascript">
     window.onload = function ()
     {
         document.getElementById("conn").click();
@@ -19,7 +19,7 @@
     {
         $('#conn').click(function ()
         {
-            ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=' + @ViewBag.sid);
+            ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=@ViewBag.sid');
             $('#msg').append('<p>正在连接</p>');
 
             ws.onopen = function ()
@@ -30,7 +30,7 @@
             {
                 $('#msg').append('<p>' + evt.data + '</p>');
                 var str = evt.data.split('|');
-                if (str[1] == "@ViewBag.ksid") {
+                if (str[1] == "@ViewBag.ksid" || str[1] == @ViewBag.ksid) {
                     switch (str[0])
                     {
                         case "1":
@@ -90,44 +90,44 @@
     <p id="questionDis" style="float:right;display:inline;color:green">提问队列中有 @ViewBag.NowQue 位同学</p>
 </div>
 
-@for (var i = 0; i < ViewBag.model.team_serial.Length;i++)
-            {
-                <div class="row" style="width:100%;margin-top:2px;background-color:#ffffff">
-                        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em;margin-right:3em">@{i++;}第 @i 组: @{i--;}</p>
-                        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.team_serial[i]</p>
+@for (var i = 0; i < ViewBag.model.team_serial.Length; i++)
+{
+    <div class="row" style="width:100%;margin-top:2px;background-color:#ffffff">
+        <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-left:2em;margin-right:3em">@{i++;}第 @i 组: @{i--;}</p>
+        <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.team_serial[i]</p>
 
-                </div>
-            }
+    </div>
+}
 
 <div class="row" style="width:100%;text-align:center">
-		<button type="button" class="btn btn-primary" style="margin-top:20px;" id="QA">Q&A</button>
+    <button type="button" class="btn btn-primary" style="margin-top:20px;" id="QA">Q&A</button>
 </div>
 
-                <div style="display: none;">
-                    <input id="user" type="text" />
-                    <input id="conn" type="button" value="连接" />
-                    <input id="close" type="button" value="关闭" /><br />
-                    <span id="tips"></span>
-                    <input id="content" type="text" />
-                    <input id="send" type="button" value="发送" /><br />
-                    <input id="to" type="text" />目的用户
-                    <div id="msg">
-                    </div>
-                </div>
-                
-<script>
+<div style="display: none;">
+    <input id="user" type="text" />
+    <input id="conn" type="button" value="连接" />
+    <input id="close" type="button" value="关闭" /><br />
+    <span id="tips"></span>
+    <input id="content" type="text" />
+    <input id="send" type="button" value="发送" /><br />
+    <input id="to" type="text" />目的用户
+</div>
+<div id="msg">
+</div>
+
+<script type="text/javascript">
     //修改 第i组展示中
     function modNowQuestion(mes)    //1
     {
         document.getElementById("questionDis").innerHTML = "已有" + mes + "位同学提问";
     }
-    function questionTip(mes,cnt)       //2
+    function questionTip(mes, cnt)       //2
     {
         alert("请 " + mes + " 提问 ");
         document.getElementById("questionDis").innerHTML = "已有" + cnt + "位同学提问";
     }
     function modNowDisGroup(mes)    //3
     {
-		document.getElementById("groupDis").innerHTML = "当前展示小组：" + mes;
-	}
+        document.getElementById("groupDis").innerHTML = "当前展示小组：" + mes;
+    }
 </script>

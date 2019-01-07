@@ -462,7 +462,7 @@ namespace final.Controllers
                     else
                         return Content("Not a Excel.");
             }
-            return RedirectToAction("/TeacherMobile/Klassinfo/" + id.ToString());
+            return Redirect("/TeacherMobile/Klassinfo/" + id.ToString());
         }
         private void LoadList(string path, int class_id)   //"Data Source=" + Server.MapPath("~/Files/NET.xls") + ";"
         {

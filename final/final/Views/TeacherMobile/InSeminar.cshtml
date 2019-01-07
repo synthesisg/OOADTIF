@@ -71,12 +71,12 @@
     <input id="content" type="text" />
     <input id="send" type="button" value="发送" /><br />
     <input id="to" type="text" />目的用户
-    <div id="msg">
-    </div>
+</div>
+<div id="msg">
 </div>
 
 
-<script>
+<script type="text/javascript">
     window.onload = function ()
     {
         document.getElementById("conn").click();
@@ -86,7 +86,7 @@
     {
         $('#conn').click(function ()
         {
-            ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=' + @ViewBag.tid);
+            ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/api/wsconn?user=@ViewBag.tid');
             $('#msg').append('<p>正在连接</p>');
 
             ws.onopen = function ()
@@ -97,7 +97,7 @@
             {
                 $('#msg').append('<p>' + evt.data + '</p>');
                 var str = evt.data.split('|');
-                if (str[1] == "@ViewBag.ksid") {
+                if (str[1] == "@ViewBag.ksid" ||str[1] == @ViewBag.ksid) {
                     switch (str[0])
                     {
                         case "1":

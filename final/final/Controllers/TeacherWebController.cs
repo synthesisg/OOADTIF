@@ -109,14 +109,14 @@ namespace final.Controllers
                 string fname = class_id.ToString() + ".xls";
                 if (type == 2) fname += 'x';
 
-                if (System.IO.File.Exists(Server.MapPath("~/Files/class/" + fname)))
+                string totalpath = Server.MapPath("~/Files/class/" + fname);
+                if (System.IO.File.Exists(totalpath))
                 {
-                    System.IO.File.Delete(Server.MapPath("~/Files/class/" + fname));
+                    System.IO.File.Delete(totalpath);
                 }
 
-                f.SaveAs(Server.MapPath("~/Files/class/" + fname));
-                LoadList("~/Files/class/" + fname, class_id);
-                Response.Write("<script type='text/javascript'>alert('Success!');</script>");
+                f.SaveAs(totalpath);
+                LoadList(totalpath, class_id);
                 return RedirectToAction("TeacherImport");
             }
             else
@@ -190,9 +190,9 @@ namespace final.Controllers
         {
             string strConn = "";
             if (path.Last() == 'x')
-                strConn = "Provider=Microsoft.ACE.OLEDB.12.0;" + "Data Source=" + Server.MapPath(path) + ";" + "Extended Properties='Excel 12.0;HDR=NO;IMEX=1';";
+                strConn = "Provider=Microsoft.ACE.OLEDB.12.0;" + "Data Source=" + path + ";" + "Extended Properties='Excel 12.0;HDR=NO;IMEX=1';";
             else
-                strConn = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + Server.MapPath(path) + ";" + "Extended Properties='Excel 8.0;HDR=NO;IMEX=1';";
+                strConn = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + path + ";" + "Extended Properties='Excel 8.0;HDR=NO;IMEX=1';";
             string strExcel = "select * from   [sheet1$]";
             DataSet ds = new DataSet();
             OleDbConnection conn = new OleDbConnection(strConn);
@@ -201,14 +201,13 @@ namespace final.Controllers
             adapter.Fill(ds, "sheet1");
             conn.Close();
 
-
             //学号    姓名  所属系 专业
             DataTable data = ds.Tables["sheet1"];
 
             int course_id = db.klass.Find(class_id).course_id;
             //以前的记录
-            var sclist = from sc in db.klass_student where sc.klass_id == class_id select sc;
-            List<decimal> scid = new List<decimal>();
+            var sclist = (from sc in db.klass_student where sc.klass_id == class_id select sc).ToList();
+            List<int> scid = new List<int>();
             foreach (var sc in sclist) scid.Add(db.student.Find(sc.student_id).id);
 
             for (int i = 0; i < data.Rows.Count; i++)
@@ -217,7 +216,7 @@ namespace final.Controllers
                 if (acad_id == null || acad_id == "" || acad_id == "学号") continue;    //忽略首行与空行(合并行)
 
                 //创建账户
-                var uitest = from ui in db.student where ui.account.Contains(acad_id) select ui;
+                var uitest = (from ui in db.student where ui.account.Contains(acad_id) select ui).ToList();
                 if (uitest.Count() == 0)
                 {
                     var addus = new student
@@ -231,7 +230,7 @@ namespace final.Controllers
                     db.SaveChanges();
                 }
 
-                var uilist = from ui in db.student where ui.account.Contains(acad_id) select ui;
+                var uilist = (from ui in db.student where ui.account.Contains(acad_id) select ui).ToList();
                 int uid = 0;
                 foreach (var ui in uilist) uid = ui.id;
                 if (scid.Contains(uid)) scid.Remove(uid);   //仍在表内，踢出list
@@ -243,7 +242,7 @@ namespace final.Controllers
             }
 
             //删除不在新表内的
-            var dellist = from sc in db.klass_student where (scid.Contains(sc.student_id) && sc.klass_id == class_id) select sc;
+            var dellist = (from sc in db.klass_student where (scid.Contains(sc.student_id) && sc.klass_id == class_id) select sc).ToList();
             foreach (var del in dellist) db.klass_student.Remove(del);
 
             //保存

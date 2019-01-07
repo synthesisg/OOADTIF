@@ -11,7 +11,7 @@ namespace final.Controllers
     {
         public ActionResult Index()
         {
-            //*
+            /*
             admin cdx = new admin
             {
                 account = "admin",
@@ -102,7 +102,7 @@ namespace final.Controllers
                         {
                             Session["user_id"] = uilist[0].id;
                             Session["is_student"] = true;
-                            return Redirect("/StudentMobile/Seminar");
+                            return Redirect("/StudentMobile/StudentMyCourse");
                         }
                     }
                     else
@@ -166,7 +166,7 @@ namespace final.Controllers
                             db.SaveChanges();
                             Session["user_id"] = Session["tmp_id"];
                             Session["is_student"] = true;
-                            return Redirect("/StudentMobile/Seminar");
+                            return Redirect("/StudentMobile/StudentMyCourse");
                     }
                     break;
             }

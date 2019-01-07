@@ -88,9 +88,11 @@ namespace final.Controllers
             foreach (var cs in cslist)
             {
                 klass k = db.klass.Find(cs.klass_id);
+                int k2tid = new qt().k2t(k.id, student_id);
+                 if (k2tid != 0 && db.team.Find(k2tid).course_id==cs.course_id ) k = db.klass.Find(db.team.Find(k2tid).klass_id);
                 personclass tmp = new personclass
                 {
-                    klass_id = cs.klass_id,
+                    klass_id = k.id,
                     name = db.course.Find(cs.course_id).course_name + k.grade.ToString() + '-' + k.klass_serial.ToString()
                 };
                 pc.Add(tmp);
@@ -243,7 +245,8 @@ namespace final.Controllers
             if (alist.Count() > 0)
             {
                 ViewBag.NowAttend = new qt().t2ts(alist[0].team_id);
-                ViewBag.NowQue = (from q in db.question where q.is_selected != 1 && q.attendance_id == alist[0].id select q).Count();
+                int aid = alist[0].id;
+                ViewBag.NowQue = (from q in db.question where q.is_selected != 1 && q.attendance_id == aid select q).Count();
             }
             else
             {
@@ -305,6 +308,11 @@ namespace final.Controllers
             db.attendance.Remove(at);
             db.SaveChanges();
             return "success";
+        }
+        public string ChangeEnroll(byte order, int ksid)
+        {
+            CancelEnroll(ksid);
+            return Enroll(order, ksid);
         }
 
         public void score(int id)           //course_id

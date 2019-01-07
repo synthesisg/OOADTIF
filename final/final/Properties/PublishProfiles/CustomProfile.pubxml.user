@@ -28,10 +28,10 @@
       <publishTime>12/26/2018 04:01:54</publishTime>
     </File>
     <File Include="bin/final.dll">
-      <publishTime>01/07/2019 13:15:47</publishTime>
+      <publishTime>01/07/2019 19:08:09</publishTime>
     </File>
     <File Include="bin/final.pdb">
-      <publishTime>01/07/2019 13:15:47</publishTime>
+      <publishTime>01/07/2019 19:08:09</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>12/26/2018 04:01:55</publishTime>
@@ -469,7 +469,7 @@
       <publishTime>12/28/2018 02:27:53</publishTime>
     </File>
     <File Include="Views/StudentMobile/NowSmnDisplay.cshtml">
-      <publishTime>01/06/2019 02:21:49</publishTime>
+      <publishTime>01/07/2019 18:48:15</publishTime>
     </File>
     <File Include="Views/StudentMobile/NowSmnPPT.cshtml">
       <publishTime>01/03/2019 14:41:15</publishTime>
@@ -544,7 +544,7 @@
       <publishTime>01/03/2019 22:15:00</publishTime>
     </File>
     <File Include="Views/TeacherMobile/InSeminar.cshtml">
-      <publishTime>01/06/2019 03:29:12</publishTime>
+      <publishTime>01/07/2019 18:49:05</publishTime>
     </File>
     <File Include="Views/TeacherMobile/KlassInfo.cshtml">
       <publishTime>01/05/2019 03:18:49</publishTime>
@@ -601,7 +601,7 @@
       <publishTime>12/26/2018 04:01:52</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>01/05/2019 07:33:04</publishTime>
+      <publishTime>01/07/2019 16:39:25</publishTime>
     </File>
   </ItemGroup>
 </Project>
