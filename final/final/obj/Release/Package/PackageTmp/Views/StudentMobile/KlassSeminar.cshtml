@@ -48,7 +48,15 @@
         <div class="container" style="background-color:#f0f0f0">
             <p style="font-weight:bold;height:40px;line-height:40px;display:inline;margin-right:3em">课程情况:</p>
             <p style="height:40px;line-height:40px;display:inline;">@ViewBag.model.status</p>
-            <a href="/StudentMobile/BQueryEnrollSmn/@ViewBag.model.ksid">报名情况</a>
+
+            @if (ViewBag.model.seminar_status == 0 && ViewBag.model.enroll_status == 1)
+            {
+                <a href="/StudentMobile/BChangeEnrollSmn/@ViewBag.model.ksid">报名情况</a>
+            }
+            else
+            {
+                <a href="/StudentMobile/BQueryEnrollSmn/@ViewBag.model.ksid">报名情况</a>
+            }
             @if (ViewBag.model.seminar_status != 0)
             {<a href="/StudentMobile/NowSmnPPT/@ViewBag.model.ksid">查看PPT</a>}
         </div>
