@@ -1016,6 +1016,7 @@ namespace final.Models
                 {
                     if (db.team.Find(tidd).course_id == c)
                     {
+                        if(list.Contains(tidd)==false)
                         list.Add(tidd);
                         continue;
                     }

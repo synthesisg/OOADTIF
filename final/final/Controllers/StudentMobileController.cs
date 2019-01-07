@@ -572,22 +572,23 @@ namespace final.Controllers
             foreach(var c in clist)
             {
                 int aserial = (from t in db.team where t.course_id == c select t).Count() + 1;
+                int kid = (from k in db.klass where k.course_id == c select k.id).ToList()[0];
                 team aNewTeam = new team
                 {
-                    klass_id = klass_id,
+                    klass_id = kid,
                     course_id = c,
                     leader_id = sid,
                     team_name = team_name,
-                    team_serial = (byte)serial,
+                    team_serial = (byte)aserial,
                     status = 0,
-                    klass_serial = db.klass.Find(klass_id).klass_serial
+                    klass_serial = db.klass.Find(kid).klass_serial
                 };
                 db.team.Add(aNewTeam);
                 db.SaveChanges();   //Create team_id
 
                 klass_team aNewks = new klass_team
                 {
-                    klass_id = klass_id,
+                    klass_id = kid,
                     team_id = aNewTeam.id
                 };
                 db.klass_team.Add(aNewks);
