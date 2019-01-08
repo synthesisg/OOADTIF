@@ -38,6 +38,7 @@ namespace final.Models
         public string t2ts(int team_id)
         {
             team t = db.team.Find(team_id);
+            if (t == null) return "unknown";
             return t.klass_serial.ToString() + '-' + t.team_serial.ToString();
         }
         public string k2ks(int klass_id)
@@ -413,6 +414,7 @@ namespace final.Models
         }
         public round_team_score(int round_id,int team_id)
         {
+            if (team_id == 0) return;
             tid = team_id;
             team_serial = new qt().t2ts(team_id);
             int klass_id = db.team.Find(team_id).klass_id;
